@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('keluhan_saran', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('kategori', ['keluhan', 'saran']);
             $table->text('isi');
             $table->timestamps();

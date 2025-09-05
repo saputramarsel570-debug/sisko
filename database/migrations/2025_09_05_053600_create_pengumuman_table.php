@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('judul', 128);
             $table->text('isi');
-            $table->foreignId('dibuat_oleh')->constrained('user')->onDelete('cascade');
+            $table->foreignId('dibuat_oleh')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
