@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('pengumuman', function (Blueprint $table) {
             $table->id();
+            $table->string('judul', 128);
+            $table->text('isi');
+            $table->foreignId('dibuat_oleh')->constrained('user')->onDelete('cascade');
             $table->timestamps();
         });
     }
