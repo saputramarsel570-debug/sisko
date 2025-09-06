@@ -8,6 +8,8 @@ class Absensi extends Model
 {
     use HasFactory;
 
+    protected $table = 'absensi';
+
     protected $fillable = [
         'tanggal',
         'kelas_id',
@@ -19,11 +21,11 @@ class Absensi extends Model
     public function siswa()
     {
         return
-        $this->belongsTo(Siswa::class);
+        $this->belongsTo(Siswa::class, 'siswa_id');
     }
     public function kelas()
     {
         return
-        $this->belongsTo(Kelas::class);
+        $this->belongsTo(Kelas::class, 'kelas_id');
     }
 }

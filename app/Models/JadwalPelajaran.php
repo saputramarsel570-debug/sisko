@@ -8,6 +8,8 @@ class JadwalPelajaran extends Model
 {
     use HasFactory;
 
+    protected $table = 'jadwal_pelajaran';
+
     protected $fillable = [
         'hari',
         'jam_mulai',
@@ -19,11 +21,11 @@ class JadwalPelajaran extends Model
 
     public function kelas()
     {
-        return $this->belongsTo(Kelas::class);
+        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
     public function guru ()
     {
-        return $this->belongsTo(Guru::class);
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 }
