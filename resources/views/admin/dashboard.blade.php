@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <h4 class="fw-bold">Dashboard Admin</h4>
-    <p>Selamat Datang, {{ Auth::user()->name }} ({{ Auth::user()->role }})</p>
+<div class="d-flex justify-content-center align-items-center" style="min-height:70vh;">
+    <div class="card shadow p-4 text-center" style="max-width: 600px; width: 100%;">
+        <h4 class="fw-bold mb-3">Dashboard Admin</h4>
+        <p class="mb-0">Selamat Datang, {{  Auth::user()->name }} ({{ Auth::user()->role }})</p>
+    </div>
+</div>
 @endsection

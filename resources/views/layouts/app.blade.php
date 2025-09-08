@@ -70,7 +70,23 @@
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         <!-- Menu -->
-            @include('partials.sidebar')
+            @switch(Auth::user()->role)
+                @case('admin')
+                    @include('partials.sidebar-admin')
+                    @break
+
+                @case('guru')
+                    @include('partials.sidebar-guru')
+                    @break
+
+                @case('siswa')
+                    @include('partials.sidebar-siswa')
+                    @break
+
+                @case('orangtua')
+                    @include('partials.sidebar-orangtua')
+                    @break
+            @endswitch
         <!-- / Menu -->
 
         <!-- Layout container -->
