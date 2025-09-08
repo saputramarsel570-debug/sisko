@@ -45,5 +45,18 @@
                     Dashboard
                 </a>
             </li>
+            <li class="menu-item">
+              <a href="{{ route('orangtua.absensi') }}" class="menu-link">
+                  <i class="menu-icon tf-icons ti ti-home"></i>
+                  Absensi Anak
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="{{ route('orangtua.pengumuman') }}" class="menu-link">
+                  <i class="menu-icon tf-icons ti ti-home"></i>
+                  Pengumuman Sekolah
+              </a>
+            </li>
+            
           </ul>
         </aside>

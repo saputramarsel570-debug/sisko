@@ -8,6 +8,6 @@ class SiswaController extends Controller
 {
     public function dashboard()
     {
-        return view('siswa.dashboard');
+        return view('pages.siswa.dashboard');
     }
 }

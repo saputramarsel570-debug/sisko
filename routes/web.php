@@ -26,8 +26,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // admin routes
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/dashboard', fn () => view('admin.dashboard'))->name('admin.dashboard');
-    Route::resource('/admin', App\Http\Controllers\AdminController::class);
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 });
 
 // guru routes
@@ -43,6 +42,8 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function () {
 // orangtua routes
 Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->group(function () {
     Route::get('/dashboard', [OrangtuaController::class, 'dashboard'])->name('orangtua.dashboard');
+    Route::get('/absensi', [OrangtuaController::class, 'absensi'])->name('orangtua.absensi');
+    Route::get('/pengumuman', [OrangtuaController::class, 'pengumuman'])->name('orangtua.pengumuman');
 });
 
 require __DIR__.'/auth.php';

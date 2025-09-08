@@ -8,6 +8,6 @@ class GuruController extends Controller
 {
     public function dashboard()
     {
-        return view('guru.dashboard');
+        return view('pages.guru.dashboard');
     }
 }
