@@ -40,15 +40,15 @@
 
           <ul class="menu-inner py-1">
             <li class="menu-item">
-                <a href="{{ route('home') }}" class="menu-link">
+                <a href="{{ route('admin.dashboard') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
                 </a>
             </li>
             <li class="menu-item">
-                <a href="{{ route('admin.index') }}" class="menu-link">
+                <a href="{{ route('admin.users.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-users"></i>
-                    Admin
+                    Kelola User
                 </a>
             </li>
           </ul>

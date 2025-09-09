@@ -2,6 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
+use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
+use App\Http\Controllers\Orangtua\DashboardController as OrangtuaDashboardController;
+
 
 Route::get('/', function () {
     return view('welcome');
