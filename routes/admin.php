@@ -8,5 +8,5 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function ()
 {
     Route::get('/dashboard',[DashboardController::class, 'index'])->name('admin.dashboard');
 
-    Route::resource('/users', UserController::class);
+    Route::resource('/users', UserController::class, ['as' => 'admin']);
 });
