@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -31,17 +32,19 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'username' => 'required|string|max:255|unique:users,username',
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
+            'role' => 'required|in:admin,guru,siswa,orangtua',
             'password' => 'required|min:6|confirmed',
-            'role' => 'required|string',
         ]);
 
         User::create([
+            'username' => $request->username,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
             'role' => $request->role,
+            'password' => bcrypt($request->password),
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan');
@@ -60,6 +63,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
+        $user = User::findOrFail($id);
         return view('pages.admin.users.edit', compact('user'));
     }
 
@@ -67,28 +71,35 @@ class UserController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|string',
-        ]);
+{
+    $user = User::findOrFail($id);
 
-        $user::update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-        ]);
+    $request->validate([
+        'username' => 'required|string|max:50|unique:users,username,' . $user->id,
+        'name'     => 'required|string|max:255',
+        'email'    => 'required|email|unique:users,email,' . $user->id,
+        'role'     => 'required|in:admin,guru,siswa,orangtua',
+        'password' => 'nullable|min:6|confirmed',
+    ]);
 
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui');
-    }
+    $user->update([
+        'username' => $request->username,
+        'name'     => $request->name,
+        'email'    => $request->email,
+        'role'     => $request->role,
+        'password' => $request->filled('password') ? Hash::make($request->password) : $user->password,
+    ]);
+
+    return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui.');
+}
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
+        $user = User::find($id);
         $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus');
+        return redirect()->route('admin.users.index');
     }
 }
