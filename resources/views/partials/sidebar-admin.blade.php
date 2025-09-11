@@ -51,5 +51,17 @@
                     Kelola User
                 </a>
             </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.guru.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-users"></i>
+                    Kelola Guru
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.siswa.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-users"></i>
+                    Kelola Siswa
+                </a>
+            </li>
           </ul>
         </aside>

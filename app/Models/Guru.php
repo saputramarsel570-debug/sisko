@@ -11,10 +11,10 @@ class Guru extends Model
     protected $table = 'guru';
 
     protected $fillable = [
+        'user_id',
         'nip',
         'nama',
         'mapel',
-        'user_id',
     ];
     Public function user()
     {
