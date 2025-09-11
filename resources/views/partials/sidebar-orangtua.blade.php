@@ -46,15 +46,21 @@
                 </a>
             </li>
             <li class="menu-item">
-              <a href="{{ route('orangtua.absensi') }}" class="menu-link">
+              <a href="{{ route('orangtua.absensi.index') }}" class="menu-link">
                   <i class="menu-icon tf-icons ti ti-home"></i>
                   Absensi Anak
               </a>
             </li>
             <li class="menu-item">
-              <a href="{{ route('orangtua.pengumuman') }}" class="menu-link">
-                  <i class="menu-icon tf-icons ti ti-home"></i>
-                  Pengumuman Sekolah
+              <a href="{{ route('orangtua.pengumuman.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-home"></i>
+                Pengumuman Sekolah
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="{{ route('orangtua.keluhan.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-home"></i>
+                Keluhan & Saran
               </a>
             </li>
             

@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="{{ route('home') }}" class="app-brand-link">
+            <a href="{{ route('siswa.dashboard') }}" class="app-brand-link">
               <span class="app-brand-logo demo">
                 <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -40,16 +40,27 @@
 
           <ul class="menu-inner py-1">
             <li class="menu-item">
-                <a href="{{ route('home') }}" class="menu-link">
+                <a href="{{ route('siswa.dashboard') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
                 </a>
             </li>
             <li class="menu-item">
-                <a href="{{ route('admin.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-users"></i>
-                    Admin
-                </a>
-            </li>
+              <a href="{{ route('siswa.jadwal.index') }}" class="menu-link">
+                  <i class="menu-icon tf-icons ti ti-home"></i>
+                  Jadwal Pelajaran
+              </a>
+           </li>
+           <li class="menu-item">
+            <a href="{{ route('siswa.pengumuman.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-home"></i>
+                Pengumuman Sekolah
+            </a>
+         </li>
+         <li class="menu-item">
+          <a href="{{ route('siswa.keluhan.index') }}" class="menu-link">
+              <i class="menu-icon tf-icons ti ti-home"></i>
+              Keluhan & Saran
+          </a>
           </ul>
         </aside>
