@@ -13,7 +13,7 @@ class KeluhanController extends Controller
      */
     public function index()
     {
-        $Keluhan = Keluhan::all();
+        $keluhan = KeluhanSaran::all();
         return view('pages.siswa.keluhan.index', compact('keluhan'));
     }
 

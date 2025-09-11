@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Siswa;
-
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers\Guru;
+use app\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Pengumuman;
-
-class PengumumanController extends Controller
+use App\Models\Jurnal;
+class JurnalController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $pengumuman = Pengumuman::all();
-        return view('pages.siswa.pengumuman.index', compact('pengumuman'));
+        $jurnal = Jurnal::all();
+        return view('pages.guru.jurnal.index', compact('jurnal'));
     }
 
     /**

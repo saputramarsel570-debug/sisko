@@ -3,8 +3,8 @@
 @section('content')
 <div class="d-flex justify-content-center align-items-center" style="min-height:70vh;">
     <div class="card shadow p-4 text-center" style="max-width: 600px; width: 100%;">
-        <h4 class="fw-bold mb-3">Absensi Anak -{{ Auth::user()->role }}</h4>
-        <p class="mb-0">Selamat Anakmu Minggat -{{  Auth::user()->name }} </p>
+        <h4 class="fw-bold mb-3">Pengumuman -{{ Auth::user()->role }}</h4>
+        <p class="mb-0">Royan Cupu Hadir -{{  Auth::user()->name }} </p>
     </div>
 </div>
 @endsection

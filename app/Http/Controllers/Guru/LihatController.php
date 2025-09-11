@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Siswa;
-
+namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Pengumuman;
-
-class PengumumanController extends Controller
+use App\Models\Absensi;
+class LihatController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $pengumuman = Pengumuman::all();
-        return view('pages.siswa.pengumuman.index', compact('pengumuman'));
+        $lihat = Absensi::all();
+        return view('pages.guru.lihat.index', compact('lihat'));
     }
 
     /**

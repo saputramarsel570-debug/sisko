@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Siswa;
+namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class PengumumanController extends Controller
     public function index()
     {
         $pengumuman = Pengumuman::all();
-        return view('pages.siswa.pengumuman.index', compact('pengumuman'));
+        return view('pages.guru.pengumuman.index', compact('pengumuman'));
     }
 
     /**

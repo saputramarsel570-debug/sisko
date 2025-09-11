@@ -14,6 +14,6 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
     
     Route::resource('/jadwal', JadwalController::class, ['as' => 'siswa']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa']);
-    Route::resource('/keluhan', PengumumanController::class, ['as' => 'siswa']);
+    Route::resource('/keluhan', KeluhanController::class, ['as' => 'siswa']);
 
 });

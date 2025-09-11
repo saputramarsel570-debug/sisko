@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Orangtua;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use\App\Models\Keluhan;
+use App\Models\KeluhanSaran;
 class KeluhanController extends Controller
 {
     /**
@@ -11,7 +11,7 @@ class KeluhanController extends Controller
      */
     public function index()
     {
-        $keluhan = Keluhan::all();
+        $keluhan = KeluhanSaran::all();
         return view('pages.orangtua.keluhan.index', compact('keluhan'));
     }
 
@@ -28,7 +28,17 @@ class KeluhanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $reqquest->validate([
+            'judul' => 'required',
+            'isi' => 'required',
+        ]);
+
+        $keluhan = new KeluhanSaran([
+            'judul' => $request->get('judul'),
+            'isi' => $request->get('isi'),
+        ]);
+        $keluhan->save();
+        return redirect('/orangtua/keluhan')->with('success', 'Data Berhasil Dikirim!');
     }
 
     /**

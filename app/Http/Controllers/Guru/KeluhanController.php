@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Siswa;
+namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Pengumuman;
+use App\Models\KeluhanSaran;
 
-class PengumumanController extends Controller
+class KeluhanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $pengumuman = Pengumuman::all();
-        return view('pages.siswa.pengumuman.index', compact('pengumuman'));
+        $keluhan = KeluhanSaran::all();
+        return view('pages.guru.keluhan.index', compact('keluhan'));
     }
 
     /**
