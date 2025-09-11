@@ -16,10 +16,14 @@ class SiswaController extends Controller
      */
     public function index(Request $request)
     {
-        $kelasId = $request->kelas_id;
-        $kelas = Kelas::all();
+        $kelasList = Kelas::all();
+        $kelasId = $request->get('kelas_id');
 
+        $siswa = Siswa::with(['user', 'kelas'])->when($kelasId, function($query) use ($kelasId) {
+        $query->where('kelas_id', $kelasId);
+        })->get();
 
+        return view('pages.admin.users.siswa.index', compact('siswa', 'kelasList', 'kelasId'));
     }
 
     /**
@@ -27,7 +31,8 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        //
+        $kelasList = Kelas::all();
+        return view('pages.admin.users.siswa.create', compact('kelasList'));
     }
 
     /**
@@ -35,7 +40,33 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nis' => 'required|unique:siswa,nis',
+            'nama' => 'required|string|max:255',
+            'alamat' => 'nullable|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id',
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $user = User::create([
+            'username' => $request->username,
+            'name' => $request->nama,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'siswa',
+        ]);
+
+        Siswa::create([
+            'nis' => $request->nis,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'kelas_id' => $request->kelas_id,
+            'user_id' => $user->id,
+        ]);
+
+        return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil ditambahkan');
     }
 
     /**
@@ -51,22 +82,51 @@ class SiswaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $kelasList = Kelas::all();
+        return view('pages.admin.users.siswa.edit', compact('siswa', 'kelasList'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Siswa $siswa)
     {
-        //
+        $request->validate([
+            'nis' => 'required|unique:siswa,nis,' . $siswa->id,
+            'nama' => 'required|string|max:255',
+            'alamat' => 'nullable|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id',
+            'username' => 'required|string|max:255|unique:users,username,' . $siswa->user_id,
+            'email' => 'required|email|unique:users,email,' . $siswa->user_id,
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $user = $siswa->user;
+        $user->update([
+            'username' => $request->username,
+            'name' => $request->nama,
+            'email' => $request->email,
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
+        ]);
+
+        $siswa->update([
+            'nis' => $request->nis,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'kelas_id' => $request->kelas_id,
+        ]);
+
+        return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Siswa $siswa)
     {
-        //
+        $siswa->user()->delete();
+        $siswa->delete();
+
+        return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil dihapus');
     }
 }
