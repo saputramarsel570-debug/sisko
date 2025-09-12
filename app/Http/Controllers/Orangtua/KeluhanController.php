@@ -20,7 +20,7 @@ class KeluhanController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.orangtua.keluhan.create');
     }
 
     /**
@@ -28,17 +28,19 @@ class KeluhanController extends Controller
      */
     public function store(Request $request)
     {
-        $reqquest->validate([
-            'judul' => 'required',
-            'isi' => 'required',
+        $request->validate([
+            'kategori' => 'required|string',
+            'isi' => 'required|string',
         ]);
 
-        $keluhan = new KeluhanSaran([
-            'judul' => $request->get('judul'),
-            'isi' => $request->get('isi'),
+        KeluhanSaran::create([
+            'user_id' => auth()->id(),
+            'kategori' => $request->kategori,
+            'isi' => $request->isi,
         ]);
-        $keluhan->save();
-        return redirect('/orangtua/keluhan')->with('success', 'Data Berhasil Dikirim!');
+
+        return redirect()->route('orangtua.keluhan.index')
+            ->with('success', 'Keluhan/Saran berhasil dikirim');
     }
 
     /**
@@ -46,7 +48,8 @@ class KeluhanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $keluhan = KeluhanSaran::findOrFail($id);
+        return view('pages.orangtua.keluhan.show', compact('keluhan'));
     }
 
     /**
@@ -54,7 +57,8 @@ class KeluhanController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $keluhan = KeluhanSaran::findOrFail($id);
+        return view('pages.orangtua.keluhan.edit', compact('keluhan'));
     }
 
     /**
@@ -62,7 +66,19 @@ class KeluhanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'kategori' => 'required|string',
+            'isi' => 'required|string',
+        ]);
+
+        $keluhan = KeluhanSaran::findOrFail($id);
+        $keluhan->update([
+            'kategori' => $request->kategori,
+            'isi' => $request->isi,
+        ]);
+
+        return redirect()->route('orangtua.keluhan.index')
+            ->with('success', 'Keluhan/Saran berhasil diperbarui');
     }
 
     /**
@@ -70,6 +86,9 @@ class KeluhanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $keluhan = KeluhanSaran::findOrFail($id);
+        $keluhan->delete();
+        return redirect()->route('orangtua.keluhan.index')
+            ->with('success', 'Keluhan/Saran berhasil dihapus');
     }
 }

@@ -64,11 +64,9 @@
     <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
     <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script type='text/javascript'>
-     document.addEventListener("DOMContentLoaded", function() {
-            if (typeof $ !== "undefined" && typeof $.fn.dataTable !== "undefined") {
-                $('.dataTable').DataTable();
-            }
-        });
+    $(function() {
+        $('.dataTable').DataTable();
+    });
 
     function actionDelete(url) {
         Swal.fire({
@@ -78,12 +76,11 @@
             showCancelButton : true,
             confirmButtonText : "Ya, hapus!"
         }).then((result) => {
-                if (result.isConfirmed) {
-                    let form = document.getElementById('form-delete');
-                    form.action = url;
-                    form.submit();
-                }
-            });
-        }
+            if (result.isConfirmed) {
+                $('#form-delete').attr('action', url);
+                $('#form-delete').submit();
+            }
+        });
+    }
     </script>
 @endpush
