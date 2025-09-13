@@ -14,9 +14,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Dashboard - Analytics | Vuexy - Bootstrap Admin Template</title>
-
-    <meta name="description" content="" />
+    <title>@yield('title') | Aplikasi SISKO (Sistem Informasi Sekolah Online)</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('/img/favicon/favicon.ico') }}" />
@@ -63,7 +61,23 @@
 
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('/js/config.js') }}"></script>
-    @stack('styles')
+
+
+    <style>
+    .swal2-container {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        pointer-events: all !important;
+    }
+</style>
+@stack('styles')
   </head>
 
   <body>

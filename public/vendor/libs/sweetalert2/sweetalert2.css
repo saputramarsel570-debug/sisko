@@ -1304,7 +1304,7 @@ body.swal2-toast-shown .swal2-container.swal2-bottom-end, body.swal2-toast-shown
   border-right-color: transparent;
   box-shadow: none;
 }
-[dir=rtl] .swal2-popup .swal2-actions.swal2-loading :not(.swal2-styled).swal2-confirm::after {
+[dir=rtl] . .swal2-actions.swal2-loading :not(.swal2-styled).swal2-confirm::after {
   margin-left: 0;
   margin-right: 0.5em;
 }

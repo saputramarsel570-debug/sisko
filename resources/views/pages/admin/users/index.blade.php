@@ -34,7 +34,8 @@
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">
                                         <span class="ti ti-pencil"></span> Edit
                                     </a>
-                                    <a href="javascript:;" class="btn btn-sm btn-danger" onclick="actionDelete('{{ route('admin.users.destroy', $user->id) }}')">
+                                    <a href="javascript:;" class="btn btn-sm btn-danger"
+                                       onclick="actionDelete('{{ route('admin.users.destroy', $user->id) }}')">
                                         <span class="ti ti-trash"></span> Hapus
                                     </a>
                                 </td>
@@ -50,10 +51,10 @@
         </div>
     </div>
 
-    <form id="form-delete" action="" method="POST" class="d-none">
+<form id="form-delete" action="" method="POST" class="d-none">
         @csrf
         @method('DELETE')
-    </form>
+</form>
 @endsection
 
 @push('styles')
@@ -75,7 +76,6 @@
             title : "Apakah kamu yakin?",
             text : "Data yang dihapus tidak dapat dikembalikan!",
             icon : "warning",
-            showCancelButton : true,
             confirmButtonText : "Ya, hapus saja!"
         }).then((result) => {
             if (result.isConfirmed) {

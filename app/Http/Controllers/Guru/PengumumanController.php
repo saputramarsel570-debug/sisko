@@ -13,7 +13,7 @@ class PengumumanController extends Controller
      */
     public function index()
     {
-        $pengumuman = Pengumuman::all();
+        $pengumuman = Pengumuman::with('user')->latest()->get();
         return view('pages.guru.pengumuman.index', compact('pengumuman'));
     }
 
@@ -22,7 +22,7 @@ class PengumumanController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.guru.pengumuman.create');
     }
 
     /**
@@ -30,7 +30,19 @@ class PengumumanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'judul' => 'required|string',
+            'isi' => 'required|string',
+        ]);
+
+        Pengumuman::create([
+            'judul' => $request->judul,
+            'isi' => $request->isi,
+            'dibuat_oleh' => auth()->id(),
+        ]);
+
+        return redirect()->route('guru.pengumuman.index')
+            ->with('success', 'Pengumuman Terbaru berhasil dikirim');
     }
 
     /**
@@ -38,7 +50,7 @@ class PengumumanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('pages.guru.pengumuman.show', compact('pengumuman'));
     }
 
     /**
@@ -46,7 +58,7 @@ class PengumumanController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('pages.guru.pengumuman.edit', compact('pengumuman'));
     }
 
     /**
@@ -54,7 +66,19 @@ class PengumumanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'isi' => 'required|string',
+        ]);
+
+        Pengumuman::update([
+            'judul' => $request->judul,
+            'isi' => $request->isi,
+            'dibuat_oleh' => auth()->id(),
+        ]);
+
+        return redirect()->route('guru.pengumuman.index')
+            ->with('success', 'Pengumuman berhasil diupdate');
     }
 
     /**
@@ -62,6 +86,8 @@ class PengumumanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Pengumuman::delete();
+        return redirect()->route('guru.pengumuman.index')
+            ->with('success', 'Pengumuman berhasil dihapus');
     }
 }
