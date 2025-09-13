@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-12 offset-md-12">
             <h3 class="page-title">Detail Keluhan & Saran</h3>
 
             <div class="card">

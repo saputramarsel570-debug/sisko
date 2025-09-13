@@ -28,9 +28,10 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->judul }}</td>
-                            <td>{{ Str::limit($item->isi, 50) }}</td>
+                            <td>{{ Str::limit($item->isi, 80) }}</td>
                             <td>{{ $item->user->name ?? 'Tidak diketahui' }}</td>
                             <td>
+                                <div class="btn-group" role="">
                                 <a href="{{ route('guru.pengumuman.show', $item->id) }}" class="btn btn-sm btn-secondary">
                                     <span class="ti ti-eye"></span>
                                 </a>
@@ -41,6 +42,7 @@
                                     onclick="actionDelete('{{ route('guru.pengumuman.destroy', $item->id) }}')">
                                     <span class="ti ti-trash"></span>
                                 </a>
+                             </div>
                             </td>
                         </tr>
                     @endforeach

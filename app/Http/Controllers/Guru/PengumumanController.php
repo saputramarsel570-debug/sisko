@@ -50,6 +50,7 @@ class PengumumanController extends Controller
      */
     public function show(string $id)
     {
+        $pengumuman = Pengumuman::findOrFail($id);
         return view('pages.guru.pengumuman.show', compact('pengumuman'));
     }
 
@@ -58,6 +59,7 @@ class PengumumanController extends Controller
      */
     public function edit(string $id)
     {
+        $pengumuman = Pengumuman::findOrFail($id);
         return view('pages.guru.pengumuman.edit', compact('pengumuman'));
     }
 
@@ -71,7 +73,7 @@ class PengumumanController extends Controller
             'isi' => 'required|string',
         ]);
 
-        Pengumuman::update([
+        Pengumuman::findOrFail($id)->update([
             'judul' => $request->judul,
             'isi' => $request->isi,
             'dibuat_oleh' => auth()->id(),
@@ -86,7 +88,8 @@ class PengumumanController extends Controller
      */
     public function destroy(string $id)
     {
-        Pengumuman::delete();
+        $pengumuman = Pengumuman::findOrFail($id);
+        $pengumuman->delete();
         return redirect()->route('guru.pengumuman.index')
             ->with('success', 'Pengumuman berhasil dihapus');
     }
