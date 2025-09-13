@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\User\GuruController;
 use App\Http\Controllers\Admin\User\SiswaController;
 use App\Http\Controllers\Admin\User\OrangtuaController;
+use App\Http\Controllers\Admin\KelasController;
 
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
@@ -17,4 +18,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::resource('/guru', GuruController::class);
 
     Route::resource('/siswa', SiswaController::class);
+
+    Route::resource('/orangtua', OrangtuaController::class);
+
+    Route::resource('/kelas', KelasController::class);
 });

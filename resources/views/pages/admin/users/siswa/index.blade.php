@@ -18,7 +18,7 @@
                         <select name="kelas_id" id="kelas_id" class="form-select" onchange="this.form.submit()">
                             <option value="">--Semua Kelas--</option>
                             @foreach ($kelasList as $kelas)
-                                <option value="{{ $kelas->id }}" {{ $kelasId == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama }}</option>
+                                <option value="{{ $kelas->id }}" {{ $kelasId == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama_kelas }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -50,7 +50,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $row->nis }}</td>
                                 <td>{{ $row->nama }}</td>
-                                <td>{{ $row->kelas ? $row->kelas->nama : '-' }}</td>
+                                <td>{{ $row->kelas ? $row->kelas->nama_kelas : '-' }}</td>
                                 <td>{{ $row->alamat ?? '-' }}</td>
                                 <td>{{ $row->user->email }}</td>
                                 <td>{{ $row->user->username }}</td>
