@@ -33,11 +33,10 @@
                 </table>
 
                 <div class="mt-3 d-flex justify-content-betwen">
-                    <a href="{{ route('siswa.pengumuman.index') }}" class="btn btn-primary">
+                    <a href="{{ route('orangtua.pengumuman.index') }}" class="btn btn-primary">
                         <span class="ti ti-arrow-left me-1"></span> 
                         Kembali
                     </a>
-                   
                 </div>
             </div>
         </div>

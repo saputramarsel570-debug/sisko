@@ -37,7 +37,8 @@ class PengumumanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $pengumuman = Pengumuman::findOrFail($id);
+        return view('pages.orangtua.pengumuman.show', compact('pengumuman'));
     }
 
     /**
