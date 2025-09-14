@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\User\GuruController;
 use App\Http\Controllers\Admin\User\SiswaController;
 use App\Http\Controllers\Admin\User\OrangtuaController;
 use App\Http\Controllers\Admin\KelasController;
+use App\Http\Controllers\Admin\MataPelajaranController;
+use App\Http\Controllers\Admin\JadwalPelajaranController;
 
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
@@ -22,4 +24,12 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::resource('/orangtua', OrangtuaController::class);
 
     Route::resource('/kelas', KelasController::class);
+
+    Route::resource('/mapel', MataPelajaranController::class);
+});
+
+Route::prefix('admin/jadwal')->middleware(['auth', 'role:admin'])->name('admin.jadwal.')->group(function () {
+    Route::get('/', [JadwalPelajaranController::class, 'index'])->name('index');
+    Route::get('/{kelas}/edit', [JadwalPelajaranController::class, 'edit'])->name('edit');
+    Route::post('/{kelas}', [JadwalPelajaranController::class, 'updateSchedule'])->name('updateSchedule');
 });

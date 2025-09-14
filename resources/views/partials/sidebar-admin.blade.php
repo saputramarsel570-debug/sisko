@@ -75,5 +75,17 @@
                     Kelola Kelas
                 </a>
             </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.mapel.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    Kelola Mapel
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.jadwal.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    Kelola Jadwal
+                </a>
+            </li>
           </ul>
         </aside>
