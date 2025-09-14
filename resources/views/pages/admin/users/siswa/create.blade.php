@@ -31,7 +31,7 @@
                                 <option value="">-- Pilih Kelas --</option>
                                 @foreach($kelasList as $kelas)
                                     <option value="{{ $kelas->id }}" {{ old('kelas_id') == $kelas->id ? 'selected' : '' }}>
-                                        {{ $kelas->nama }}
+                                        {{ $kelas->nama_kelas }}
                                     </option>
                                 @endforeach
                             </select>

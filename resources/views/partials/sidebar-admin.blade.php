@@ -63,5 +63,17 @@
                     Kelola Siswa
                 </a>
             </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.orangtua.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-users"></i>
+                    Kelola Orang Tua
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.kelas.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    Kelola Kelas
+                </a>
+            </li>
           </ul>
         </aside>
