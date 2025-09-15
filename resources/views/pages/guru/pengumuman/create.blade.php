@@ -30,6 +30,14 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+                <div class="mb-3">
+                    <label for="target" class="form-label">Target Audiens</label>
+                    <select name="target" id="target" class="form-control">
+                        <option value="siswa">Siswa</option>
+                        <option value="orangtua">Orang Tua</option>
+                        <option value="semua">Semua</option>
+                    </select>
+                </div>
 
                 <div class="d-flex justify-content-end">
                     <a href="{{ route('guru.pengumuman.index') }}" class="btn btn-secondary me-2">Batal</a>

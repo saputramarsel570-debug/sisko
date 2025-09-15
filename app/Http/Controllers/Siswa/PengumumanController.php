@@ -13,7 +13,7 @@ class PengumumanController extends Controller
      */
     public function index()
     {
-        $pengumuman = Pengumuman::all();
+        $pengumuman = Pengumuman::whereIn('target', ['semua', 'siswa'])->latest()->get();
         return view('pages.siswa.pengumuman.index', compact('pengumuman'));
     }
 

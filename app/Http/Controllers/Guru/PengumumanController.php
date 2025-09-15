@@ -29,21 +29,21 @@ class PengumumanController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'judul' => 'required|string',
-            'isi' => 'required|string',
-        ]);
+{
+    $validated = $request->validate([
+        'judul'  => 'required|string|max:255',
+        'isi'    => 'required|string',
+        'target' => 'required|in:siswa,orangtua,semua',
+    ]);
 
-        Pengumuman::create([
-            'judul' => $request->judul,
-            'isi' => $request->isi,
-            'dibuat_oleh' => auth()->id(),
-        ]);
+    $validated['dibuat_oleh'] = auth()->id();
 
-        return redirect()->route('guru.pengumuman.index')
-            ->with('success', 'Pengumuman Terbaru berhasil dikirim');
-    }
+    Pengumuman::create($validated);
+
+    return redirect()
+        ->route('guru.pengumuman.index')
+        ->with('success', 'Pengumuman terbaru berhasil dikirim');
+}
 
     /**
      * Display the specified resource.

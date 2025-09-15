@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('judul', 128);
             $table->text('isi');
             $table->foreignId('dibuat_oleh')->constrained('users')->onDelete('cascade');
+            $table->enum('target', ['siswa', 'orangtua', 'semua'])->default('semua');
             $table->timestamps();
         });
     }
