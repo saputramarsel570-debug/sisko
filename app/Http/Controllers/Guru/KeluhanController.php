@@ -38,7 +38,8 @@ class KeluhanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $keluhan = Keluhan::findOrFail($id);
+        return view('pages.guru.keluhan.show', cpmpact ('keluhan'));
     }
 
     /**
