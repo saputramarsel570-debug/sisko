@@ -23,6 +23,10 @@
                             <td>{{ $keluhan->isi }}</td>
                         </tr>
                         <tr>
+                            <th>Pengirim</th>
+                            <td>{{ ucfirst($keluhan->tipe_pengirim) }}</td>
+                        </tr>
+                        <tr>
                             <th>Dibuat Oleh</th>
                             <td>{{ $keluhan->user->name ?? 'Siswa' }}</td>
                         </tr>

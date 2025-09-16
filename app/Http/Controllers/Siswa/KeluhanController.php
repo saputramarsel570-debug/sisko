@@ -1,11 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Siswa;
- 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KeluhanSaran;
-
 class KeluhanController extends Controller
 {
     /**
@@ -39,6 +37,7 @@ class KeluhanController extends Controller
             'user_id' => auth()->id(),
             'kategori' => $request->kategori,
             'isi' => $request->isi,
+            'tipe_pengirim' => 'siswa',
         ]);
 
         return redirect()->route('siswa.keluhan.index')
@@ -77,6 +76,7 @@ class KeluhanController extends Controller
         $keluhan->update([
             'kategori' => $request->kategori,
             'isi' => $request->isi,
+            'tipe_pengirim' => 'siswa',
         ]);
 
         return redirect()->route('siswa.keluhan.index')

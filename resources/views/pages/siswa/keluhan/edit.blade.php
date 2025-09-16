@@ -7,20 +7,21 @@
         <div class="col-md-12">
             <h3 class="page-title">Edit Keluhan & Saran</h3>
 
-                <div class="card-body">
+            <div class="card shadow-sm">
+                <div class="card-body bg-white rounded">
                     <form action="{{ route('siswa.keluhan.update', $keluhan->id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
                         <div class="form-group mb-3">
-                            <label for="kategori" class="fomr-label">Kategori</label>
+                            <label for="kategori" class="form-label">Kategori</label>
                             <input type="text" class="form-control @error('kategori') is-invalid @enderror"
                                 id="kategori" 
                                 name="kategori" 
                                 value="{{ old('kategori', $keluhan->kategori) }}" />
                             @error('kategori')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror">
+                            @enderror
                         </div>
 
                         <div class="form-group mb-3">
@@ -33,7 +34,13 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="d-flex justify-content-between">
+
+                        <div class="form-group mb-3">
+                            <label for="tipe_pengirim" class="form-label">Tipe Pengirim</label>
+                            <input type="text" class="form-control" id="tipe_pengirim" value="siswa" readonly>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
                             <a href="{{ route('siswa.keluhan.index') }}" class="btn btn-secondary">
                                 <span class="ti ti-arrow-left me-1"></span> 
                                 Kembali

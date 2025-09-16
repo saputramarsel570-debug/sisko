@@ -14,11 +14,11 @@ class KeluhanSaran extends Model
         'user_id',
         'kategori',
         'isi',
+        'tipe_pengirim',
     ];
 
     public function user()
     {
-        return
-        $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
