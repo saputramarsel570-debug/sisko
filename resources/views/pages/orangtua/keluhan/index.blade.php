@@ -19,6 +19,7 @@
                         <th scope="col">No</th>
                         <th scope="col">Kategori</th>
                         <th scope="col">Isi</th>
+                        <th scope="col">Tipe Pengirim</th>
                         <th scope="col">Aksi</th>
                     </tr>
                 </thead>
@@ -28,6 +29,7 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $item->kategori }}</td>
                                 <td>{{ $item->isi }}</td>
+                                <td>{{ ucfirst($item->tipe_pengirim) }}</td>
                                 <td>
                                     <a href="{{ route('orangtua.keluhan.show', $item->id) }}" class="btn btn-sm btn-secondary" >
                                         <span class="ti ti-eye"></span>

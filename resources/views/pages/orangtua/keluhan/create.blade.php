@@ -34,6 +34,11 @@
                             </div>
                         @enderror
                     </div>
+                    <div class="form-group mb-3">
+                        <label for="tipe_pengirim" class="form-label">Tipe Pengirim</label>
+                        <input type="text" class="form-control" id="tipe_pengirim" value="orangtua" readonly>
+                    </div>
+
 
                     <div class="flex">
                         <button type="submit" class="btn btn-primary">

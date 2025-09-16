@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-12 offset-md-12">
             <h3 class="page-title">Detail Keluhan & Saran</h3>
 
             <div class="card">
@@ -23,6 +23,10 @@
                             <td>{{ $keluhan->isi }}</td>
                         </tr>
                         <tr>
+                            <th>Pengirim</th>
+                            <td>{{ ucfirst($keluhan->tipe_pengirim) }}</td>
+                        </tr>
+                        <tr>
                             <th>Dibuat Oleh</th>
                             <td>{{ $keluhan->user->name ?? 'Orangtua' }}</td>
                         </tr>
@@ -32,15 +36,17 @@
                         </tr>
                     </table>
 
-                    <div class="mt-3 d-flex justify-content-betwen">
+                    <div class="btn-group mt-3">
+                    <div class="gap-2 d-flex justify-content-betwen">
                         <a href="{{ route('orangtua.keluhan.index') }}" class="btn btn-primary">
                             <span class="ti ti-arrow-left me-1"></span> 
                             Kembali
                         </a>
-                        <a href="{{ route('orangtua.keluhan.edit', $keluhan->id) }}" class="btn btn-warning">
+                        <a href="{{ route('orangtua.keluhan.edit', $keluhan->id) }}" class="btn btn-warning m">
                             <span class="ti ti-pencil me-1"></span> 
                             Edit
                         </a>
+                    </div>
                     </div>
                 </div>
             </div>

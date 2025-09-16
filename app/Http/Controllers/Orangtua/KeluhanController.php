@@ -37,6 +37,7 @@ class KeluhanController extends Controller
             'user_id' => auth()->id(),
             'kategori' => $request->kategori,
             'isi' => $request->isi,
+            'tipe_pengirim' => 'orangtua',
         ]);
 
         return redirect()->route('orangtua.keluhan.index')
@@ -75,6 +76,7 @@ class KeluhanController extends Controller
         $keluhan->update([
             'kategori' => $request->kategori,
             'isi' => $request->isi,
+            'tipe_pengirim' => 'orangtua',
         ]);
 
         return redirect()->route('orangtua.keluhan.index')
