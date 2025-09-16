@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Siswa;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KeluhanSaran;
+
 class KeluhanController extends Controller
 {
     /**
@@ -11,7 +13,8 @@ class KeluhanController extends Controller
      */
     public function index()
     {
-        $keluhan = KeluhanSaran::all();
+        $keluhan = KeluhanSaran::where('user_id', auth()->id())->get();
+
         return view('pages.siswa.keluhan.index', compact('keluhan'));
     }
 
@@ -29,15 +32,14 @@ class KeluhanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kategori' => 'required|string',
+            'kategori' => 'required|in:keluhan,saran',
             'isi' => 'required|string',
         ]);
 
         KeluhanSaran::create([
-            'user_id' => auth()->id(),
+            'user_id'  => auth()->id(),
             'kategori' => $request->kategori,
-            'isi' => $request->isi,
-            'tipe_pengirim' => 'siswa',
+            'isi'      => $request->isi,
         ]);
 
         return redirect()->route('siswa.keluhan.index')
@@ -49,7 +51,8 @@ class KeluhanController extends Controller
      */
     public function show(string $id)
     {
-        $keluhan = KeluhanSaran::findOrFail($id);
+        $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
+
         return view('pages.siswa.keluhan.show', compact('keluhan'));
     }
 
@@ -58,7 +61,8 @@ class KeluhanController extends Controller
      */
     public function edit(string $id)
     {
-        $keluhan = KeluhanSaran::findOrFail($id);
+        $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
+
         return view('pages.siswa.keluhan.edit', compact('keluhan'));
     }
 
@@ -68,15 +72,15 @@ class KeluhanController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'kategori' => 'required|string',
+            'kategori' => 'required|in:keluhan,saran',
             'isi' => 'required|string',
         ]);
 
-        $keluhan = KeluhanSaran::findOrFail($id);
+        $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
+
         $keluhan->update([
             'kategori' => $request->kategori,
-            'isi' => $request->isi,
-            'tipe_pengirim' => 'siswa',
+            'isi'      => $request->isi,
         ]);
 
         return redirect()->route('siswa.keluhan.index')
@@ -88,8 +92,9 @@ class KeluhanController extends Controller
      */
     public function destroy(string $id)
     {
-        $keluhan = KeluhanSaran::findOrFail($id);
+        $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
         $keluhan->delete();
+
         return redirect()->route('siswa.keluhan.index')
             ->with('success', 'Keluhan/Saran berhasil dihapus');
     }

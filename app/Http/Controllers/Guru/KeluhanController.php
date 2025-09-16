@@ -18,28 +18,12 @@ class KeluhanController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $keluhan = Keluhan::findOrFail($id);
-        return view('pages.guru.keluhan.show', cpmpact ('keluhan'));
+        $keluhan = KeluhanSaran::findOrFail($id);
+        return view('pages.guru.keluhan.show', compact('keluhan'));
     }
 
     /**
@@ -47,7 +31,8 @@ class KeluhanController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $keluhan = KeluhanSaran::findOrFail($id);
+        return view('pages.guru.keluhan.edit', compact('keluhan'));
     }
 
     /**
@@ -55,14 +40,18 @@ class KeluhanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
-    }
+        $request->validate([
+            'status'  => 'required|in:pending,proses,selesai',
+            'balasan' => 'nullable|string',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $keluhan = KeluhanSaran::findOrFail($id);
+        $keluhan->update([
+            'status'  => $request->status,
+            'balasan' => $request->balasan,
+        ]);
+
+        return redirect()->route('guru.keluhan.index')
+            ->with('success', 'Keluhan/Saran berhasil diperbarui');
     }
 }

@@ -40,7 +40,7 @@
                             <input type="text" class="form-control" id="tipe_pengirim" value="orangtua" readonly>
                         </div>
 
-                        <div class="d-flex justify-content-end gap-2 mb-3">
+                        <div class="d-flex justify-content-end gap-2">
                             <a href="{{ route('orangtua.keluhan.index') }}" class="btn btn-secondary">
                                 <span class="ti ti-arrow-left me-1"></span> 
                                 Kembali

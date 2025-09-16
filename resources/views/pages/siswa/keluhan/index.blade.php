@@ -16,21 +16,33 @@
                 <table class="table table-striped dataTable">
                     <thead>
                         <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Kategori</th>
-                            <th scope="col">Isi</th>
-                            <th scope="col">Tipe Pengirim</th>
-                            <th scope="col">Aksi</th>
+                            <th>No</th>
+                            <th>Kategori</th>
+                            <th>Isi</th>
+                            <th>Status</th>
+                            <th>Balasan</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($keluhan as $index => $item)
+                        @foreach ($keluhan as $item)
                             <tr>
-                                <th scope="row">{{ $loop->iteration }}</th>
-                                <td>{{ $item->kategori }}</td>
-                                <td>{{ $item->isi }}</td>
-                                <td>{{ ucfirst($item->tipe_pengirim) }}</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ ucfirst($item->kategori) }}</td>
+                                <td>{{ Str::limit($item->isi, 50) }}</td>
                                 <td>
+                                    @if($item->status == 'pending')
+                                        <span class="badge bg-warning">Pending</span>
+                                    @elseif($item->status == 'proses')
+                                        <span class="badge bg-primary">Proses</span>
+                                    @else
+                                        <span class="badge bg-success">Selesai</span>
+                                    @endif
+                                </td>
+                                <td>{{ $item->balasan ?? '-' }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                    <div class="gap-2 d-flex justify-content-betwen">
                                     <a href="{{ route('siswa.keluhan.show', $item->id) }}" class="btn btn-sm btn-secondary">
                                         <span class="ti ti-eye"></span>
                                     </a>
@@ -41,6 +53,8 @@
                                         onclick="actionDelete('{{ route('siswa.keluhan.destroy', $item->id) }}')">
                                         <span class="ti ti-trash"></span>
                                     </a>
+                                    </div>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

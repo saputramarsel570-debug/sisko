@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('keluhan_saran', function (Blueprint $table) {
+        Schema::create('kelola_keluhan_saran', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('kategori', ['keluhan', 'saran']);
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->text('isi');
-            $table->text('balasan')->nullable();
-            $table->enum('status', ['pending', 'proses', 'selesai'])->default('pending');
+            $table->enum('kategori', ['keluhan', 'saran']);
+            $table->enum('status', ['baru', 'diproses', 'selesai'])->default('baru');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
-
     }
 
     /**
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('keluhan_saran');
+        Schema::dropIfExists('kelola_keluhan_saran');
     }
 };
