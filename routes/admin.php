@@ -9,7 +9,8 @@ use App\Http\Controllers\Admin\User\OrangtuaController;
 use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\JadwalPelajaranController;
-
+use App\Http\Controllers\Admin\KeluhanSaranController;
+use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
 {
@@ -26,6 +27,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::resource('/kelas', KelasController::class);
 
     Route::resource('/mapel', MataPelajaranController::class);
+
+    Route::resource('/keluhan_saran', KeluhanSaranController::class);
 });
 
 Route::prefix('admin/jadwal')->middleware(['auth', 'role:admin'])->name('admin.jadwal.')->group(function () {

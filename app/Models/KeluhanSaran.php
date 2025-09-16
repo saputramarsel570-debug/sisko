@@ -14,6 +14,8 @@ class KeluhanSaran extends Model
         'user_id',
         'kategori',
         'isi',
+        'status',
+        'balasan',
     ];
 
     public function user()

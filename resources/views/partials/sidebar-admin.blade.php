@@ -87,5 +87,11 @@
                     Kelola Jadwal
                 </a>
             </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.keluhan_saran.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    Kelola Keluhan & Saran
+                </a>
+            </li>
           </ul>
         </aside>
