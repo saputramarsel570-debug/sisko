@@ -86,9 +86,10 @@ class OrangtuaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Orangtua $orangtua)
     {
-        //
+        $orangtua->load('siswa.kelas', 'user');
+        return view('pages.admin.users.orangtua.show', compact('orangtua'));
     }
 
     /**

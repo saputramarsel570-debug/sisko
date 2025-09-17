@@ -12,7 +12,7 @@
                     <form action="{{ route('admin.siswa.update', $siswa->id) }}" method="POST">
                         @csrf
                         @method('PUT')
-                        <div class="mb-3">
+                        <div class="form-group mb-3">
                             <label for="nis" class="form-label">NIS</label>
                             <input type="text" name="nis" id="nis" class="form-control @error('nis') is-invalid @enderror" value="{{ old('nis', $siswa->nis) }}" required>
                             @error('nis')
@@ -31,7 +31,7 @@
                             <select name="kelas_id" id="kelas_id" class="form-select @error('kelas_id') is-invalid @enderror" required>
                                 <option value="">-- Pilih Kelas --</option>
                                 @foreach($kelasList as $kelas)
-                                    <option value="{{ $kelas->id }}" {{ old('kelas_id', $siswa->kelas_id) == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama }}</option>
+                                    <option value="{{ $kelas->id }}" {{ old('kelas_id', $siswa->kelas_id) == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama_kelas }}</option>
                                 @endforeach
                             </select>
                             @error('kelas_id')

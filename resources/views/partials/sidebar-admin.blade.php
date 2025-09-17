@@ -46,50 +46,54 @@
                 </a>
             </li>
             <li class="menu-item">
-                <a href="{{ route('admin.users.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-users"></i>
-                    Kelola User
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div>Kelola Data</div>
                 </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('admin.guru.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-users"></i>
-                    Kelola Guru
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('admin.siswa.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-users"></i>
-                    Kelola Siswa
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('admin.orangtua.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-users"></i>
-                    Kelola Orang Tua
-                </a>
+                <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{ route('admin.users.index') }}" class="menu-link">
+                    <div>Kelola User</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.guru.index') }}" class="menu-link">
+                    <div>Kelola Guru</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.siswa.index') }}" class="menu-link">
+                    <div>Kelola Siswa</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.orangtua.index') }}" class="menu-link">
+                    <div>Kelola Orang Tua</div>
+                    </a>
+                </li>
+                </ul>
             </li>
             <li class="menu-item">
                 <a href="{{ route('admin.kelas.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    <i class="menu-icon tf-icons ti ti-chalkboard"></i>
                     Kelola Kelas
                 </a>
             </li>
             <li class="menu-item">
                 <a href="{{ route('admin.mapel.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    <i class="menu-icon tf-icons ti ti-books"></i>
                     Kelola Mapel
                 </a>
             </li>
             <li class="menu-item">
                 <a href="{{ route('admin.jadwal.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    <i class="menu-icon tf-icons ti ti-calendar-event"></i>
                     Kelola Jadwal
                 </a>
             </li>
             <li class="menu-item">
                 <a href="{{ route('admin.keluhan_saran.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    <i class="menu-icon tf-icons ti ti-message"></i>
                     Kelola Keluhan & Saran
                 </a>
             </li>
