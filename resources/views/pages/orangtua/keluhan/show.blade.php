@@ -3,53 +3,44 @@
 @section('title', 'Detail Keluhan & Saran')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12 offset-md-12">
-            <h3 class="page-title">Detail Keluhan & Saran</h3>
-
-            <div class="card">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>No</th>
-                            <td>{{ $keluhan->id }}</td>
-                        </tr>
-                        <tr>
-                            <th>Kategori</th>
-                            <td>{{ $keluhan->kategori }}</td>
-                        </tr>
-                        <tr>
-                            <th>Isi</th>
-                            <td>{{ $keluhan->isi }}</td>
-                        </tr>
-                        <tr>
-                            <th>Pengirim</th>
-                            <td>{{ ucfirst($keluhan->tipe_pengirim) }}</td>
-                        </tr>
-                        <tr>
-                            <th>Dibuat Oleh</th>
-                            <td>{{ $keluhan->user->name ?? 'Orangtua' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tanggal</th>
-                            <td>{{ $keluhan->created_at->format('d-m-Y H:i') }}</td>
-                        </tr>
-                    </table>
-
-                    <div class="btn-group mt-3">
-                    <div class="gap-2 d-flex justify-content-betwen">
-                        <a href="{{ route('orangtua.keluhan.index') }}" class="btn btn-primary">
-                            <span class="ti ti-arrow-left me-1"></span> 
-                            Kembali
-                        </a>
-                        <a href="{{ route('orangtua.keluhan.edit', $keluhan->id) }}" class="btn btn-warning m">
-                            <span class="ti ti-pencil me-1"></span> 
-                            Edit
-                        </a>
-                    </div>
-                    </div>
+<div class="row">
+    <div class="col-md-12 offset-md-12">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Detail Keluhan & Saran</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 p-3 border rounded bg-light">
+                    <label class="fw-bold d-block">Kategori</label>
+                    <p class="mb-0">{{ ucfirst($keluhan->kategori) }}</p>
                 </div>
+                <div class="mb-3 p-3 border rounded bg-light">
+                    <label class="fw-bold d-block">Isi</label>
+                    <p class="mb-0">{{ $keluhan->isi }}</p>
+                </div>
+                <div class="mb-3 p-3 border rounded bg-light">
+                    <label class="fw-bold d-block">Status</label>
+                    <p class="mb-0">
+                        @if($keluhan->status == 'pending')
+                            <span class="badge bg-warning">Pending</span>
+                        @elseif($keluhan->status == 'proses')
+                            <span class="badge bg-info">Proses</span>
+                        @else
+                            <span class="badge bg-success">Selesai</span>
+                        @endif
+                    </p>
+                </div>
+                <div class="mb-3 p-3 border rounded bg-light">
+                    <label class="fw-bold d-block">Balasan</label>
+                    <p class="mb-0">{{ $keluhan->balasan ?? '-' }}</p>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content">
+                <a href="{{ route('orangtua.keluhan.index') }}" class="btn btn-secondary">
+                    <span class="ti ti-arrow-left me-1"></span> Kembali
+                </a>
             </div>
         </div>
     </div>
+</div>
 @endsection

@@ -5,6 +5,12 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            @if (session('success'))
+                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                    {{ session('success') }}
+                </div>
+            @endif
             <h3 class="page-title">Halaman Kelola Siswa</h3>
 
             <a href="{{ route('admin.siswa.create') }}" class="btn btn-primary my-3">
@@ -25,10 +31,6 @@
                 </div>
             </form>
 
-            @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-
             <div class="card">
                 <div class="table-responsive">
                     <table class="table table-striped">
@@ -39,8 +41,6 @@
                                 <th>Nama</th>
                                 <th>Kelas</th>
                                 <th>Alamat</th>
-                                <th>Email</th>
-                                <th>Username</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -52,9 +52,10 @@
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->kelas ? $row->kelas->nama_kelas : '-' }}</td>
                                 <td>{{ $row->alamat ?? '-' }}</td>
-                                <td>{{ $row->user->email }}</td>
-                                <td>{{ $row->user->username }}</td>
                                 <td>
+                                    <a href="{{ route('admin.siswa.show', $row->id) }}" class="btn btn-sm btn-primary" >
+                                        <span class="ti ti-eye"></span> Detail
+                                    </a>
                                     <a href="{{ route('admin.siswa.edit', $row->id) }}" class="btn btn-sm btn-warning">
                                         <span class="ti ti-pencil"></span> Edit
                                     </a>
@@ -66,7 +67,7 @@
                             </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">Tidak ada data siswa</td>
+                                    <td colspan="6" class="text-center">Tidak ada data siswa</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -108,5 +109,17 @@
             }
         });
     }
+
+    setTimeout(function () {
+        let alert = document.getElementById('success');
+        if (alert) {
+
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+
     </script>
 @endpush

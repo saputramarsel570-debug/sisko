@@ -72,15 +72,16 @@ class SiswaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Siswa $siswa)
     {
-        //
+        $siswa->load('user');
+        return view('pages.admin.users.siswa.show', compact('siswa'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Siswa $siswa)
     {
         $kelasList = Kelas::all();
         return view('pages.admin.users.siswa.edit', compact('siswa', 'kelasList'));
@@ -98,7 +99,7 @@ class SiswaController extends Controller
             'kelas_id' => 'required|exists:kelas,id',
             'username' => 'required|string|max:255|unique:users,username,' . $siswa->user_id,
             'email' => 'required|email|unique:users,email,' . $siswa->user_id,
-            'password' => 'required|confirmed|min:6',
+            'password' => 'nullable|confirmed|min:6',
         ]);
 
         $user = $siswa->user;
@@ -124,7 +125,9 @@ class SiswaController extends Controller
      */
     public function destroy(Siswa $siswa)
     {
-        $siswa->user()->delete();
+        if ($siswa->user) {
+            $siswa->user()->delete();
+        }
         $siswa->delete();
 
         return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil dihapus');

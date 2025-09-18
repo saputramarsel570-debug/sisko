@@ -55,7 +55,8 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-
+        $user = User::findOrFail($id);
+        return view('pages.admin.users.show', compact('user'));
     }
 
     /**
@@ -90,7 +91,7 @@ class UserController extends Controller
         'password' => $request->filled('password') ? Hash::make($request->password) : $user->password,
     ]);
 
-    return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui.');
+    return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui');
 }
 
     /**
@@ -100,6 +101,6 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $user->delete();
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus');
     }
 }

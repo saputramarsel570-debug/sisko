@@ -5,6 +5,12 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
+        @if (session('success'))
+            <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                {{ session('success') }}
+            </div>
+        @endif
         <h3 class="page-title">Kelola Data Guru</h3>
 
         <a href="{{ route('admin.guru.create') }}" class="btn btn-primary my-3">
@@ -32,6 +38,9 @@
                             <td>{{ $item->mapel }}</td>
                             <td>{{ $item->user->email ?? '-' }}</td>
                             <td>
+                                <a href="{{ route('admin.guru.show', $item->id) }}" class="btn btn-sm btn-primary" >
+                                        <span class="ti ti-eye"></span> Detail
+                                    </a>
                                 <a href="{{ route('admin.guru.edit', $item->id) }}" class="btn btn-sm btn-warning">
                                     <i class="ti ti-pencil"></i> Edit
                                 </a>
@@ -86,5 +95,17 @@
             }
         });
     }
+
+    setTimeout(function () {
+        let alert = document.getElementById('success');
+        if (alert) {
+
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+
 </script>
 @endpush

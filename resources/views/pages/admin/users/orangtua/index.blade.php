@@ -5,6 +5,12 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            @if (session('success'))
+                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                    {{ session('success') }}
+                </div>
+            @endif
             <h3 class="page-title">Kelola Orang Tua</h3>
 
             <a href="{{ route('admin.orangtua.create') }}" class="btn btn-primary my-3">
@@ -12,7 +18,7 @@
                 Tambah Orang Tua
             </a>
 
-            <form action="{{ route('admin.orangtua.index') }}" method="GET" clas="row g-2 mb-3">
+            <form action="{{ route('admin.orangtua.index') }}" method="GET" class="row g-2 mb-3">
                 <div class="col-md-4">
                     <select name="kelas_id" id="kelas_id" class="form-select">
                         <option value="">-- Semua Kelas --</option>
@@ -50,6 +56,9 @@
                                 <td>{{ $ot->siswa->nama ?? '-' }}</td>
                                 <td>{{ $ot->siswa->kelas->nama_kelas ?? '-' }}</td>
                                 <td>
+                                    <a href="{{ route('admin.orangtua.show', $ot->id) }}" class="btn btn-sm btn-primary" >
+                                        <span class="ti ti-eye"></span> Detail
+                                    </a>
                                     <a href="{{ route('admin.orangtua.edit', $ot->id) }}" class="btn btn-sm btn-warning">
                                         <span class="ti ti-pencil"></span> Edit
                                     </a>
@@ -103,5 +112,17 @@
             }
         });
     }
+
+    setTimeout(function () {
+        let alert = document.getElementById('success');
+        if (alert) {
+
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+
 </script>
 @endpush
