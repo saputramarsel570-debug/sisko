@@ -7,7 +7,6 @@
     <div class="col-md-12">
         <h3 class="page-title">Jadwal Pelajaran</h3>
 
-        {{-- Filter kelas --}}
         <form method="GET" class="mb-3">
             <div class="row g-2">
                 <div class="col-md-4">
@@ -34,11 +33,28 @@
             <div class="card">
                 <div class="card-body table-responsive">
                     <table class="table table-bordered text-center align-middle">
+                        @php
+                            $jamRanges = [
+                                1 => '07:00 - 07:45',
+                                2 => '07:45 - 08:30',
+                                3 => '08:30 - 09:15',
+                                4 => '09:30 - 10:15',
+                                5 => '10:15 - 11:00',
+                                6 => '11:00 - 11:45',
+                                7 => '12:30 - 13:15',
+                                8 => '13:15 - 14:00',
+                                9 => '14:00 - 14:45',
+                                10 => '14:45 - 15:30',
+                            ];
+                        @endphp
                         <thead class="table-light">
                             <tr>
                                 <th>Hari</th>
                                 @for($jam = 1; $jam <= 10; $jam++)
-                                    <th>Jam {{ $jam }}</th>
+                                    <th>
+                                        Jam {{ $jam }} <br>
+                                        <small class="text-muted">{{ $jamRanges[$jam] }}</small>
+                                    </th>
                                 @endfor
                             </tr>
                         </thead>
@@ -46,18 +62,41 @@
                             @foreach(['Senin','Selasa','Rabu','Kamis','Jumat'] as $hari)
                                 <tr>
                                     <td><strong>{{ $hari }}</strong></td>
-                                    @for($jam = 1; $jam <= 10; $jam++)
-                                        <td>
-                                            @if(isset($jadwalByHari[$hari][$jam]))
-                                                <div>
-                                                    <strong>{{ $jadwalByHari[$hari][$jam]->mataPelajaran->nama_mapel }}</strong><br>
-                                                    <small>{{ $jadwalByHari[$hari][$jam]->guru->nama ?? '-' }}</small>
-                                                </div>
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
-                                        </td>
-                                    @endfor
+
+                                    @php
+                                        $jam = 1;
+                                    @endphp
+
+                                    @while($jam <= 10)
+                                        @if(isset($jadwalByHari[$hari][$jam]))
+                                            @php
+                                                $current = $jadwalByHari[$hari][$jam];
+                                                $colspan = 1;
+
+                                                for ($next = $jam + 1; $next <= 10; $next++) {
+                                                    if (
+                                                        isset($jadwalByHari[$hari][$next]) &&
+                                                        $jadwalByHari[$hari][$next]->mata_pelajaran_id == $current->mata_pelajaran_id &&
+                                                        $jadwalByHari[$hari][$next]->guru_id == $current->guru_id
+                                                    ) {
+                                                        $colspan++;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                }
+                                            @endphp
+
+                                            <td colspan="{{ $colspan }}">
+                                                <strong>{{ $current->mataPelajaran->nama_mapel }}</strong><br>
+                                                <small>{{ $current->guru->nama ?? '-' }}</small>
+                                            </td>
+
+                                            @php $jam += $colspan; @endphp
+                                        @else
+                                            <td>-</td>
+                                            @php $jam++; @endphp
+                                        @endif
+                                    @endwhile
                                 </tr>
                             @endforeach
                         </tbody>

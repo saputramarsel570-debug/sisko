@@ -5,11 +5,13 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <h3 class="page-title">Kelola Kelas</h3>
-
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                    {{ session('success') }}
+                </div>
             @endif
+            <h3 class="page-title">Kelola Kelas</h3>
 
             <a href="{{ route('admin.kelas.create') }}" class="btn btn-primary my-3">
                 <span class="ti ti-plus me-1"></span>
@@ -86,5 +88,17 @@
             }
         });
     }
+
+    setTimeout(function () {
+        let alert = document.getElementById('success');
+        if (alert) {
+
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+
 </script>
 @endpush

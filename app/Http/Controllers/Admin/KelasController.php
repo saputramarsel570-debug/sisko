@@ -80,9 +80,12 @@ class KelasController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kelas $kela)
+    public function destroy(Kelas $kelas)
     {
-        $kela->delete();
+        foreach ($kelas->siswa as $siswa) {
+            $siswa->update(['kelas_id' => null]);
+        }
+        $kelas->delete();
         return redirect()->route('admin.kelas.index')->with('success', 'Kelas berhasil dihapus');
     }
 }

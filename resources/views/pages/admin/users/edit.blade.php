@@ -49,6 +49,7 @@
                                 <option value="guru" {{ old('role', $user->role) == 'guru' ? 'selected' : '' }}>Guru</option>
                                 <option value="siswa" {{ old('role', $user->role) == 'siswa' ? 'selected' : '' }}>Siswa</option>
                                 <option value="orangtua" {{ old('role', $user->role) == 'orangtua' ? 'selected' : '' }}>Orangtua</option>
+                                <option value="siswa_perwakilan" {{ old('role', $user->role) == 'siswa_perwakilan' ? 'selected' : '' }}>Siswa Perwakilan</option>
                             </select>
                             @error('role')
                                 <div class="invalid-feedback d-block">

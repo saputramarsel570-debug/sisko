@@ -24,7 +24,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
     Route::resource('/orangtua', OrangtuaController::class);
 
-    Route::resource('/kelas', KelasController::class);
+    Route::resource('/kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
 
     Route::resource('/mapel', MataPelajaranController::class);
 
