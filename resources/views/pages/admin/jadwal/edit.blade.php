@@ -13,11 +13,28 @@
             <div class="card">
                 <div class="card-body table-responsive">
                     <table class="table table-bordered text-center align-middle">
+                        @php
+                            $jamRanges = [
+                                1 => '07:00 - 07:45',
+                                2 => '07:45 - 08:30',
+                                3 => '08:30 - 09:15',
+                                4 => '09:30 - 10:15',
+                                5 => '10:15 - 11:00',
+                                6 => '11:00 - 11:45',
+                                7 => '12:30 - 13:15',
+                                8 => '13:15 - 14:00',
+                                9 => '14:00 - 14:45',
+                                10 => '14:45 - 15:30',
+                            ];
+                        @endphp
                         <thead class="table-light">
                             <tr>
                                 <th>Hari</th>
                                 @for($jam = 1; $jam <= 10; $jam++)
-                                    <th>Jam {{ $jam }}</th>
+                                    <th>
+                                        Jam {{ $jam }} <br>
+                                        <small class="text-muted">{{ $jamRanges[$jam] }}</small>
+                                    </th>
                                 @endfor
                             </tr>
                         </thead>
@@ -30,7 +47,7 @@
                                             $data = $jadwalByHari[$hari][$jam] ?? null;
                                         @endphp
                                         <td>
-                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][mapel_id]" class="form-select">
+                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][mapel_id]" class="form-select w-100 text-dark" style="min-width: 150px;">
                                                 <option value="">- Mapel -</option>
                                                 @foreach($mapel as $m)
                                                     <option value="{{ $m->id }}" {{ $data && $data->mata_pelajaran_id == $m->id ? 'selected' : '' }}>
@@ -38,7 +55,7 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][guru_id]" class="form-select mt-1">
+                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][guru_id]" class="form-select w-100 text-dark mt-1" style="min-width: 150px;">
                                                 <option value="">- Guru -</option>
                                                 @foreach($guru as $g)
                                                     <option value="{{ $g->id }}" {{ $data && $data->guru_id == $g->id ? 'selected' : '' }}>

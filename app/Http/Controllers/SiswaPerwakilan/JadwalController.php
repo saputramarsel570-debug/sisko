@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Siswa;
+namespace App\Http\Controllers\SiswaPerwakilan;
 
 use App\Http\Controllers\Controller;
 use App\Models\JadwalPelajaran;
@@ -14,6 +14,6 @@ class JadwalController extends Controller
     public function index()
     {
         $jadwal = JadwalPelajaran::all();
-        return view('pages.siswa.jadwal.index', compact('jadwal'));
+        return view('pages.siswa-perwakilan.jadwal.index', compact('jadwal'));
     }
 }

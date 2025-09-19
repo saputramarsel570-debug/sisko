@@ -98,6 +98,10 @@
                     @include('partials.sidebar-siswa')
                     @break
 
+                @case('siswa_perwakilan')
+                    @include('partials.sidebar-siswa-perwakilan')
+                    @break
+
                 @case('orangtua')
                     @include('partials.sidebar-orangtua')
                     @break

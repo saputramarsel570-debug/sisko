@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
+use App\Http\Controllers\SiswaPerwakilan\DashboardController as SiswaPerwakilanDashboardController;
 use App\Http\Controllers\Orangtua\DashboardController as OrangtuaDashboardController;
 
 
@@ -26,7 +27,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 require __DIR__.'/auth.php';
-
+require __DIR__.'/siswa_perwakilan.php';
 require __DIR__.'/admin.php';
 require __DIR__.'/guru.php';
 require __DIR__.'/siswa.php';
