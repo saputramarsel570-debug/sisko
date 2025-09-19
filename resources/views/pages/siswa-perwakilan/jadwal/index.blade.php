@@ -1,46 +1,104 @@
 @extends('layouts.app')
 
-@section('title', 'Jadwal Pelajaran Siswa')
+@section('title', 'Jadwal Pelajaran')
 
 @section('content')
 <div class="row">
     <div class="col-md-12">
         <h3 class="page-title">Jadwal Pelajaran</h3>
 
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>No</th>
-                            <th>Kelas</th>
-                            <th>Mata Pelajaran</th>
-                            <th>Guru</th>
-                            <th>Hari</th>
-                            <th>Jam Mulai</th>
-                            <th>Jam Selesai</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($jadwal as $item)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
-                                <td>{{ $item->mataPelajaran->nama ?? '-' }}</td>
-                                <td>{{ $item->guru->nama ?? '-' }}</td>
-                                <td>{{ $item->hari }}</td>
-                                <td>{{ $item->jam_mulai }}</td>
-                                <td>{{ $item->jam_selesai }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center">Tidak ada jadwal tersedia.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+        <form method="GET" class="mb-3">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <select name="kelas_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Pilih Kelas --</option>
+                        @foreach($kelasList as $kelas)
+                            <option value="{{ $kelas->id }}" {{ $kelasId == $kelas->id ? 'selected' : '' }}>
+                                {{ $kelas->nama_kelas }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </div>
+        </form>
+
+        @if($kelasId)
+
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <table class="table table-bordered text-center align-middle">
+                        @php
+                            $jamRanges = [
+                                1 => '07:00 - 07:45',
+                                2 => '07:45 - 08:30',
+                                3 => '08:30 - 09:15',
+                                4 => '09:30 - 10:15',
+                                5 => '10:15 - 11:00',
+                                6 => '11:00 - 11:45',
+                                7 => '12:30 - 13:15',
+                                8 => '13:15 - 14:00',
+                                9 => '14:00 - 14:45',
+                                10 => '14:45 - 15:30',
+                            ];
+                        @endphp
+                        <thead class="table-light">
+                            <tr>
+                                <th>Hari</th>
+                                @for($jam = 1; $jam <= 10; $jam++)
+                                    <th>
+                                        Jam {{ $jam }} <br>
+                                        <small class="text-muted">{{ $jamRanges[$jam] }}</small>
+                                    </th>
+                                @endfor
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(['Senin','Selasa','Rabu','Kamis','Jumat'] as $hari)
+                                <tr>
+                                    <td><strong>{{ $hari }}</strong></td>
+
+                                    @php
+                                        $jam = 1;
+                                    @endphp
+
+                                    @while($jam <= 10)
+                                        @if(isset($jadwalByHari[$hari][$jam]))
+                                            @php
+                                                $current = $jadwalByHari[$hari][$jam];
+                                                $colspan = 1;
+
+                                                for ($next = $jam + 1; $next <= 10; $next++) {
+                                                    if (
+                                                        isset($jadwalByHari[$hari][$next]) &&
+                                                        $jadwalByHari[$hari][$next]->mata_pelajaran_id == $current->mata_pelajaran_id &&
+                                                        $jadwalByHari[$hari][$next]->guru_id == $current->guru_id
+                                                    ) {
+                                                        $colspan++;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                }
+                                            @endphp
+
+                                            <td colspan="{{ $colspan }}">
+                                                <strong>{{ $current->mataPelajaran->nama_mapel }}</strong><br>
+                                                <small>{{ $current->guru->nama ?? '-' }}</small>
+                                            </td>
+
+                                            @php $jam += $colspan; @endphp
+                                        @else
+                                            <td>-</td>
+                                            @php $jam++; @endphp
+                                        @endif
+                                    @endwhile
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <div>
+        @endif
     </div>
 </div>
 @endsection

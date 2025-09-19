@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\JadwalPelajaranController;
 use App\Http\Controllers\Admin\KeluhanSaranController;
+use App\Http\Controllers\Admin\PengaturanSekolahController;
 use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
@@ -35,4 +36,10 @@ Route::prefix('admin/jadwal')->middleware(['auth', 'role:admin'])->name('admin.j
     Route::get('/', [JadwalPelajaranController::class, 'index'])->name('index');
     Route::get('/{kelas}/edit', [JadwalPelajaranController::class, 'edit'])->name('edit');
     Route::post('/{kelas}', [JadwalPelajaranController::class, 'updateSchedule'])->name('updateSchedule');
+});
+
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
+    Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
+    Route::get('/pengaturan/{id}/edit', [PengaturanSekolahController::class, 'edit'])->name('pengaturan.edit');
+    Route::put('/pengaturan/{id}', [PengaturanSekolahController::class, 'update'])->name('pengaturan.update');
 });

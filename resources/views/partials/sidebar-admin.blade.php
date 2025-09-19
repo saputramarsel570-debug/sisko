@@ -97,5 +97,11 @@
                     Kelola Keluhan & Saran
                 </a>
             </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.pengaturan.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-building"></i>
+                    <span>Pengaturan Sekolah</span>
+                </a>
+            </li>
           </ul>
         </aside>
