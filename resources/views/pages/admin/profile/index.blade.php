@@ -29,6 +29,18 @@
                     <div class="card-body">
                         <h5 class="mb-3">Data Identitas</h5>
 
+                        <div class="mb-3">
+                            <img src="{{ $user->profile_photo ? asset('uploads/profile/' . $user->profile_photo) : 'https://via.placeholder.com/120' }}" alt="Foto Profil" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
+
+                            <form action="{{ route('admin.profile.photo') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="input-group mt-2">
+                                    <input type="file" name="profile_photo" id="profile_photo" class="form-control form-control-sm" accept="image/*" required>
+                                    <button type="submit" class="btn btn-sm btn-primary">Ganti Foto</button>
+                                </div>
+                            </form>
+                        </div>
+
                         <p><strong>Nama :</strong>{{ $user->name }}</p>
                         <p><strong>Email :</strong>{{ $user->email }}</p>
                         <p><strong>Role :</strong>{{ ucfirst($user->role) }}</p>

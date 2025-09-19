@@ -48,6 +48,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
-   Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
-   Route::post('/admin/profile/password', [ProfileController::class, 'updatePassword'])->name('admin.profile.password');
+   Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+   Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+   Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
 });

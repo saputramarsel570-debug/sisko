@@ -18,12 +18,20 @@ class SiswaController extends Controller
     {
         $kelasList = Kelas::all();
         $kelasId = $request->get('kelas_id');
+        $role = $request->get('role');
 
-        $siswa = Siswa::with(['user', 'kelas'])->when($kelasId, function($query) use ($kelasId) {
-        $query->where('kelas_id', $kelasId);
-        })->get();
+        $siswa = Siswa::with(['user', 'kelas'])
+            ->when($kelasId, function ($query) use ($kelasId) {
+                $query->where('kelas_id', $kelasId);
+            })
+            ->when($role, function ($query) use ($role) {
+                $query->whereHas('user', function ($q) use ($role) {
+                    $q->where('role', $role);
+                });
+            })
+            ->get();
 
-        return view('pages.admin.users.siswa.index', compact('siswa', 'kelasList', 'kelasId'));
+        return view('pages.admin.users.siswa.index', compact('siswa', 'kelasList', 'kelasId', 'role'));
     }
 
     /**
@@ -48,6 +56,7 @@ class SiswaController extends Controller
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
+            'role' => 'required|in:siswa,siswa_perwakilan',
         ]);
 
         $user = User::create([
@@ -55,7 +64,7 @@ class SiswaController extends Controller
             'name' => $request->nama,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'siswa',
+            'role' => $request->role,
         ]);
 
         Siswa::create([
@@ -74,7 +83,7 @@ class SiswaController extends Controller
      */
     public function show(Siswa $siswa)
     {
-        $siswa->load('user');
+        $siswa->load('user', 'kelas');
         return view('pages.admin.users.siswa.show', compact('siswa'));
     }
 
@@ -84,6 +93,7 @@ class SiswaController extends Controller
     public function edit(Siswa $siswa)
     {
         $kelasList = Kelas::all();
+        $siswa->load('user');
         return view('pages.admin.users.siswa.edit', compact('siswa', 'kelasList'));
     }
 
@@ -100,6 +110,7 @@ class SiswaController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $siswa->user_id,
             'email' => 'required|email|unique:users,email,' . $siswa->user_id,
             'password' => 'nullable|confirmed|min:6',
+            'role' => 'required|in:siswa,siswa_perwakilan',
         ]);
 
         $user = $siswa->user;
@@ -108,6 +119,7 @@ class SiswaController extends Controller
             'name' => $request->nama,
             'email' => $request->email,
             'password' => $request->password ? Hash::make($request->password) : $user->password,
+            'role' => $request->role,
         ]);
 
         $siswa->update([

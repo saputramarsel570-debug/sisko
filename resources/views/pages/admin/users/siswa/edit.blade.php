@@ -46,6 +46,17 @@
                             @enderror
                         </div>
 
+                        <div class="form-group mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <select name="role" id="role" class="form-select @error('role') is-invalid @enderror" required>
+                                <option value="siswa" {{ old('role', $siswa->user->role) == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                                <option value="siswa_perwakilan" {{ old('role', $siswa->user->role) == 'siswa_perwakilan' ? 'selected' : '' }}>Siswa Perwakilan</option>
+                            </select>
+                            @error('role')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <hr>
 
                         <h5 class="mb-3">Akun Login</h5>
