@@ -11,12 +11,11 @@ use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\JadwalPelajaranController;
 use App\Http\Controllers\Admin\KeluhanSaranController;
 use App\Http\Controllers\Admin\PengaturanSekolahController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
 {
-    Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard');
-
     Route::resource('/users', UserController::class);
 
     Route::resource('/guru', GuruController::class);
@@ -42,4 +41,13 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
     Route::get('/pengaturan/{id}/edit', [PengaturanSekolahController::class, 'edit'])->name('pengaturan.edit');
     Route::put('/pengaturan/{id}', [PengaturanSekolahController::class, 'update'])->name('pengaturan.update');
+});
+
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+});
+
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
+   Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
+   Route::post('/admin/profile/password', [ProfileController::class, 'updatePassword'])->name('admin.profile.password');
 });
