@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\Orangtua\DashboardController as OrangtuaDashboardController;
+use App\Models\User;
 
 
 Route::get('/', function () {
@@ -22,6 +23,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/notifications/read/{id}', function($id) {
+    $notif = auth()->user()->notifications()->findOrFail($id);
+    $notif->markAsRead();
+    return back();
+})->name('notifications.read');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
