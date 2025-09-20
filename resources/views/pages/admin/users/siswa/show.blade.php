@@ -43,6 +43,10 @@
                         <td>{{ $siswa->user->username }}</td>
                     </tr>
                     <tr>
+                        <th>Role</th>
+                        <td>{{ ucfirst(str_replace('_', ' ', $siswa->user->role)) }}</td>
+                    </tr>
+                    <tr>
                         <th>Dibuat pada</th>
                         <td>{{ $siswa->created_at->format('d M Y H:i') }}</td>
                     </tr>

@@ -11,7 +11,7 @@ class PengaturanSekolahController extends Controller
 {
     public function index()
     {
-        $pengaturan = PengaturanSekolah::first(); // diasumsikan cuma ada 1 data
+        $pengaturan = PengaturanSekolah::first(); 
         return view('pages.admin.pengaturan.index', compact('pengaturan'));
     }
 

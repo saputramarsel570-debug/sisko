@@ -42,6 +42,12 @@ class KeluhanController extends Controller
             'isi'      => $request->isi,
         ]);
 
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new KeluhanSaranNotification(auth()->user()->name, $request->isi));
+        }
+
         return redirect()->route('orangtua.keluhan.index')
             ->with('success', 'Keluhan/Saran berhasil dikirim');
     }

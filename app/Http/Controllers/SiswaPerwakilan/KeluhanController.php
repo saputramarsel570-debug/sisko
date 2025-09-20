@@ -5,6 +5,8 @@ namespace App\Http\Controllers\SiswaPerwakilan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KeluhanSaran;
+use App\Models\User;
+use App\Notifications\KeluhanSaranNotification;
 
 class KeluhanController extends Controller
 {
@@ -14,7 +16,6 @@ class KeluhanController extends Controller
     public function index()
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->get();
-
         return view('pages.siswa-perwakilan.keluhan.index', compact('keluhan'));
     }
 
@@ -41,6 +42,12 @@ class KeluhanController extends Controller
             'kategori' => $request->kategori,
             'isi'      => $request->isi,
         ]);
+
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new KeluhanSaranNotification(auth()->user()->name, $request->isi));
+        }
 
         return redirect()->route('siswa-perwakilan.keluhan.index')
             ->with('success', 'Keluhan/Saran berhasil dikirim');

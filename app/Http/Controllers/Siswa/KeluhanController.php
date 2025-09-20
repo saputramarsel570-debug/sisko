@@ -16,6 +16,7 @@ class KeluhanController extends Controller
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->get();
 
         return view('pages.siswa.keluhan.index', compact('keluhan'));
+
     }
 
     /**
@@ -42,6 +43,11 @@ class KeluhanController extends Controller
             'isi'      => $request->isi,
         ]);
 
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new KeluhanSaranNotification(auth()->user()->name, $request->isi));
+        }
         return redirect()->route('siswa.keluhan.index')
             ->with('success', 'Keluhan/Saran berhasil dikirim');
     }

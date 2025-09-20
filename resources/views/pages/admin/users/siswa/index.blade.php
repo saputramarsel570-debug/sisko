@@ -28,6 +28,13 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="col-md-3">
+                        <select name="role" id="role" class="form-select" onchange="this.form.submit()">
+                            <option value="">--Semua Role--</option>
+                            <option value="siswa" {{ request('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                            <option value="siswa_perwakilan" {{ request('role') == 'siswa_perwakilan' ? 'selected' : '' }}>Siswa Perwakilan</option>
+                        </select>
+                    </div>
                 </div>
             </form>
 
@@ -41,6 +48,7 @@
                                 <th>Nama</th>
                                 <th>Kelas</th>
                                 <th>Alamat</th>
+                                <th>Role</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -52,6 +60,13 @@
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->kelas ? $row->kelas->nama_kelas : '-' }}</td>
                                 <td>{{ $row->alamat ?? '-' }}</td>
+                                <td>
+                                    @if($row->user && $row->user->role == 'siswa_perwakilan')
+                                        <span class="badge bg-success">Perwakilan</span>
+                                    @else
+                                        <span class="badge bg-secondary">Siswa</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <a href="{{ route('admin.siswa.show', $row->id) }}" class="btn btn-sm btn-primary" >
                                         <span class="ti ti-eye"></span> Detail
@@ -67,7 +82,7 @@
                             </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data siswa</td>
+                                    <td colspan="7" class="text-center">Tidak ada data siswa</td>
                                 </tr>
                             @endforelse
                         </tbody>

@@ -343,18 +343,18 @@
                     href="javascript:void(0);"
                     data-bs-toggle="dropdown">
                     <div class="d-flex align-items-center gap-1">
-                    <div class="avatar avatar-online">
-                      <img src="{{ asset ('/img/avatars/1.png') }}" alt class="rounded-circle" />
-                    </div>
+                        <div class="avatar avatar-online">
+                            <img src="{{ Auth::user()->profile_photo ? asset('uploads/profile/' . Auth::user()->profile_photo) : asset('/img/avatars/1.png') }}" alt="User Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" />
+                        </div>
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a class="dropdown-item mt-0" href="pages-account-settings-account.html">
+                      <a class="dropdown-item mt-0" href="{{ route('admin.profile') }}">
                         <div class="d-flex align-items-center">
                           <div class="flex-shrink-0 me-2">
                             <div class="avatar avatar-online">
-                              <img src="{{ asset('/img/avatars/1.png') }}" alt class="rounded-circle" />
+                                <img src="{{ Auth::user()->profile_photo ? asset('uploads/profile/' . Auth::user()->profile_photo) : asset('/img/avatars/1.png') }}" alt="User Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" />
                             </div>
                           </div>
                           <div class="flex-grow-1">
@@ -368,13 +368,8 @@
                       <div class="dropdown-divider my-1 mx-n2"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="pages-profile-user.html">
+                      <a class="dropdown-item" href="{{ route('admin.profile') }}">
                         <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="pages-account-settings-account.html">
-                        <i class="ti ti-settings me-3 ti-md"></i><span class="align-middle">Settings</span>
                       </a>
                     </li>
                     <li>

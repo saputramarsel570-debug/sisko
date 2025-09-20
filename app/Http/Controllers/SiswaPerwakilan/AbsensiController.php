@@ -3,47 +3,78 @@
 namespace App\Http\Controllers\SiswaPerwakilan;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Absensi;
 use App\Models\Siswa;
-use App\Models\Kelas;
-use App\Models\MataPelajaran;
-use Illuminate\Http\Request;
 
 class AbsensiController extends Controller
 {
     public function index()
     {
-        $kelas = Kelas::all();
-        $mapel = MataPelajaran::all();
+        $user = auth()->user();
+        $siswaPerwakilan = Siswa::where('user_id', $user->id)->first();
 
-        return view('pages.siswa-perwakilan.absensi.index', compact('kelas', 'mapel'));
+        if (!$siswaPerwakilan) {
+            abort(403, 'Anda bukan perwakilan kelas');
+        }
+
+        $kelas = $siswaPerwakilan->kelas;
+        $siswaKelas = Siswa::where('kelas_id', $kelas->id)->get();
+
+        $absensiHariIni = Absensi::where('kelas_id', $kelas->id)
+            ->where('tanggal', now()->toDateString())
+            ->get();
+
+        return view('pages.siswa-perwakilan.absensi.index', compact('kelas', 'siswaKelas', 'absensiHariIni'));
     }
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+        $siswaPerwakilan = Siswa::where('user_id', $user->id)->first();
+
+        if (!$siswaPerwakilan) {
+            abort(403, 'Anda bukan perwakilan kelas');
+        }
+
+        $kelasId = $siswaPerwakilan->kelas_id;
+
         $request->validate([
-            'kelas_id' => 'required|exists:kelas,id',
-            'mapel_id' => 'required|exists:mata_pelajaran,id',
-            'tanggal' => 'required|date',
-            'status.*' => 'required|in:hadir,izin,sakit,alfa',
+            'absensi' => 'required|array',
         ]);
 
-        foreach ($request->siswa_id as $index => $siswaId) {
+        foreach ($request->absensi as $siswa_id => $data) {
             Absensi::create([
-                'tanggal' => $request->tanggal,
-                'kelas_id' => $request->kelas_id,
-                'siswa_id' => $siswaId,
-                'status' => $request->status[$index],
-                'keterangan' => $request->keterangan[$index] ?? null,
+                'tanggal' => now()->toDateString(),
+                'kelas_id' => $kelasId,
+                'siswa_id' => $siswa_id,
+                'status' => $data['status'],
+                'keterangan' => $data['keterangan'] ?? null,
             ]);
         }
 
-        return redirect()->back()->with('success', 'Absensi berhasil disimpan.');
+        return redirect()->route('siswa-perwakilan.absensi.index')
+            ->with('success', 'Absensi berhasil disimpan');
     }
 
-    public function getSiswa($kelasId)
+    public function edit(Absensi $absensi)
     {
-        $siswa = Siswa::where('kelas_id', $kelasId)->get();
-        return response()->json($siswa);
+        return view('pages.siswa-perwakilan.absensi.edit', compact('absensi'));
+    }
+
+    public function update(Request $request, Absensi $absensi)
+    {
+        $request->validate([
+            'status' => 'required|in:hadir,izin,sakit,alfa',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $absensi->update([
+            'status' => $request->status,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return redirect()->route('siswa-perwakilan.absensi.index')
+            ->with('success', 'Absensi berhasil diperbarui');
     }
 }
