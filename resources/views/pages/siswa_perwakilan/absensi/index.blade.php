@@ -8,7 +8,7 @@
         <h4 class="mb-0">Isi Absensi</h4>
     </div>
     <div class="card-body">
-        <form action="{{ route('siswa-perwakilan.absensi.store') }}" method="POST">
+        <form action="{{ route('siswa_perwakilan.absensi.store') }}" method="POST">
             @csrf
 
             <div class="mb-3">

@@ -18,7 +18,7 @@
                                     <p class="card-text text-truncate">
                                         {{ Str::limit($item->isi, 100) }}
                                     </p>
-                                    <a href="{{ route('siswa-perwakilan.pengumuman.show', $item->id) }}" 
+                                    <a href="{{ route('siswa_perwakilan.pengumuman.show', $item->id) }}" 
                                        class="btn btn-sm btn-primary">
                                         <span class="ti ti-eye me-1"></span> Detail
                                     </a>

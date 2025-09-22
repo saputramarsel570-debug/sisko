@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="card-footer d-flex justify-content">
-                <a href="{{ route('siswa-perwakilan.keluhan.index') }}" class="btn btn-secondary">
+                <a href="{{ route('siswa_perwakilan.keluhan.index') }}" class="btn btn-secondary">
                     <span class="ti ti-arrow-left me-1"></span> Kembali
                 </a>
             </div>

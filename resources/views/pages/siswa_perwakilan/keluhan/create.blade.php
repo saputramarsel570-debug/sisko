@@ -9,7 +9,7 @@
             <div class="card-body">
                 <h4 class="mb-3">Kirim Keluhan / Saran</h4>
 
-                <form action="{{ route('siswa-perwakilan.keluhan.store') }}" method="POST">
+                <form action="{{ route('siswa_perwakilan.keluhan.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label for="kategori" class="form-label">Kategori</label>
@@ -32,7 +32,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Kirim</button>
-                    <a href="{{ route('siswa-perwakilan.keluhan.index') }}" class="btn btn-secondary">Batal</a>
+                    <a href="{{ route('siswa_perwakilan.keluhan.index') }}" class="btn btn-secondary">Batal</a>
                 </form>
             </div>
         </div>

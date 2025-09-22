@@ -7,7 +7,7 @@
         <div class="col-md-12">
             <h3 class="page-title">Halaman Keluhan & Saran</h3>
 
-            <a href="{{ route('siswa-perwakilan.keluhan.create') }}" class="btn btn-primary my-3">
+            <a href="{{ route('siswa_perwakilan.keluhan.create') }}" class="btn btn-primary my-3">
                 <span class="ti ti-plus me-1"></span>
                 Tambah
             </a>
@@ -43,14 +43,14 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                     <div class="gap-2 d-flex justify-content-betwen">
-                                    <a href="{{ route('siswa-perwakilan.keluhan.show', $item->id) }}" class="btn btn-sm btn-secondary">
+                                    <a href="{{ route('siswa_perwakilan.keluhan.show', $item->id) }}" class="btn btn-sm btn-secondary">
                                         <span class="ti ti-eye"></span>
                                     </a>
-                                    <a href="{{ route('siswa-perwakilan.keluhan.edit', $item->id) }}" class="btn btn-sm btn-primary">
+                                    <a href="{{ route('siswa_perwakilan.keluhan.edit', $item->id) }}" class="btn btn-sm btn-primary">
                                         <span class="ti ti-pencil"></span>
                                     </a>
                                     <a href="javascript:;" class="btn btn-sm btn-danger"
-                                        onclick="actionDelete('{{ route('siswa-perwakilan.keluhan.destroy', $item->id) }}')">
+                                        onclick="actionDelete('{{ route('siswa_perwakilan.keluhan.destroy', $item->id) }}')">
                                         <span class="ti ti-trash"></span>
                                     </a>
                                     </div>

@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="{{ route('siswa.dashboard') }}" class="app-brand-link">
+            <a href="{{ route('siswa.dashboard.index') }}" class="app-brand-link">
               <span class="app-brand-logo demo">
                 <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -40,7 +40,7 @@
 
           <ul class="menu-inner py-1">
             <li class="menu-item">
-                <a href="{{ route('siswa.dashboard') }}" class="menu-link">
+                <a href="{{ route('siswa.dashboard.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
                 </a>

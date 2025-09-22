@@ -36,6 +36,6 @@ class JadwalController extends Controller
             }
         }
 
-        return view('pages.siswa-perwakilan.jadwal.index', compact('kelasList', 'kelasId', 'jadwalByHari'));
+        return view('pages.siswa_perwakilan.jadwal.index', compact('kelasList', 'kelasId', 'jadwalByHari'));
     }
 }

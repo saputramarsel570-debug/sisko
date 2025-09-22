@@ -10,7 +10,7 @@
                 <h5 class="mb-0">Edit Keluhan & Saran</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('siswa-perwakilan.keluhan.update', $keluhan->id) }}" method="POST">
+                <form action="{{ route('siswa_perwakilan.keluhan.update', $keluhan->id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="d-flex justify-content-start gap-2 mt-3">
-                        <a href="{{ route('siswa-perwakilan.keluhan.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('siswa_perwakilan.keluhan.index') }}" class="btn btn-secondary">
                             <span class="ti ti-arrow-left"></span> Kembali
                         </a>
                         <button type="submit" class="btn btn-primary">

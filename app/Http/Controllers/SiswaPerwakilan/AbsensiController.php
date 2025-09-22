@@ -25,7 +25,7 @@ class AbsensiController extends Controller
             ->where('tanggal', now()->toDateString())
             ->get();
 
-        return view('pages.siswa-perwakilan.absensi.index', compact('kelas', 'siswaKelas', 'absensiHariIni'));
+        return view('pages.siswa_perwakilan.absensi.index', compact('kelas', 'siswaKelas', 'absensiHariIni'));
     }
 
     public function store(Request $request)
@@ -53,13 +53,13 @@ class AbsensiController extends Controller
             ]);
         }
 
-        return redirect()->route('siswa-perwakilan.absensi.index')
+        return redirect()->route('siswa_perwakilan.absensi.index')
             ->with('success', 'Absensi berhasil disimpan');
     }
 
     public function edit(Absensi $absensi)
     {
-        return view('pages.siswa-perwakilan.absensi.edit', compact('absensi'));
+        return view('pages.siswa_perwakilan.absensi.edit', compact('absensi'));
     }
 
     public function update(Request $request, Absensi $absensi)
@@ -74,7 +74,7 @@ class AbsensiController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('siswa-perwakilan.absensi.index')
+        return redirect()->route('siswa_perwakilan.absensi.index')
             ->with('success', 'Absensi berhasil diperbarui');
     }
 }

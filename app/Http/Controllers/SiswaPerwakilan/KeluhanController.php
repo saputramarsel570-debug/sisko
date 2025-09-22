@@ -16,7 +16,7 @@ class KeluhanController extends Controller
     public function index()
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->get();
-        return view('pages.siswa-perwakilan.keluhan.index', compact('keluhan'));
+        return view('pages.siswa_perwakilan.keluhan.index', compact('keluhan'));
     }
 
     /**
@@ -24,7 +24,7 @@ class KeluhanController extends Controller
      */
     public function create()
     {
-        return view('pages.siswa-perwakilan.keluhan.create');
+        return view('pages.siswa_perwakilan.keluhan.create');
     }
 
     /**
@@ -49,7 +49,7 @@ class KeluhanController extends Controller
             $admin->notify(new KeluhanSaranNotification(auth()->user()->name, $request->isi));
         }
 
-        return redirect()->route('siswa-perwakilan.keluhan.index')
+        return redirect()->route('siswa_perwakilan.keluhan.index')
             ->with('success', 'Keluhan/Saran berhasil dikirim');
     }
 
@@ -60,7 +60,7 @@ class KeluhanController extends Controller
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
 
-        return view('pages.siswa-perwakilan.keluhan.show', compact('keluhan'));
+        return view('pages.siswa_perwakilan.keluhan.show', compact('keluhan'));
     }
 
     /**
@@ -70,7 +70,7 @@ class KeluhanController extends Controller
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
 
-        return view('pages.siswa-perwakilan.keluhan.edit', compact('keluhan'));
+        return view('pages.siswa_perwakilan.keluhan.edit', compact('keluhan'));
     }
 
     /**
@@ -90,7 +90,7 @@ class KeluhanController extends Controller
             'isi'      => $request->isi,
         ]);
 
-        return redirect()->route('siswa-perwakilan.keluhan.index')
+        return redirect()->route('siswa_perwakilan.keluhan.index')
             ->with('success', 'Keluhan/Saran berhasil diperbarui');
     }
 
@@ -102,7 +102,7 @@ class KeluhanController extends Controller
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
         $keluhan->delete();
 
-        return redirect()->route('siswa-perwakilan.keluhan.index')
+        return redirect()->route('siswa_perwakilan.keluhan.index')
             ->with('success', 'Keluhan/Saran berhasil dihapus');
     }
 }

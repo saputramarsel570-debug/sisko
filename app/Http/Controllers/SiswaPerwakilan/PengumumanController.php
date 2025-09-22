@@ -14,12 +14,12 @@ class PengumumanController extends Controller
     public function index()
     {
         $pengumuman = Pengumuman::whereIn('target', ['semua', 'siswa'])->latest()->get();
-        return view('pages.siswa-perwakilan.pengumuman.index', compact('pengumuman'));
+        return view('pages.siswa_perwakilan.pengumuman.index', compact('pengumuman'));
     }
 
        public function show(string $id)
     {
         $pengumuman = Pengumuman::findOrFail($id);
-        return view('pages.siswa-perwakilan.pengumuman.show', compact('pengumuman'));
+        return view('pages.siswa_perwakilan.pengumuman.show', compact('pengumuman'));
     }
 }
