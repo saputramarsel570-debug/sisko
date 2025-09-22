@@ -8,9 +8,22 @@ use App\Models\Kelas;
 use App\Models\MataPelajaran;
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\JadwalImport;
 
 class JadwalPelajaranController extends Controller
 {
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls',
+        ]);
+
+        Excel::import(new JadwalImport, $request->file('file'));
+
+        return redirect()->route('admin.jadwal.index')->with('success', 'Data jadwal berhasil diimport');
+    }
+
     public function index(Request $request)
     {
         $kelasList = Kelas::all();

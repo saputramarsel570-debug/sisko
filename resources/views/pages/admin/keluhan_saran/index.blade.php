@@ -5,6 +5,12 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            @if (session('success'))
+                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                    {{ session('success') }}
+                </div>
+            @endif
             <h3 class="page-title">Kelola Keluhan & Saran</h3>
 
             <div class="card card-body table-responsive">
@@ -63,4 +69,50 @@
             </div>
         </div>
     </div>
+<form id="form-delete" action="" method="POST" class="d-none">
+        @csrf
+        @method('DELETE')
+</form>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+    <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+    <script type='text/javascript'>
+    $(function() {
+        $('.dataTable').DataTable();
+    });
+
+    function actionDelete(url) {
+        Swal.fire({
+            title : "Apakah kamu yakin?",
+            text : "Data yang dihapus tidak dapat dikembalikan!",
+            icon : "warning",
+            confirmButtonText : "Ya, hapus saja!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#form-delete').attr('action', url);
+                $('#form-delete').submit();
+            }
+        });
+    }
+
+    setTimeout(function () {
+        let alert = document.getElementById('success');
+        if (alert) {
+
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+
+    </script>
+@endpush
