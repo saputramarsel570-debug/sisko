@@ -12,16 +12,19 @@ class KeluhanSaranNotification extends Notification
     protected $kategori;
     protected $username;
     protected $isi;
+    protected $keluhanId;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($kategori, $username, $isi)
-    {
-        $this->kategori = $kategori;
-        $this->username = $username;
-        $this->isi = $isi;
-    }
+    public function __construct($kategori, $username, $isi, $keluhanId)
+{
+    $this->kategori = $kategori;
+    $this->username = $username;
+    $this->isi = $isi;
+    $this->keluhanId = $keluhanId;
+}
+
 
     /**
      * Get the notification's delivery channels.
@@ -39,6 +42,7 @@ class KeluhanSaranNotification extends Notification
         return [
             'title'   => 'Keluhan/Saran Baru',
             'message' => $this->kategori . ' dari ' . $this->username . ': ' . $this->isi,
+            'url'     => route('admin.keluhan_saran.show', $this->keluhanId), 
         ];
     }
 }

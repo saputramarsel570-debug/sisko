@@ -38,7 +38,7 @@ class KeluhanController extends Controller
         'isi'      => 'required|string',
     ]);
 
-    KeluhanSaran::create([
+    $keluhan =KeluhanSaran::create([
         'user_id'  => auth()->id(),
         'kategori' => $request->kategori,
         'isi'      => $request->isi,
@@ -50,7 +50,8 @@ class KeluhanController extends Controller
         $admin->notify(new KeluhanSaranNotification(
             $request->kategori,
             auth()->user()->name,
-            $request->isi
+            $request->isi,
+            $keluhan->id
         ));
     }
 

@@ -5,7 +5,7 @@
 @section('content')
     <div class="d-flex justify-content-center align-items-center">
         <div class="container">
-            <h2 class="text-center mb-4 fw-bold">Dashboard Siswa</h2>
+            <h2 class="text-center mb-4 fw-bold">Dashboard Orang Tua</h2>
             <div class="row g-4 justify-content-center">
 
                 <div class="col-md-3 col-sm-6">

@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/notifications/read/{id}', function($id) {
     $notif = auth()->user()->notifications()->findOrFail($id);
     $notif->markAsRead();
-    return back();
+    return redirect($notif->data['url'] ?? url('/dashboard'));
 })->name('notifications.read');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

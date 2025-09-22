@@ -3,12 +3,28 @@
 namespace App\Http\Controllers\Orangtua;
 
 use App\Http\Controllers\Controller;
+use App\Models\Siswa;
+use App\Models\Guru;
+use App\Models\Kelas;
+use App\Models\OrangTua;
+use App\Models\MataPelajaran;
+use App\Models\KeluhanSaran;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        return view('pages.orangtua.dashboard');
+        $totalSiswa = Siswa::count();
+        $totalGuru = Guru::count();
+        $totalKelas = Kelas::count();
+        $totalOrtu = OrangTua::count();
+        $totalMapel = MataPelajaran::count();
+        $totalKeluhan = KeluhanSaran::count();
+
+        $kelasLabels = Kelas::pluck('nama_kelas');
+        $kelasCounts = Kelas::withCount('siswa')->pluck('siswa_count');
+
+        return view('pages.orangtua.dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalOrtu', 'totalMapel', 'totalKeluhan', 'kelasLabels', 'kelasCounts'));
     }
 }
