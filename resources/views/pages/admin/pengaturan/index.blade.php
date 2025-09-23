@@ -5,10 +5,10 @@
 @section('content')
 <div class="row">
     <div class="col-md-10 offset-md-1">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="ti ti-check me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        @if (session('success'))
+            <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                {{ session('success') }}
             </div>
         @endif
 
@@ -74,7 +74,7 @@
                         <th>Kop Surat</th>
                         <td>
                             @if($pengaturan->kop_surat)
-                                <img src="{{ asset('storage/'.$pengaturan->kop_surat) }}" class="img-fluid rounded border" alt="Kop Surat">
+                                <img src="{{ asset('storage/'.$pengaturan->kop_surat) }}" height="80" class="rounded border" alt="Kop Surat">
                             @else
                                 <span class="text-muted">Belum diunggah</span>
                             @endif
@@ -96,3 +96,17 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    setTimeout(function () {
+        let alert = document.getElementById('success');
+        if (alert) {
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+</script>
+@endpush

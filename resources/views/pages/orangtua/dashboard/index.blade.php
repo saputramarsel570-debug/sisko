@@ -69,6 +69,15 @@
                     <canvas id="siswaChart" height="120"></canvas>
                 </div>
             </div>
+
+            <div class="card shadow-lg border-0 mt-5 rounded-4">
+                <div class="card-body">
+                    <h5 class="text-center mb-4 fw-bold">
+                        Grafik Absensi Bulan {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}
+                    </h5>
+                    <canvas id="absensiChart" height="120"></canvas>
+             </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -99,5 +108,26 @@
             }
         }
     });
+
+    const absensiCtx = document.getElementById('absensiChart').getContext('2d');
+    new Chart(absensiCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {!! json_encode(array_keys($dataAbsensi)) !!},
+            datasets: [{
+                data: {!! json_encode(array_values($dataAbsensi)) !!},
+                backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#dc3545'],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: { enabled: true }
+            }
+        }
+ });
+
 </script>
 @endpush

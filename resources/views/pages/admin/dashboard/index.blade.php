@@ -69,6 +69,24 @@
                     <canvas id="siswaChart" height="120"></canvas>
                 </div>
             </div>
+
+            <div class="card shadow-lg border-0 mt-5 rounded-4">
+                <div class="card-body">
+                    <h5 class="text-center mb-4 fw-bold">
+                        Kehadiran Siswa per Kelas ({{ \Carbon\Carbon::now()->translatedFormat('F Y') }})
+                    </h5>
+                    <canvas id="absensiKelasChart" height="120"></canvas>
+                </div>
+            </div>
+
+            <div class="card shadow-lg border-0 mt-5 rounded-4">
+                <div class="card-body">
+                    <h5 class="text-center mb-4 fw-bold">
+                        Tren Keluhan / Saran Terbanyak
+                    </h5>
+                    <canvas id="keluhanChart" height="120"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -96,6 +114,58 @@
             },
             scales: {
                 y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const absensiKelasCtx = document.getElementById('absensiKelasChart').getContext('2d');
+    new Chart(absensiKelasCtx, {
+        type: 'bar',
+        data: {
+            labels: @json($kelasAbsensiLabels),
+            datasets: [
+                {
+                    label: 'Hadir',
+                    data: @json($kelasAbsensiHadir),
+                    backgroundColor: '#28a745',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'Alfa',
+                    data: @json($kelasAbsensiAlfa),
+                    backgroundColor: '#dc3545',
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: { enabled: true },
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const keluhanCtx = document.getElementById('keluhanChart').getContext('2d');
+    new Chart(keluhanCtx, {
+        type: 'pie',
+        data: {
+            labels: @json($keluhanLabels),
+            datasets: [{
+                data: @json($keluhanCounts),
+                backgroundColor: ['#0d6efd', '#ffc107', '#28a745', '#dc3545', '#17a2b8'],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: { enabled: true }
             }
         }
     });

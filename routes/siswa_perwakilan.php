@@ -13,21 +13,27 @@ use App\Http\Controllers\SiswaPerwakilan\MataPelajaranController;
 use App\Http\Controllers\SiswaPerwakilan\JadwalPelajaranController;
 use App\Http\Controllers\SiswaPerwakilan\KeluhanController;
 use App\Http\Controllers\SiswaPerwakilan\DashboardController;
-
+use App\Http\Controllers\SiswaPerwakilan\ProfileController;
 
 Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->group(function ()
 {
-    Route::get('/dashboard',[DashboardController::class, 'index'])->name('siswa_perwakilan.dashboard.index');
-    
     Route::resource('/jadwal', JadwalController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/absensi', AbsensiController::class, ['as' => 'siswa_perwakilan']);
-    Route::resource('/guru', GuruController::class, ['as' => 'siswa']);
-    Route::resource('/orangtua', OrangtuaController::class, ['as' => 'siswa']);
-    Route::resource('/siswa', SiswaController::class, ['as' => 'siswa']);
+    Route::resource('/guru', GuruController::class, ['as' => 'siswa_perwakilan']);
+    Route::resource('/orangtua', OrangtuaController::class, ['as' => 'siswa_perwakilan']);
+    Route::resource('/siswa', SiswaController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/kelas', KelasController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/mapel', MataPelajaranController::class, ['as' => 'siswa_perwakilan']);
-    Route::resource('/jadwal-pelajaran', JadwalPelajaranController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'siswa_perwakilan']);
+});
 
+Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->name('siswa_perwakilan.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\SiswaPerwakilan\DashboardController::class, 'index'])->name('dashboard');
+});
+
+Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->name('siswa_perwakilan.')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
 });

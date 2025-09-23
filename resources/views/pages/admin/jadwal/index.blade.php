@@ -5,6 +5,12 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
+        @if (session('success'))
+            <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                {{ session('success') }}
+            </div>
+        @endif
         <h3 class="page-title">Jadwal Pelajaran</h3>
 
         <form method="GET" class="mb-3">
@@ -25,6 +31,15 @@
         @if($kelasId)
             <div class="d-flex justify-content-between mb-2">
                 <h5>Jadwal Kelas: {{ $kelasList->find($kelasId)->nama_kelas }}</h5>
+                <div class="d-flex gap-2">
+                    <form action="{{ route('jadwal.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="file" id="file" class="form-control form-control-sm d-inline-block" required>
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="ti ti-file-import"></i> Import Jadwal
+                        </button>
+                    </form>
+                </div>
                 <a href="{{ route('admin.jadwal.edit', $kelasId) }}" class="btn btn-warning btn-sm">
                     <i class="ti ti-edit"></i> Edit Jadwal
                 </a>
@@ -109,3 +124,17 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    setTimeout(function () {
+        let alert = document.getElementById('success');
+        if (alert) {
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+</script>
+@endpush

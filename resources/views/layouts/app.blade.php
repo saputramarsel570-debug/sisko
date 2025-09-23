@@ -62,7 +62,6 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('/js/config.js') }}"></script>
 
-
     <style>
     .swal2-container {
         position: fixed !important;
@@ -112,6 +111,10 @@
         <div class="layout-page">
           <!-- Navbar -->
             @include('partials.navbar')
+
+            @include('partials.navbar-siswa')
+
+            @include('partials.navbar-siswap')
           <!-- / Navbar -->
 
           <!-- Content wrapper -->
