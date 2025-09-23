@@ -112,6 +112,8 @@
           <!-- Navbar -->
             @include('partials.navbar')
 
+            @include('partials.navbar-guru')
+
             @include('partials.navbar-siswa')
 
             @include('partials.navbar-siswap')

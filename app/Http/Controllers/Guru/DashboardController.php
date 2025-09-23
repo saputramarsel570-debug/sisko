@@ -3,63 +3,82 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Siswa;
+use App\Models\Guru;
+use App\Models\Kelas;
+use App\Models\OrangTua;
+use App\Models\MataPelajaran;
+use App\Models\KeluhanSaran;
+use App\Models\Absensi;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('pages.guru.dashboard');
-    }
+        // statistik umum
+        $totalSiswa = Siswa::count();
+        $totalGuru = Guru::count();
+        $totalKelas = Kelas::count();
+        $totalOrtu = OrangTua::count();
+        $totalMapel = MataPelajaran::count();
+        $totalKeluhan = KeluhanSaran::count();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $kelasLabels = Kelas::pluck('nama_kelas');
+        $kelasCounts = Kelas::withCount('siswa')->pluck('siswa_count');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // dapatkan siswa (anak) dari orangtua yang login
+        $orangtua = Auth::user()->orangtua ?? null;
+        $anak = $orangtua ? $orangtua->siswa : null;
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // bulan & tahun sekarang
+        $bulanIni = Carbon::now()->month;
+        $tahunIni = Carbon::now()->year;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        // default data absensi (agar selalu ada nilainya)
+        $dataAbsensi = [
+            'Hadir' => 0,
+            'Izin'  => 0,
+            'Sakit' => 0,
+            'Alfa'  => 0,
+        ];
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if ($anak) {
+            $rekap = Absensi::where('siswa_id', $anak->id)
+                ->whereMonth('tanggal', $bulanIni)
+                ->whereYear('tanggal', $tahunIni)
+                ->selectRaw('status, COUNT(*) as total')
+                ->groupBy('status')
+                ->pluck('total', 'status')
+                ->toArray();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            // normalisasi key (database mungkin menyimpan 'hadir' lowercase dsb)
+            foreach ($rekap as $status => $count) {
+                $s = strtolower($status);
+                if ($s === 'hadir') $dataAbsensi['Hadir'] = (int) $count;
+                elseif ($s === 'izin') $dataAbsensi['Izin'] = (int) $count;
+                elseif ($s === 'sakit') $dataAbsensi['Sakit'] = (int) $count;
+                elseif ($s === 'alfa' || $s === 'alpha' || $s === 'alpa') $dataAbsensi['Alfa'] = (int) $count;
+                // kalau ada status lain, bisa di-handle di sini
+            }
+        }
+
+        return view(
+            'pages.guru.dashboard.index',
+            compact(
+                'totalSiswa',
+                'totalGuru',
+                'totalKelas',
+                'totalOrtu',
+                'totalMapel',
+                'totalKeluhan',
+                'kelasLabels',
+                'kelasCounts',
+                'anak',
+                'dataAbsensi'
+            )
+        );
     }
 }
