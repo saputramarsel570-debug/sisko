@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\JadwalPelajaranController;
 use App\Http\Controllers\Admin\KeluhanSaranController;
 use App\Http\Controllers\Admin\PengaturanSekolahController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\EkstrakurikulerController;
+use App\Http\Controllers\Admin\JadwalEkskulController;
 use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
@@ -29,6 +31,10 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::resource('/mapel', MataPelajaranController::class);
 
     Route::resource('/keluhan_saran', KeluhanSaranController::class);
+
+    Route::resource('/ekskul', EkstrakurikulerController::class);
+
+    Route::resource('/jadwal_ekskul', JadwalEkskulController::class);
 });
 
 Route::prefix('admin/jadwal')->middleware(['auth', 'role:admin'])->name('admin.jadwal.')->group(function () {

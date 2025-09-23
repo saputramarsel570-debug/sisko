@@ -103,5 +103,17 @@
                     <span>Pengaturan Sekolah</span>
                 </a>
             </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.ekskul.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-activity"></i>
+                    <span>Ekskul</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{{ route('admin.jadwal_ekskul.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-calendar"></i>
+                    <span>Jadwal Ekskul</span>
+                </a>
+            </li>
           </ul>
         </aside>
