@@ -115,6 +115,8 @@
             @include('partials.navbar-siswa')
 
             @include('partials.navbar-siswap')
+
+            @include('partials.navbar-orangtua')
           <!-- / Navbar -->
 
           <!-- Content wrapper -->
