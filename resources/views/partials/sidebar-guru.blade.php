@@ -46,9 +46,9 @@
                 </a>
             </li>
             <li class="menu-item">
-              <a href="{{ route('guru.lihat.index') }}" class="menu-link">
+              <a href="{{ route('guru.absensi.index') }}" class="menu-link">
                   <i class="menu-icon tf-icons ti ti-home"></i>
-                  Lihat Daftar Absensi Siswa
+                  Absensi Siswa
               </a>
           </li>
           <li class="menu-item">
