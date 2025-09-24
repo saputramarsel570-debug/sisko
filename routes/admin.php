@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\PengaturanSekolahController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\EkstrakurikulerController;
 use App\Http\Controllers\Admin\JadwalEkskulController;
+use App\Http\Controllers\Admin\KalenderAkademikController;
 use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
@@ -35,6 +36,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::resource('/ekskul', EkstrakurikulerController::class);
 
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class);
+
+    Route::resource('/kalender_akademik', KalenderAkademikController::class);
 });
 
 Route::prefix('admin/jadwal')->middleware(['auth', 'role:admin'])->name('admin.jadwal.')->group(function () {

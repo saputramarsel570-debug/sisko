@@ -115,5 +115,11 @@
                     <span>Jadwal Ekskul</span>
                 </a>
             </li>
+            <li class="menu-item {{ request()->routeIs('admin.kalender_akademik.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.kalender_akademik.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-calendar-event"></i>
+                    <span>Kalender Akademik</span>
+                </a>
+            </li>
           </ul>
         </aside>
