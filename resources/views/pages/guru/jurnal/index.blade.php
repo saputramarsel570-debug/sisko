@@ -44,10 +44,6 @@
                                     <a href="{{ route('guru.jurnal.edit', $item->id) }}" class="btn btn-sm btn-primary">
                                         <span class="ti ti-pencil"></span>
                                     </a>
-                                    <a href="javascript:;" class="btn btn-sm btn-danger"
-                                        onclick="actionDelete('{{ route('guru.jurnal.destroy', $item->id) }}')">
-                                        <span class="ti ti-trash"></span>
-                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -60,12 +56,7 @@
             </table>
         </div>
     </div>
-</div>
-
-<form id="form-delete" action="" method="POST" class="d-none">
-    @csrf
-    @method('DELETE')
-</form>        
+</div>  
 @endsection
 
 @push('styles')
@@ -81,20 +72,5 @@
     $(function() {
         $('.dataTable').DataTable();
     });
-
-    function actionDelete(url) {
-        Swal.fire({
-            title :"Yakin mau dihapus?",
-            text : "Data yang dihapus tidak dapat dikembalikan!",
-            icon : "warning",
-            showCancelButton : true,
-            confirmButtonText : "Ya, hapus!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#form-delete').attr('action', url);
-                $('#form-delete').submit();
-            }
-        });
-    }
     </script>
 @endpush

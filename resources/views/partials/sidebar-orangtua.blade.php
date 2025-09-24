@@ -48,7 +48,7 @@
             <li class="menu-item">
               <a href="{{ route('orangtua.absensi.index') }}" class="menu-link">
                   <i class="menu-icon tf-icons ti ti-home"></i>
-                  Absensi Anak
+                  Absensi Siswa
               </a>
             </li>
             <li class="menu-item">

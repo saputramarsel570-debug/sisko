@@ -54,7 +54,7 @@
           <li class="menu-item">
             <a href="{{ route('guru.jurnal.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-home"></i>
-                Jurnal guru
+                Jurnal Guru
             </a>
         </li>
         <li class="menu-item">

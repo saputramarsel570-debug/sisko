@@ -73,3 +73,19 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+    <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+    <script type="text/javascript">
+    $(function() {
+        $('.dataTable').DataTable();
+    });
+    </script>
+@endpush

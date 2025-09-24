@@ -22,31 +22,20 @@
                 @csrf
                 <div class="mb-3">
                     <label for="tanggal" class="form-label">Tanggal</label>
-                    <input type="date" name="tanggal" id="tanggal" class="form-control" value="{{ old('tanggal') }}" required>
+                    <input type="date" name="tanggal" id="tanggal" class="form-control" 
+                        value="{{ \Carbon\Carbon::now()->toDateString() }}" readonly>
                 </div>
 
                 <div class="mb-3">
-                    <label for="kelas_id" class="form-label">Kelas</label>
-                    <select name="kelas_id" id="kelas_id" class="form-control" required>
-                        <option value="">-- Pilih Kelas --</option>
-                        @foreach ($kelas as $k)
-                            <option value="{{ $k->id }}" {{ old('kelas_id') == $k->id ? 'selected' : '' }}>
-                                {{ $k->nama_kelas }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label for="kelas" class="form-label">Kelas</label>
+                    <input type="text" class="form-control" value="{{ $jadwal->kelas->nama_kelas }}" readonly>
+                    <input type="hidden" name="kelas_id" value="{{ $jadwal->kelas_id }}">
                 </div>
 
                 <div class="mb-3">
                     <label for="mapel" class="form-label">Mata Pelajaran</label>
-                    <select name="mapel" id="mapel" class="form-control" required>
-                        <option value="">-- Pilih Mapel --</option>
-                        @foreach ($mapel as $m)
-                            <option value="{{ $m->nama_mapel }}" {{ old('mapel') == $m->nama_mapel ? 'selected' : '' }}>
-                                {{ $m->nama_mapel }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <input type="text" class="form-control" value="{{ $jadwal->mataPelajaran->nama_mapel }}" readonly>
+                    <input type="hidden" name="mapel" value="{{ $jadwal->mataPelajaran->nama_mapel }}">
                 </div>
 
                 <div class="mb-3">
@@ -64,11 +53,22 @@
                         <i class="ti ti-arrow-left"></i> Kembali
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="ti ti-device-floppy"></i> Simpan Perubahan
+                        <i class="ti ti-device-floppy"></i> Simpan
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+@if(session('no_schedule'))
+<script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Peringatan',
+        text: '{{ session('no_schedule') }}',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+    })
+</script>
+@endif
 @endsection
