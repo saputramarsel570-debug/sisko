@@ -135,9 +135,30 @@
                 placeholder="••••••••"
                 required
                 autocomplete="current-password" />
-            <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off" id="togglePassword"></i></span>
         </div>
     </div>
+
+    <!-- percobaan -->
+      <script>
+       document.addEventListener('DOMContentLoaded', function () {
+         const passwordInput = document.getElementById('password');
+         const togglePassword = document.getElementById('togglePassword');
+
+         togglePassword.addEventListener('click', function () {
+           const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+           passwordInput.setAttribute('type', type);
+
+           if (type === 'text') {
+             this.classList.remove('ti-eye-off');
+             this.classList.add('ti-eye');
+           } else {
+             this.classList.remove('ti-eye');
+             this.classList.add('ti-eye-off');
+           }
+         });
+       });
+      </script>
 
     <div class="my-8">
         <div class="d-flex justify-content-between">
@@ -159,34 +180,6 @@
     </div>
 </form>
 
-              <p class="text-center">
-                <span>New on our platform?</span>
-                <a href="auth-register-basic.html">
-                  <span>Create an account</span>
-                </a>
-              </p>
-
-              <div class="divider my-6">
-                <div class="divider-text">or</div>
-              </div>
-
-              <div class="d-flex justify-content-center">
-                <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-facebook me-1_5">
-                  <i class="tf-icons ti ti-brand-facebook-filled"></i>
-                </a>
-
-                <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-twitter me-1_5">
-                  <i class="tf-icons ti ti-brand-twitter-filled"></i>
-                </a>
-
-                <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-github me-1_5">
-                  <i class="tf-icons ti ti-brand-github-filled"></i>
-                </a>
-
-                <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-google-plus">
-                  <i class="tf-icons ti ti-brand-google-filled"></i>
-                </a>
-              </div>
             </div>
           </div>
           <!-- /Register -->
