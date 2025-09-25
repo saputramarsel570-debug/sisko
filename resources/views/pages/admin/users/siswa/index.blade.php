@@ -18,6 +18,16 @@
                 Tambah Siswa
             </a>
 
+            <div class="mb-3">
+                <form action="{{ route('admin.siswa.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
+                    @csrf
+                    <input type="file" name="file" class="form-control me-2" style="max-width: 250px;" required>
+                    <button class="btn btn-success" type="submit">
+                        <i class="ti ti-upload"></i> Import Siswa & Ortu
+                    </button>
+                </form>
+            </div>
+
             <form action="{{ route('admin.siswa.index') }}" method="GET" class="mb-3">
                 <div class="row g-2 align-items-center">
                     <div class="col-md-3">

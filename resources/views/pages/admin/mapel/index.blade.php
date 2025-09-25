@@ -13,9 +13,20 @@
         @endif
         <h3 class="page-title">Kelola Mata Pelajaran</h3>
 
-        <a href="{{ route('admin.mapel.create') }}" class="btn btn-primary my-3">
-            <i class="ti ti-plus"></i> Tambah Mata Pelajaran
-        </a>
+        <div class="d-flex justify-content-between align-items-center my-3">
+            <a href="{{ route('admin.mapel.create') }}" class="btn btn-primary">
+                <i class="ti ti-plus"></i> Tambah Mata Pelajaran
+            </a>
+            <div>
+                <form action="{{ route('admin.mapel.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
+                    @csrf
+                    <input type="file" name="file" class="form-control me-2" style="max-width: 250px;" required>
+                    <button class="btn btn-success" type="submit">
+                        <i class="ti ti-upload"></i> Import
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <div class="card card-body">
             <table class="table table-striped dataTable">

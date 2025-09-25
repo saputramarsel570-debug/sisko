@@ -4,7 +4,6 @@
 
 @push('styles')
 <style>
-/* Minimal CSS untuk FullCalendar */
 #calendar {
     max-width: 900px;
     margin: 0 auto;
@@ -43,7 +42,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
 
-    // Tambahkan class event berdasarkan kategori
     var events = @json($kalender);
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
