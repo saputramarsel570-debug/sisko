@@ -5,6 +5,12 @@
 @section('content')
 <div class="card shadow-sm">
     <div class="card-header">
+        @if (session('success'))
+                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                    {{ session('success') }}
+                </div>
+            @endif
         <h4 class="mb-0">Isi Absensi</h4>
     </div>
     <div class="card-body">
@@ -51,3 +57,26 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+    <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+    <script type='text/javascript'>
+setTimeout(function () {
+    let alert = document.getElementById('success');
+    if (alert) {
+
+        alert.style.transition = "opacity 0.5s ease";
+        alert.style.opacity = 0;
+
+        setTimeout(() => alert.remove(), 500);
+    }
+}, 3000);
+</script>
+@endpush

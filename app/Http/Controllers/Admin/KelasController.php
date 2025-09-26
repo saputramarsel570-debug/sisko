@@ -6,9 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use App\Imports\KelasImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KelasController extends Controller
 {
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls',
+        ]);
+
+        Excel::import(new KelasImport, $request->file('file'));
+
+        return redirect()->route('admin.kelas.index')->with('success', 'Data kelas berhasil diimport');
+    }
+
     /**
      * Display a listing of the resource.
      */

@@ -17,6 +17,16 @@
             <i class="ti ti-plus"></i> Tambah Guru
         </a>
 
+        <div class="mb-3">
+            <form action="{{ route('admin.guru.import') }}" method="POST" enctype="multipart/form-data" class="d-flex" style="max-width:400px;">
+                @csrf
+                <input type="file" name="file" class="form-control me-2" required>
+                <button class="btn btn-success" type="submit">
+                    <i class="ti ti-upload"></i> Import
+                </button>
+            </form>
+        </div>
+
         <div class="card card-body">
             <table class="table table-striped dataTable">
                 <thead>

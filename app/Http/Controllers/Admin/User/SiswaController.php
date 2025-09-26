@@ -8,9 +8,22 @@ use App\Models\User;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\SiswaOrangtuaImport;
 
 class SiswaController extends Controller
 {
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        Excel::import(new SiswaOrangtuaImport, $request->file('file'));
+
+        return redirect()->route('admin.siswa.index')->with('success', 'Data siswa & orangtua berhasil diimport');
+    }
+
     /**
      * Display a listing of the resource.
      */

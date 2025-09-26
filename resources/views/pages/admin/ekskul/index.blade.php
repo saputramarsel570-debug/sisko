@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kelola Mata Pelajaran')
+@section('title', 'Kelola Ekstrakurikuler')
 
 @section('content')
 <div class="row">
@@ -11,52 +11,56 @@
                 {{ session('success') }}
             </div>
         @endif
-        <h3 class="page-title">Kelola Mata Pelajaran</h3>
 
-        <div class="d-flex justify-content-between align-items-center my-3">
-            <a href="{{ route('admin.mapel.create') }}" class="btn btn-primary">
-                <i class="ti ti-plus"></i> Tambah Mata Pelajaran
-            </a>
-            <div>
-                <form action="{{ route('admin.mapel.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
-                    @csrf
-                    <input type="file" name="file" class="form-control me-2" style="max-width: 250px;" required>
-                    <button class="btn btn-success" type="submit">
-                        <i class="ti ti-upload"></i> Import
-                    </button>
-                </form>
-            </div>
-        </div>
+        <h3 class="page-title">Kelola Ekstrakurikuler</h3>
+
+        <a href="{{ route('admin.ekskul.create') }}" class="btn btn-primary my-3">
+            <i class="ti ti-plus"></i> Tambah Ekstrakurikuler
+        </a>
 
         <div class="card card-body">
             <table class="table table-striped dataTable">
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Kode Mapel</th>
-                        <th>Nama Mapel</th>
+                        <th>Foto</th>
+                        <th>Nama Ekstrakurikuler</th>
+                        <th>Pembina</th>
+                        <th>Deskripsi</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($mapel as $item)
+                    @forelse($ekskul as $item)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode_mapel }}</td>
-                            <td>{{ $item->nama_mapel }}</td>
                             <td>
-                                <a href="{{ route('admin.mapel.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                                @if ($item->foto)
+                                    <img src="{{ asset('storage/' . $item->foto) }}"
+                                         alt="{{ $item->nama }}" width="60" class="rounded">
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+                            <td>{{ $item->nama }}</td>
+                            <td>{{ $item->nama_pembina ?? '-' }}</td>
+                            <td>{{ Str::limit($item->deskripsi, 50, '...') }}</td>
+                            <td>
+                                <a href="{{ route('admin.ekskul.show', $item->id) }}" class="btn btn-sm btn-info">
+                                    <i class="ti ti-eye"></i> Detail
+                                </a>
+                                <a href="{{ route('admin.ekskul.edit', $item->id) }}" class="btn btn-sm btn-warning">
                                     <i class="ti ti-pencil"></i> Edit
                                 </a>
                                 <a href="javascript:;" class="btn btn-sm btn-danger"
-                                   onclick="actionDelete('{{ route('admin.mapel.destroy', $item->id) }}')">
+                                   onclick="actionDelete('{{ route('admin.ekskul.destroy', $item->id) }}')">
                                     <i class="ti ti-trash"></i> Hapus
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center">Belum ada data mata pelajaran</td>
+                            <td colspan="6" class="text-center">Belum ada data ekstrakurikuler</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -103,13 +107,10 @@
     setTimeout(function () {
         let alert = document.getElementById('success');
         if (alert) {
-
             alert.style.transition = "opacity 0.5s ease";
             alert.style.opacity = 0;
-
             setTimeout(() => alert.remove(), 500);
         }
     }, 3000);
-
 </script>
 @endpush

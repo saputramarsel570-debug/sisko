@@ -39,33 +39,33 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
-            <li class="menu-item">
+              <li class="menu-item {{ request()->routeIs('guru.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('guru.dashboard') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('guru.absensi.*') ? 'active' : '' }}">
               <a href="{{ route('guru.absensi.index') }}" class="menu-link">
-                  <i class="menu-icon tf-icons ti ti-home"></i>
+                  <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
                   Absensi Siswa
               </a>
           </li>
-          <li class="menu-item">
+          <li class="menu-item {{ request()->routeIs('guru.jurnal.*') ? 'active' : '' }}">
             <a href="{{ route('guru.jurnal.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-home"></i>
                 Jurnal Guru
             </a>
         </li>
-        <li class="menu-item">
+        <li class="menu-item {{ request()->routeIs('guru.pengumuman.*') ? 'active' : '' }}">
           <a href="{{ route('guru.pengumuman.index') }}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-home"></i>
               Pengumuman Sekolah
           </a>
       </li>
-      <li class="menu-item">
+      <li class="menu-item {{ request()->routeIs('guru.keluhan.*') ? 'active' : '' }}">
         <a href="{{ route('guru.keluhan.index') }}" class="menu-link">
-            <i class="menu-icon tf-icons ti ti-home"></i>
+          <i class="menu-icon tf-icons ti ti-message"></i>
             Keluhan & Saran
         </a>
     </li>

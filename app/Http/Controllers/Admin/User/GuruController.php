@@ -7,9 +7,22 @@ use App\Models\Guru;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\GuruImport;
 
 class GuruController extends Controller
 {
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls',
+        ]);
+
+        Excel::import(new GuruImport, $request->file('file'));
+
+        return redirect()->route('admin.guru.index')->with('success', 'Data guru berhasil diimport');
+    }
+
     /**
      * Display a listing of the resource.
      */

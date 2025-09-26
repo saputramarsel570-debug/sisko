@@ -32,17 +32,17 @@
             <div class="d-flex justify-content-between mb-2">
                 <h5>Jadwal Kelas: {{ $kelasList->find($kelasId)->nama_kelas }}</h5>
                 <div class="d-flex gap-2">
-                    <form action="{{ route('jadwal.import') }}" method="POST" enctype="multipart/form-data">
+                    <a href="{{ route('admin.jadwal.edit', $kelasId) }}" class="btn btn-warning btn-sm">
+                        <i class="ti ti-edit"></i> Edit Jadwal
+                    </a>
+                    <form action="{{ route('admin.jadwal.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
                         @csrf
-                        <input type="file" name="file" id="file" class="form-control form-control-sm d-inline-block" required>
-                        <button type="submit" class="btn btn-success btn-sm">
-                            <i class="ti ti-file-import"></i> Import Jadwal
+                        <input type="file" name="file" class="form-control form-control-sm me-2" required>
+                        <button class="btn btn-success btn-sm" type="submit">
+                            <i class="ti ti-upload"></i> Import
                         </button>
                     </form>
                 </div>
-                <a href="{{ route('admin.jadwal.edit', $kelasId) }}" class="btn btn-warning btn-sm">
-                    <i class="ti ti-edit"></i> Edit Jadwal
-                </a>
             </div>
 
             <div class="card">

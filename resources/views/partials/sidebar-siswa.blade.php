@@ -39,25 +39,25 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('siswa.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('siswa.dashboard') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('siswa.jadwal.*') ? 'active' : '' }}">
               <a href="{{ route('siswa.jadwal.index') }}" class="menu-link">
                   <i class="menu-icon tf-icons ti ti-home"></i>
                   Jadwal Pelajaran
               </a>
            </li>
-           <li class="menu-item">
+           <li class="menu-item {{ request()->routeIs('siswa.pengumuman.*') ? 'active' : '' }}">
             <a href="{{ route('siswa.pengumuman.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-home"></i>
                 Pengumuman Sekolah
             </a>
          </li>
-         <li class="menu-item">
+         <li class="menu-item {{ request()->routeIs('siswa.keluhan.*') ? 'active' : '' }}">
           <a href="{{ route('siswa.keluhan.index') }}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-home"></i>
               Keluhan & Saran

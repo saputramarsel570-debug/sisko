@@ -39,7 +39,7 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('admin.dashboard') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
@@ -51,56 +51,74 @@
                 <div>Kelola Data</div>
                 </a>
                 <ul class="menu-sub">
-                <li class="menu-item">
+                <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.users.index') }}" class="menu-link">
                     <div>Kelola User</div>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item {{ request()->routeIs('admin.guru.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.guru.index') }}" class="menu-link">
                     <div>Kelola Guru</div>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item {{ request()->routeIs('admin.siswa.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.siswa.index') }}" class="menu-link">
                     <div>Kelola Siswa</div>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item {{ request()->routeIs('admin.orangtua.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.orangtua.index') }}" class="menu-link">
                     <div>Kelola Orang Tua</div>
                     </a>
                 </li>
                 </ul>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.kelas.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-chalkboard"></i>
                     Kelola Kelas
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('admin.mapel.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.mapel.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-books"></i>
                     Kelola Mapel
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('admin.jadwal.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.jadwal.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-calendar-event"></i>
                     Kelola Jadwal
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('admin.keluhan_saran.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.keluhan_saran.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-message"></i>
                     Kelola Keluhan & Saran
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('admin.pengaturan.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.pengaturan.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-building"></i>
                     <span>Pengaturan Sekolah</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('admin.ekskul.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.ekskul.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-activity"></i>
+                    <span>Ekskul</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('admin.jadwal_ekskul.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.jadwal_ekskul.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-calendar"></i>
+                    <span>Jadwal Ekskul</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('admin.kalender_akademik.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.kalender_akademik.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-calendar-event"></i>
+                    <span>Kalender Akademik</span>
                 </a>
             </li>
           </ul>

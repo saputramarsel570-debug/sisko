@@ -39,25 +39,25 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
-            <li class="menu-item">
+            <li class="menu-item"><li class="menu-item {{ request()->routeIs('orangtua.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('orangtua.dashboard') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('orangtua.absensi.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.absensi.index') }}" class="menu-link">
                   <i class="menu-icon tf-icons ti ti-home"></i>
                   Absensi Siswa
               </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('orangtua.pengumuman.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.pengumuman.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-home"></i>
                 Pengumuman Sekolah
               </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ request()->routeIs('orangtua.keluhan.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.keluhan.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-home"></i>
                 Keluhan & Saran

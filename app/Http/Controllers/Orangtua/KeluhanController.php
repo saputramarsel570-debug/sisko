@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Orangtua;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KeluhanSaran;
+use App\Models\User;
+use App\Notifications\KeluhanSaranNotification;
 
 class KeluhanController extends Controller
 {
@@ -14,8 +16,8 @@ class KeluhanController extends Controller
     public function index()
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->get();
-
         return view('pages.orangtua.keluhan.index', compact('keluhan'));
+
     }
 
     /**
@@ -30,27 +32,32 @@ class KeluhanController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'kategori' => 'required|in:keluhan,saran',
-            'isi' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'kategori' => 'required|in:keluhan,saran',
+        'isi'      => 'required|string',
+    ]);
 
-        KeluhanSaran::create([
-            'user_id'  => auth()->id(),
-            'kategori' => $request->kategori,
-            'isi'      => $request->isi,
-        ]);
+    $keluhan =KeluhanSaran::create([
+        'user_id'  => auth()->id(),
+        'kategori' => $request->kategori,
+        'isi'      => $request->isi,
+    ]);
 
-        $admins = User::where('role', 'admin')->get();
+    $admins = User::where('role', 'admin')->get();
 
-        foreach ($admins as $admin) {
-            $admin->notify(new KeluhanSaranNotification(auth()->user()->name, $request->isi));
-        }
-
-        return redirect()->route('orangtua.keluhan.index')
-            ->with('success', 'Keluhan/Saran berhasil dikirim');
+    foreach ($admins as $admin) {
+        $admin->notify(new KeluhanSaranNotification(
+            $request->kategori,
+            auth()->user()->name,
+            $request->isi,
+            $keluhan->id
+        ));
     }
+
+    return redirect()->route('orangtua.keluhan.index')
+        ->with('success', 'Keluhan/Saran berhasil dikirim');
+}
 
     /**
      * Display the specified resource.

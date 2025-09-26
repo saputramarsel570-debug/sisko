@@ -5,9 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MataPelajaran;
 use Illuminate\Http\Request;
+use App\Imports\MapelImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MataPelajaranController extends Controller
 {
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls',
+        ]);
+
+        Excel::import(new MapelImport, $request->file('file'));
+
+        return redirect()->route('admin.mapel.index')->with('success', 'Data Mata Pelajaran berhasil diimport');
+    }
+
     /**
      * Display a listing of the resource.
      */

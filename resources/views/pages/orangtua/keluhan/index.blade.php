@@ -5,6 +5,12 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            @if (session('success'))
+                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                    {{ session('success') }}
+                </div>
+            @endif
             <h3 class="page-title">Halaman Keluhan & Saran</h3>
 
             <a href="{{ route('orangtua.keluhan.create') }}" class="btn btn-primary my-3">
@@ -98,5 +104,14 @@
                 }
             });
         }
+
+        setTimeout(function () {
+        let alert = document.getElementById('success');
+        if (alert) {
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
     </script>
 @endpush

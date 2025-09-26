@@ -12,6 +12,9 @@ use App\Http\Controllers\Admin\JadwalPelajaranController;
 use App\Http\Controllers\Admin\KeluhanSaranController;
 use App\Http\Controllers\Admin\PengaturanSekolahController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\EkstrakurikulerController;
+use App\Http\Controllers\Admin\JadwalEkskulController;
+use App\Http\Controllers\Admin\KalenderAkademikController;
 use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
@@ -26,9 +29,25 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
     Route::resource('/kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
 
+    Route::post('/mapel/import', [MataPelajaranController::class, 'import'])->name('mapel.import');
+
+    Route::post('/kelas/import', [KelasController::class, 'import'])->name('kelas.import');
+
+    Route::post('/jadwal/import', [JadwalPelajaranController::class, 'import'])->name('jadwal.import');
+
+    Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
+
+    Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
+
     Route::resource('/mapel', MataPelajaranController::class);
 
     Route::resource('/keluhan_saran', KeluhanSaranController::class);
+
+    Route::resource('/ekskul', EkstrakurikulerController::class);
+
+    Route::resource('/jadwal_ekskul', JadwalEkskulController::class);
+
+    Route::resource('/kalender_akademik', KalenderAkademikController::class);
 });
 
 Route::prefix('admin/jadwal')->middleware(['auth', 'role:admin'])->name('admin.jadwal.')->group(function () {
