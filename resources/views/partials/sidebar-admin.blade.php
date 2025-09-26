@@ -121,5 +121,11 @@
                     <span>Kalender Akademik</span>
                 </a>
             </li>
+            <li class="menu-item {{ request()->routeIs('admin.pengumuman.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.pengumuman.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-megaphone"></i>
+                    Pengumuman Sekolah
+                </a>
+            </li>
           </ul>
         </aside>

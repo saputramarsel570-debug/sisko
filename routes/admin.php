@@ -41,6 +41,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
     Route::resource('/mapel', MataPelajaranController::class);
 
+    Route::resource('/pengumuman', PengumumanController::class);
+
     Route::resource('/keluhan_saran', KeluhanSaranController::class);
 
     Route::resource('/ekskul', EkstrakurikulerController::class);
