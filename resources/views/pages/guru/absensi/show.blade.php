@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Absensi Siswa - Hari Ini')
+@section('title', 'Riwayat Absensi Siswa')
 
 @section('content')
 <div class="card shadow-sm">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Absensi Siswa - Hari Ini</h4>
+        <h4 class="mb-0">Riwayat Absensi Siswa</h4>
         <div>
-            <!-- Tombol Riwayat -->
-            <a href="{{ route('guru.absensi.show') }}" class="btn btn-secondary btn-sm">
-                <i class="bi bi-clock-history"></i> Riwayat
+            <!-- Tombol kembali ke absensi hari ini -->
+            <a href="{{ route('guru.absensi.index') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-arrow-left"></i> Kembali
             </a>
         </div>
     </div>
@@ -29,11 +29,12 @@
             </div>
         </form>
 
-        <!-- Tabel Absensi -->
+        <!-- Tabel Riwayat Absensi -->
         <table class="table table-bordered align-middle">
             <thead>
                 <tr>
                     <th>Nama Siswa</th>
+                    <th>Kelas</th>
                     <th>Tanggal</th>
                     <th>Hari</th>
                     <th>Status</th>
@@ -44,6 +45,7 @@
                 @forelse($absensi as $a)
                     <tr>
                         <td>{{ $a->siswa->nama }}</td>
+                        <td>{{ $a->kelas->nama_kelas }}</td>
                         <td>{{ \Carbon\Carbon::parse($a->tanggal)->format('d-m-Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($a->tanggal)->translatedFormat('l') }}</td>
                         <td>
@@ -61,8 +63,8 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted">
-                            Belum ada data absensi hari ini
+                        <td colspan="6" class="text-center text-muted">
+                            Belum ada data riwayat absensi
                         </td>
                     </tr>
                 @endforelse
@@ -72,19 +74,3 @@
     </div>
 </div>
 @endsection
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
-@endpush
-
-@push('scripts')
-    <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
-    <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-    <script type="text/javascript">
-    $(function() {
-        $('.dataTable').DataTable();
-    });
-    </script>
-@endpush

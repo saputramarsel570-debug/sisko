@@ -3,33 +3,43 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Absensi;
-use App\Models\Siswa;
+use App\Models\Kelas;
 use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $kelas = Kelas::all();
+        $selectedKelas = $request->get('kelas_id');
 
-        if ($user->role !== 'guru') {
-            abort(403, 'Akses ditolak');
+        $query = Absensi::with('siswa', 'kelas')
+            ->whereDate('tanggal', Carbon::today());
+
+        if ($selectedKelas) {
+            $query->where('kelas_id', $selectedKelas);
         }
 
-        $bulan = $request->input('bulan', Carbon::now()->month);
-        $tahun = $request->input('tahun', Carbon::now()->year);
+        $absensi = $query->get();
 
-        $absensi = Absensi::with('siswa')
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->orderBy('tanggal', 'asc')
-            ->get();
+        return view('pages.guru.absensi.index', compact('absensi', 'kelas', 'selectedKelas'));
+    }
 
-        $siswa = Siswa::all();
+    public function show(Request $request)
+    {
+        $kelas = Kelas::all();
+        $selectedKelas = $request->get('kelas_id');
 
-        return view('pages.guru.absensi.index', compact('absensi', 'siswa', 'bulan', 'tahun'));
+        $query = Absensi::with('siswa', 'kelas');
+
+        if ($selectedKelas) {
+            $query->where('kelas_id', $selectedKelas);
+        }
+
+        $absensi = $query->orderBy('tanggal', 'desc')->get();
+
+        return view('pages.guru.absensi.show', compact('absensi', 'kelas', 'selectedKelas'));
     }
 }

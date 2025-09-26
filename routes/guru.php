@@ -29,6 +29,8 @@ Route::prefix('guru')->middleware(['auth', 'role:guru'])->group(function ()
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'guru']);
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'guru']);
     Route::resource('/absensi', AbsensiController::class, ['as' => 'guru']);
+
+    Route::get('/absensi/riwayat', [AbsensiController::class, 'show'])->name('guru.absensi.show');
 });
 
 Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(function () {
@@ -40,3 +42,5 @@ Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(f
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
  });
+
+ 
