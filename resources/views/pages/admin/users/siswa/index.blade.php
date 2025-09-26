@@ -19,6 +19,9 @@
             </a>
 
             <div class="mb-3">
+                <a href="{{ route('admin.siswa.export') }}" class="btn btn-success my-3">
+                    <i class="ti ti-download"></i> Export Siswa & Orang Tua
+                </a>
                 <form action="{{ route('admin.siswa.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
                     @csrf
                     <input type="file" name="file" class="form-control me-2" style="max-width: 250px;" required>

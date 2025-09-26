@@ -9,9 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GuruImport;
+use App\Exports\GuruExport;
 
 class GuruController extends Controller
 {
+    public function export()
+    {
+        return Excel::download(new GuruExport, 'guru.xlsx');
+    }
+
     public function import(Request $request)
     {
         $request->validate([

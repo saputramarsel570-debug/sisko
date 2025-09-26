@@ -7,9 +7,15 @@ use App\Models\MataPelajaran;
 use Illuminate\Http\Request;
 use App\Imports\MapelImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MataPelajaranExport;
 
 class MataPelajaranController extends Controller
 {
+    public function export()
+    {
+        return Excel::download(new MataPelajaranExport, 'mata_pelajaran.xlsx');
+    }
+
     public function import(Request $request)
     {
         $request->validate([

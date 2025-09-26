@@ -17,6 +17,9 @@
                 <a href="{{ route('admin.kelas.create') }}" class="btn btn-primary">
                     <i class="ti ti-plus"></i> Tambah Kelas
                 </a>
+                <a href="{{ route('admin.kelas.export') }}" class="btn btn-success">
+                    <i class="ti ti-download"></i> Export
+                </a>
                 <form action="{{ route('admin.kelas.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
                     @csrf
                     <input type="file" name="file" class="form-control me-2" style="max-width: 250px;" required>

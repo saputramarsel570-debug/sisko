@@ -35,6 +35,9 @@
                     <a href="{{ route('admin.jadwal.edit', $kelasId) }}" class="btn btn-warning btn-sm">
                         <i class="ti ti-edit"></i> Edit Jadwal
                     </a>
+                    <a href="{{ route('admin.jadwal.export') }}" class="btn btn-info ms-2">
+                        <i class="ti ti-download"></i> Export
+                    </a>
                     <form action="{{ route('admin.jadwal.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
                         @csrf
                         <input type="file" name="file" class="form-control form-control-sm me-2" required>
@@ -42,6 +45,7 @@
                             <i class="ti ti-upload"></i> Import
                         </button>
                     </form>
+
                 </div>
             </div>
 

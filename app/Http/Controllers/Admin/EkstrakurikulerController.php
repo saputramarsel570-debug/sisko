@@ -6,9 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Ekstrakurikuler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\EkstrakurikulerExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EkstrakurikulerController extends Controller
 {
+    public function export()
+    {
+        return Excel::download(new EkstrakurikulerExport, 'ekstrakurikuler.xlsx');
+    }
+
     /**
      * Display a listing of the resource.
      */

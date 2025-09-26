@@ -8,9 +8,15 @@ use App\Models\Guru;
 use Illuminate\Http\Request;
 use App\Imports\KelasImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\KelasExport;
 
 class KelasController extends Controller
 {
+    public function export()
+    {
+        return Excel::download(new KelasExport, 'kelas.xlsx');
+    }
+
     public function import(Request $request)
     {
         $request->validate([
