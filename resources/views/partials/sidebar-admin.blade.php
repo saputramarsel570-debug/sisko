@@ -127,5 +127,11 @@
                     Pengumuman Sekolah
                 </a>
             </li>
+            <li class="menu-item {{ request()->routeIs('admin.absensi.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.absensi.rekap') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-clipboard-list"></i>
+                    Rekap Absensi
+                </a>
+            </li>
           </ul>
         </aside>
