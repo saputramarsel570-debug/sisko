@@ -22,23 +22,30 @@ class RekapAbsensiExport implements FromView
     public function view(): View
     {
         $siswaList = Siswa::where('kelas_id', $this->kelasId)->orderBy('nama')->get();
-
         $query = Absensi::where('kelas_id', $this->kelasId);
 
+        $tanggalList = collect();
+
         if ($this->periode == 'hari' && $this->tanggal) {
+            $tanggalList = collect([$this->tanggal]);
             $query->whereDate('tanggal', $this->tanggal);
         } elseif ($this->periode == 'bulan' && $this->bulan) {
-            $m = date('m', strtotime($this->bulan));
-            $y = date('Y', strtotime($this->bulan));
-            $query->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
+            $month = date('m', strtotime($this->bulan));
+            $year  = date('Y', strtotime($this->bulan));
+
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            for ($d = 1; $d <= $daysInMonth; $d++) {
+                $tanggalList->push(date('Y-m-d', strtotime("$year-$month-$d")));
+            }
+
+            $query->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
         }
 
-        $absensi = $query->orderBy('tanggal')->get();
-        $tanggalList = $absensi->pluck('tanggal')->unique()->sort()->values();
-
+        $absensi = $query->get();
         $rekap = [];
+
         foreach ($absensi as $a) {
-            $rekap[$a->siswa_id][(string)$a->tanggal] = $a;
+            $rekap[$a->siswa_id][$a->tanggal] = $a;
         }
 
         return view('exports.rekap_absensi', [
