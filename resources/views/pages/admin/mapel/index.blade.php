@@ -17,6 +17,9 @@
             <a href="{{ route('admin.mapel.create') }}" class="btn btn-primary">
                 <i class="ti ti-plus"></i> Tambah Mata Pelajaran
             </a>
+            <a href="{{ route('admin.mapel.export') }}" class="btn btn-info ms-2">
+                <i class="ti ti-download"></i> Export
+            </a>
             <div>
                 <form action="{{ route('admin.mapel.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
                     @csrf

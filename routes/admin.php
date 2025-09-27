@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\EkstrakurikulerController;
 use App\Http\Controllers\Admin\JadwalEkskulController;
 use App\Http\Controllers\Admin\KalenderAkademikController;
+use App\Http\Controllers\Admin\AbsensiController;
 use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
@@ -39,6 +40,26 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
 
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
+
+    Route::get('/jadwal-ekskul/export', [JadwalEkskulController::class, 'export'])->name('jadwal_ekskul.export');
+
+    Route::get('/ekskul/export', [EkstrakurikulerController::class, 'export'])->name('ekskul.export');
+
+    Route::get('/export', [JadwalPelajaranController::class, 'export'])->name('jadwal.export');
+
+    Route::get('/mapel/export', [MataPelajaranController::class, 'export'])->name('mapel.export');
+
+    Route::get('/kelas/export', [KelasController::class, 'export'])->name('kelas.export');
+
+    Route::get('/guru/export', [GuruController::class, 'export'])->name('guru.export');
+
+    Route::get('/siswa/export', [SiswaController::class, 'export'])->name('siswa.export');
+
+    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
+
+    Route::get('/absensi/rekap', [AbsensiController::class, 'rekap'])->name('absensi.rekap');
+
+    Route::get('/absensi/export', [AbsensiController::class, 'export'])->name('absensi.export');
 
     Route::resource('/mapel', MataPelajaranController::class);
 

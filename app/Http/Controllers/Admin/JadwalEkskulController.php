@@ -6,9 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\JadwalEkskul;
 use App\Models\Ekstrakurikuler;
 use Illuminate\Http\Request;
+use App\Exports\JadwalEkskulExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class JadwalEkskulController extends Controller
 {
+    public function export()
+    {
+        return Excel::download(new JadwalEkskulExport, 'jadwal_ekskul.xlsx');
+    }
+
     /**
      * Display a listing of the resource.
      */

@@ -14,9 +14,14 @@
 
         <h3 class="page-title">Kelola Ekstrakurikuler</h3>
 
-        <a href="{{ route('admin.ekskul.create') }}" class="btn btn-primary my-3">
-            <i class="ti ti-plus"></i> Tambah Ekstrakurikuler
-        </a>
+        <div class="d-flex justify-content-between align-items-center my-3">
+            <a href="{{ route('admin.ekskul.create') }}" class="btn btn-primary">
+                <i class="ti ti-plus"></i> Tambah Ekskul
+            </a>
+            <a href="{{ route('admin.ekskul.export') }}" class="btn btn-success">
+                <i class="ti ti-file-export"></i> Export Excel
+            </a>
+        </div>
 
         <div class="card card-body">
             <table class="table table-striped dataTable">

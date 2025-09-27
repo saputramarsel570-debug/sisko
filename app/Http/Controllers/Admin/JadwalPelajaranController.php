@@ -10,9 +10,15 @@ use App\Models\Guru;
 use Illuminate\Http\Request;
 use App\Imports\JadwalPelajaranImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\JadwalPelajaranExport;
 
 class JadwalPelajaranController extends Controller
 {
+    public function export()
+    {
+        return Excel::download(new JadwalPelajaranExport, 'jadwal_pelajaran.xlsx');
+    }
+
     public function import(Request $request)
     {
         $request->validate([

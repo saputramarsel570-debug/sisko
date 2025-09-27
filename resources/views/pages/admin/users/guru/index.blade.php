@@ -13,9 +13,14 @@
         @endif
         <h3 class="page-title">Kelola Data Guru</h3>
 
-        <a href="{{ route('admin.guru.create') }}" class="btn btn-primary my-3">
-            <i class="ti ti-plus"></i> Tambah Guru
-        </a>
+        <div class="d-flex justify-content-between align-items-center my-3">
+            <a href="{{ route('admin.guru.create') }}" class="btn btn-primary">
+                <i class="ti ti-plus"></i> Tambah Guru
+            </a>
+            <a href="{{ route('admin.guru.export') }}" class="btn btn-success">
+                <i class="ti ti-download"></i> Export
+            </a>
+        </div>
 
         <div class="mb-3">
             <form action="{{ route('admin.guru.import') }}" method="POST" enctype="multipart/form-data" class="d-flex" style="max-width:400px;">

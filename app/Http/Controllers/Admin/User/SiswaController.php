@@ -10,9 +10,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SiswaOrangtuaImport;
+use App\Exports\SiswaOrtuExport;
 
 class SiswaController extends Controller
 {
+    public function export()
+    {
+        return Excel::download(new SiswaOrtuExport, 'siswa_ortu.xlsx');
+    }
+
     public function import(Request $request)
     {
         $request->validate([

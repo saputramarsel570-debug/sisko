@@ -18,6 +18,10 @@
                 Tambah
             </a>
 
+            <a href="{{ route('admin.users.export') }}" class="btn btn-success my-3">
+                <i class="ti ti-download"></i> Export Users
+            </a>
+
             <div class="card card-body">
                 <table class="table table-striped dataTable">
                     <thead>

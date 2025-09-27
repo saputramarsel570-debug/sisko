@@ -6,7 +6,7 @@
 <div class="card shadow-sm">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Jurnal Guru</h4>
-        <a href="{{ route('guru.jurnal.create') }}" class="btn btn-primary btn-sm">+ Tambah Jurnal</a>
+        <a href="{{ route('guru.jurnal.create') }}" class="btn btn-primary btn-sm">Tambah Jurnal</a>
     </div>
     <div class="card-body">
 
