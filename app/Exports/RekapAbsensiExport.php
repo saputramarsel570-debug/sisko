@@ -9,11 +9,13 @@ use Maatwebsite\Excel\Concerns\FromView;
 
 class RekapAbsensiExport implements FromView
 {
-    protected $kelasId, $bulan;
+    protected $kelasId, $periode, $tanggal, $bulan;
 
-    public function __construct($kelasId, $bulan)
+    public function __construct($kelasId, $periode, $tanggal, $bulan)
     {
         $this->kelasId = $kelasId;
+        $this->periode = $periode;
+        $this->tanggal = $tanggal;
         $this->bulan   = $bulan;
     }
 
@@ -21,32 +23,28 @@ class RekapAbsensiExport implements FromView
     {
         $siswaList = Siswa::where('kelas_id', $this->kelasId)->orderBy('nama')->get();
 
-        $absensi = Absensi::where('kelas_id', $this->kelasId)
-            ->whereMonth('tanggal', date('m', strtotime($this->bulan)))
-            ->whereYear('tanggal', date('Y', strtotime($this->bulan)))
-            ->get();
+        $query = Absensi::where('kelas_id', $this->kelasId);
 
-        $tanggalList = $absensi->pluck('tanggal')->unique()->sort();
+        if ($this->periode == 'hari' && $this->tanggal) {
+            $query->whereDate('tanggal', $this->tanggal);
+        } elseif ($this->periode == 'bulan' && $this->bulan) {
+            $m = date('m', strtotime($this->bulan));
+            $y = date('Y', strtotime($this->bulan));
+            $query->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
+        }
+
+        $absensi = $query->orderBy('tanggal')->get();
+        $tanggalList = $absensi->pluck('tanggal')->unique()->sort()->values();
 
         $rekap = [];
-        $totals = [];
         foreach ($absensi as $a) {
-            $rekap[$a->siswa_id][$a->tanggal] = $a->status;
-
-            if (!isset($totals[$a->siswa_id])) {
-                $totals[$a->siswa_id] = ['H' => 0, 'I' => 0, 'S' => 0, 'A' => 0];
-            }
-            if ($a->status == 'hadir') $totals[$a->siswa_id]['H']++;
-            if ($a->status == 'izin')  $totals[$a->siswa_id]['I']++;
-            if ($a->status == 'sakit') $totals[$a->siswa_id]['S']++;
-            if ($a->status == 'alfa')  $totals[$a->siswa_id]['A']++;
+            $rekap[$a->siswa_id][(string)$a->tanggal] = $a;
         }
 
         return view('exports.rekap_absensi', [
             'siswaList'   => $siswaList,
             'tanggalList' => $tanggalList,
-            'rekap'       => $rekap,
-            'totals'      => $totals
+            'rekap'       => $rekap
         ]);
     }
 }
