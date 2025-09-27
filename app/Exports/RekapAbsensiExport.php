@@ -30,20 +30,17 @@ class RekapAbsensiExport implements FromView
             $tanggalList = collect([$this->tanggal]);
             $query->whereDate('tanggal', $this->tanggal);
         } elseif ($this->periode == 'bulan' && $this->bulan) {
-            $month = date('m', strtotime($this->bulan));
-            $year  = date('Y', strtotime($this->bulan));
-
-            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            $m = date('m', strtotime($this->bulan));
+            $y = date('Y', strtotime($this->bulan));
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $m, $y);
             for ($d = 1; $d <= $daysInMonth; $d++) {
-                $tanggalList->push(date('Y-m-d', strtotime("$year-$month-$d")));
+                $tanggalList->push(date('Y-m-d', strtotime("$y-$m-$d")));
             }
-
-            $query->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
+            $query->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
         }
 
         $absensi = $query->get();
         $rekap = [];
-
         foreach ($absensi as $a) {
             $rekap[$a->siswa_id][$a->tanggal] = $a;
         }

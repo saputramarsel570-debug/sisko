@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Absensi;
 use App\Models\Kelas;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapAbsensiExport;
 
@@ -19,29 +20,29 @@ class AbsensiController extends Controller
         $tanggal = $request->tanggal;
         $bulan   = $request->bulan;
 
-        $kelasList = Kelas::all();
+        $kelasList = Kelas::orderBy('nama_kelas')->get();
         $siswaList = collect();
         $tanggalList = collect();
         $rekap = [];
 
         if ($kelasId) {
             $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
+
             $query = Absensi::where('kelas_id', $kelasId);
 
-            if ($periode == 'hari' && $tanggal) {
+            if ($periode === 'hari' && $tanggal) {
                 $tanggalList = collect([$tanggal]);
                 $query->whereDate('tanggal', $tanggal);
-            } elseif ($periode == 'bulan' && $bulan) {
-                $month = date('m', strtotime($bulan));
-                $year  = date('Y', strtotime($bulan));
+            } elseif ($periode === 'bulan' && $bulan) {
+                $m = date('m', strtotime($bulan));
+                $y = date('Y', strtotime($bulan));
 
-                $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-                $tanggalList = collect();
+                $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $m, $y);
                 for ($d = 1; $d <= $daysInMonth; $d++) {
-                    $tanggalList->push(date('Y-m-d', strtotime("$year-$month-$d")));
+                    $tanggalList->push(date('Y-m-d', strtotime("$y-$m-$d")));
                 }
 
-                $query->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
+                $query->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
             }
 
             $absensi = $query->get();

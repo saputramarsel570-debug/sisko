@@ -1,9 +1,12 @@
 @extends('layouts.app')
 
+@section('title', 'Rekap Absensi')
+
 @section('content')
 <div class="container">
-    <h4>Rekap Absensi</h4>
+    <h3 class="mb-3">Rekap Absensi</h3>
 
+    <!-- Filter -->
     <form method="GET" class="row g-2 mb-3">
         <div class="col-md-3">
             <select name="kelas_id" class="form-select" onchange="this.form.submit()">
@@ -47,9 +50,9 @@
             <thead>
                 <tr>
                     <th rowspan="2">No</th>
-                    <th rowspan="2">Nama Siswa</th>
+                    <th rowspan="2" class="text-start">Nama Siswa</th>
                     @foreach($tanggalList as $tgl)
-                        <th>{{ \Carbon\Carbon::parse($tgl)->format('d-m') }}</th>
+                        <th>{{ \Carbon\Carbon::parse($tgl)->format('d') }}</th>
                     @endforeach
                     <th colspan="4">Total</th>
                 </tr>

@@ -34,7 +34,7 @@
 
         @if($kelasId && $jurnal->isEmpty())
             <div class="alert alert-warning">
-                Belum ada jurnal untuk kelas ini.
+                Belum ada untuk kelas ini.
             </div>
         @endif
 
