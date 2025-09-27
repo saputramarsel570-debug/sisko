@@ -17,9 +17,7 @@
     </thead>
     <tbody>
         @foreach($siswaList as $i => $siswa)
-        @php
-            $totalH = $totalS = $totalI = $totalA = 0;
-        @endphp
+        @php $totalH = $totalS = $totalI = $totalA = 0; @endphp
         <tr>
             <td>{{ $i+1 }}</td>
             <td>{{ $siswa->nama }}</td>
@@ -27,14 +25,10 @@
                 @php $absen = $rekap[$siswa->id][$tgl] ?? null; @endphp
                 <td>
                     @if($absen)
-                        @if($absen->status == 'hadir')
-                            @php $totalH++; @endphp H
-                        @elseif($absen->status == 'izin')
-                            @php $totalI++; @endphp I
-                        @elseif($absen->status == 'sakit')
-                            @php $totalS++; @endphp S
-                        @elseif($absen->status == 'alfa')
-                            @php $totalA++; @endphp A
+                        @if($absen->status == 'hadir') @php $totalH++; @endphp H
+                        @elseif($absen->status == 'izin') @php $totalI++; @endphp I
+                        @elseif($absen->status == 'sakit') @php $totalS++; @endphp S
+                        @elseif($absen->status == 'alfa') @php $totalA++; @endphp A
                         @endif
                     @else
                         -
