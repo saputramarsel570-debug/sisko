@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Absensi;
 use App\Models\Kelas;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapAbsensiExport;
 
@@ -15,40 +16,52 @@ class AbsensiController extends Controller
     public function rekap(Request $request)
     {
         $kelasId = $request->kelas_id;
+        $periode = $request->periode;
+        $tanggal = $request->tanggal;
         $bulan   = $request->bulan;
 
-        $kelasList = Kelas::all();
+        $kelasList = Kelas::orderBy('nama_kelas')->get();
         $siswaList = collect();
         $tanggalList = collect();
         $rekap = [];
-        $totals = [];
+        $hadirCounts = [];
 
-        if ($kelasId && $bulan) {
+        if ($kelasId) {
             $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
 
-            $absensi = Absensi::where('kelas_id', $kelasId)
-                ->whereMonth('tanggal', date('m', strtotime($bulan)))
-                ->whereYear('tanggal', date('Y', strtotime($bulan)))
-                ->get();
+            $query = Absensi::where('kelas_id', $kelasId);
 
-            $tanggalList = $absensi->pluck('tanggal')->unique()->sort();
+            if ($periode === 'hari' && $tanggal) {
+                $query->whereDate('tanggal', $tanggal);
+            } elseif ($periode === 'bulan' && $bulan) {
+                $m = date('m', strtotime($bulan));
+                $y = date('Y', strtotime($bulan));
+                $query->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
+            }
+
+            $absensi = $query->orderBy('tanggal')->get();
+
+            $tanggalList = $absensi->pluck('tanggal')->unique()->sort()->values();
 
             foreach ($absensi as $a) {
-                $rekap[$a->siswa_id][$a->tanggal] = $a->status;
+                $rekap[$a->siswa_id][(string)$a->tanggal] = $a;
+            }
 
-                if (!isset($totals[$a->siswa_id])) {
-                    $totals[$a->siswa_id] = ['H' => 0, 'I' => 0, 'S' => 0, 'A' => 0];
-                }
-                if ($a->status == 'hadir') $totals[$a->siswa_id]['H']++;
-                if ($a->status == 'izin')  $totals[$a->siswa_id]['I']++;
-                if ($a->status == 'sakit') $totals[$a->siswa_id]['S']++;
-                if ($a->status == 'alfa')  $totals[$a->siswa_id]['A']++;
+            foreach ($siswaList as $s) {
+                $hadirCounts[$s->id] = $absensi->where('siswa_id', $s->id)->where('status', 'hadir')->count();
             }
         }
 
-        return view('admin.absensi.rekap', compact(
-            'kelasList', 'siswaList', 'tanggalList', 'rekap',
-            'kelasId', 'bulan', 'totals'
+        return view('pages.admin.absensi.rekap', compact(
+            'kelasList',
+            'siswaList',
+            'tanggalList',
+            'rekap',
+            'kelasId',
+            'periode',
+            'tanggal',
+            'bulan',
+            'hadirCounts'
         ));
     }
 
@@ -56,7 +69,9 @@ class AbsensiController extends Controller
     {
         return Excel::download(new RekapAbsensiExport(
             $request->kelas_id,
+            $request->periode,
+            $request->tanggal,
             $request->bulan
-        ), 'rekap_absensi.xlsx');
+        ), 'rekap_absensi_'.now()->format('Ymd_His').'.xlsx');
     }
 }

@@ -30,7 +30,8 @@
                 <label class="form-label">Catatan</label>
                 <textarea name="catatan" class="form-control" rows="3"></textarea>
             </div>
-
+            <div class="d-flex justify-content-end">
+                <a href="{{ route('guru.jurnal.index') }}" class="btn btn-secondary me-2">Kembali</a>
             <button type="submit" class="btn btn-primary">Simpan</button>
         </form>
     </div>

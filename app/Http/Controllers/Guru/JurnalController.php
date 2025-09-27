@@ -38,51 +38,47 @@ class JurnalController extends Controller
 
     public function create()
 {
-    $guruId = Auth::user()->guru->id;
+    $hariIni = \Carbon\Carbon::now()->isoFormat('dddd');
 
-    $jadwal = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
-        ->where('guru_id', $guruId)
-        ->where('hari', Carbon::now()->isoFormat('dddd'))
+    $jadwal = \App\Models\JadwalPelajaran::where('guru_id', auth()->user()->id)
+        ->where('hari', $hariIni)
         ->first();
 
-    if (!$jadwal) {
-        return redirect()->route('guru.jurnal.index')
-            ->with('error', 'Tidak ada jadwal untuk hari ini.');
+    if ($jadwal) {
+        $kelas = $jadwal->kelas->nama_kelas ?? '-';
+        $mapel = $jadwal->mapel->nama_mapel ?? '-';
+    } else {
+        $kelas = 'Tidak ada jadwal hari ini';
+        $mapel = 'Tidak ada mata pelajaran';
     }
 
-    return view('pages.guru.jurnal.create', compact('jadwal'));
+    return view('pages.guru.jurnal.create', compact('kelas', 'mapel'));
 }
-
-    public function store(Request $request)
+public function store(Request $request)
 {
-    $request->validate([
-        'materi'  => 'required|string',
-        'catatan' => 'nullable|string',
-    ]);
+    $hariIni = \Carbon\Carbon::now()->isoFormat('dddd');
 
-    $guruId = Auth::user()->guru->id;
-    $tanggal = Carbon::now()->toDateString();
-
-    $jadwal = JadwalPelajaran::with('mataPelajaran')
-        ->where('guru_id', $guruId)
-        ->where('hari', Carbon::now()->isoFormat('dddd'))
+    $jadwal = \App\Models\JadwalPelajaran::where('guru_id', auth()->user()->id)
+        ->where('hari', $hariIni)
         ->first();
 
-    if (!$jadwal) {
-        return redirect()->route('guru.jurnal.index')
-            ->with('error', 'Tidak ada jadwal untuk hari ini.');
+    $jurnal = new \App\Models\Jurnal();
+    $jurnal->guru_id = auth()->user()->id;
+    $jurnal->materi = $request->materi;
+    $jurnal->catatan = $request->catatan;
+
+    if ($jadwal) {
+        $jurnal->kelas_id = $jadwal->kelas_id;
+        $jurnal->mapel_id = $jadwal->mapel_id;
+    } else {
+        $jurnal->kelas_id = null;
+        $jurnal->mapel_id = null;
     }
 
-    Jurnal::create([
-        'tanggal'  => $tanggal,
-        'guru_id'  => $guruId,
-        'kelas_id' => $jadwal->kelas_id,
-        'mapel'    => optional($jadwal->mataPelajaran)->nama_mapel,
-        'materi'   => $request->materi,
-        'catatan'  => $request->catatan,
-    ]);
+    $jurnal->save();
 
-    return redirect()->route('guru.jurnal.index')->with('success', 'Jurnal berhasil ditambahkan');
+    return redirect()->route('guru.jurnal.index')
+        ->with('success', 'Jurnal berhasil ditambahkan.');
 }
 
     public function edit($id)
