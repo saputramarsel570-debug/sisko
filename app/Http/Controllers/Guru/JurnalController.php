@@ -14,10 +14,23 @@ use Carbon\Carbon;
 
 class JurnalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $jurnal = Jurnal::with(['guru', 'kelas'])->latest()->get();
-        return view('pages.guru.jurnal.index', compact('jurnal'));
+        // Ambil semua kelas untuk tombol pilih kelas
+        $kelas = Kelas::all();
+
+        // Jika user pilih kelas lewat query string ?kelas_id=...
+        $kelasId = $request->input('kelas_id');
+
+        $jurnal = collect(); // default kosong
+        if ($kelasId) {
+            $jurnal = Jurnal::with(['guru', 'kelas'])
+                ->where('kelas_id', $kelasId)
+                ->latest()
+                ->get();
+        }
+
+        return view('pages.guru.jurnal.index', compact('kelas', 'jurnal', 'kelasId'));
     }
 
     public function show($id)
@@ -26,16 +39,17 @@ class JurnalController extends Controller
         return view('pages.guru.jurnal.show', compact('jurnal'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $guruId = Auth::user()->guru->id;
-        
-        $jadwal = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
-                    ->where('guru_id', $guruId)
-                    ->first();
 
-        if (!$jadwal) {
-            return redirect()->route('guru.jurnal.index')->with('error', 'Anda belum memiliki jadwal pelajaran.');
+        $jadwal = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
+            ->where('guru_id', $guruId)
+            ->get();
+
+        if ($jadwal->isEmpty()) {
+            return redirect()->route('guru.jurnal.index')
+                ->with('error', 'Anda belum memiliki jadwal pelajaran.');
         }
 
         return view('pages.guru.jurnal.create', compact('jadwal'));
@@ -66,7 +80,8 @@ class JurnalController extends Controller
             ->exists();
 
         if ($exists) {
-            return redirect()->route('guru.jurnal.create')->with('info', 'Jurnal untuk jadwal ini sudah dibuat hari ini.');
+            return redirect()->route('guru.jurnal.create')
+                ->with('info', 'Jurnal untuk jadwal ini sudah dibuat hari ini.');
         }
 
         Jurnal::create([
@@ -78,13 +93,13 @@ class JurnalController extends Controller
             'catatan'  => $request->catatan,
         ]);
 
-        return redirect()->route('guru.jurnal.create')->with('success', 'Jurnal berhasil ditambahkan');
+        return redirect()->route('guru.jurnal.index')
+            ->with('success', 'Jurnal berhasil ditambahkan');
     }
 
     public function edit($id)
     {
-        $jurnal = Jurnal::findOrFail($id);
-        $jurnal->load(['kelas', 'guru']);
+        $jurnal = Jurnal::with(['kelas', 'guru'])->findOrFail($id);
         return view('pages.guru.jurnal.edit', compact('jurnal'));
     }
 
@@ -97,11 +112,15 @@ class JurnalController extends Controller
             'catatan'  => 'nullable|string',
         ]);
 
+        // Guru pembuat tidak diubah, hanya materi & catatan
         $jurnal->update([
             'materi'  => $request->materi,
             'catatan' => $request->catatan,
         ]);
 
-        return redirect()->route('guru.jurnal.index')->with('success', 'Jurnal berhasil diperbarui');
+        return redirect()->route('guru.jurnal.index')
+            ->with('success', 'Jurnal berhasil diperbarui');
     }
+
+    // Tidak ada destroy
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\User\GuruController;
 use App\Http\Controllers\Admin\User\SiswaController;
 use App\Http\Controllers\Admin\User\OrangtuaController;
 use App\Http\Controllers\Admin\KelasController;
+use App\Http\Controllers\Admin\PengumumanController;
 use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\JadwalPelajaranController;
 use App\Http\Controllers\Admin\KeluhanSaranController;
@@ -40,6 +41,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
 
     Route::resource('/mapel', MataPelajaranController::class);
+
+    Route::resource('/pengumuman', PengumumanController::class);
 
     Route::resource('/keluhan_saran', KeluhanSaranController::class);
 

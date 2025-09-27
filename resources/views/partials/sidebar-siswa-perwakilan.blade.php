@@ -47,25 +47,25 @@
       </li>
       <li class="menu-item {{ request()->routeIs('siswa_perwakilan.jadwal.*') ? 'active' : '' }}">
         <a href="{{ route('siswa_perwakilan.jadwal.index') }}" class="menu-link">
-            <i class="menu-icon tf-icons ti ti-home"></i>
+          <i class="menu-icon tf-icons ti ti-calendar-event"></i>
             Jadwal Pelajaran
         </a>
      </li>
      <li class="menu-item {{ request()->routeIs('siswa_perwakilan.absensi.*') ? 'active' : '' }}">
         <a href="{{ route('siswa_perwakilan.absensi.index') }}" class="menu-link">
-            <i class="menu-icon tf-icons ti ti-home"></i>
+          <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
             Absensi Siswa
         </a>
      </li>
      <li class="menu-item {{ request()->routeIs('siswa_perwakilan.pengumuman.*') ? 'active' : '' }}">
       <a href="{{ route('siswa_perwakilan.pengumuman.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-home"></i>
+        <i class="menu-icon tf-icons ti ti-news"></i>
           Pengumuman Sekolah
       </a>
    </li>
    <li class="menu-item {{ request()->routeIs('siswa_perwakilan.keluhan.*') ? 'active' : '' }}">
     <a href="{{ route('siswa_perwakilan.keluhan.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-home"></i>
+      <i class="menu-icon tf-icons ti ti-message"></i>
         Keluhan & Saran
     </a>
    </li>

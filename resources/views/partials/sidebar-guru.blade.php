@@ -59,7 +59,7 @@
         </li>
         <li class="menu-item {{ request()->routeIs('guru.pengumuman.*') ? 'active' : '' }}">
           <a href="{{ route('guru.pengumuman.index') }}" class="menu-link">
-              <i class="menu-icon tf-icons ti ti-home"></i>
+            <i class="menu-icon tf-icons ti ti-news"></i>
               Pengumuman Sekolah
           </a>
       </li>

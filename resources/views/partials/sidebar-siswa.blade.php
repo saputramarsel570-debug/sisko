@@ -47,19 +47,19 @@
             </li>
             <li class="menu-item {{ request()->routeIs('siswa.jadwal.*') ? 'active' : '' }}">
               <a href="{{ route('siswa.jadwal.index') }}" class="menu-link">
-                  <i class="menu-icon tf-icons ti ti-home"></i>
+                <i class="menu-icon tf-icons ti ti-calendar-event"></i>
                   Jadwal Pelajaran
               </a>
            </li>
            <li class="menu-item {{ request()->routeIs('siswa.pengumuman.*') ? 'active' : '' }}">
             <a href="{{ route('siswa.pengumuman.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-home"></i>
+              <i class="menu-icon tf-icons ti ti-news"></i>
                 Pengumuman Sekolah
             </a>
          </li>
          <li class="menu-item {{ request()->routeIs('siswa.keluhan.*') ? 'active' : '' }}">
           <a href="{{ route('siswa.keluhan.index') }}" class="menu-link">
-              <i class="menu-icon tf-icons ti ti-home"></i>
+            <i class="menu-icon tf-icons ti ti-message"></i>
               Keluhan & Saran
           </a>
          </li>

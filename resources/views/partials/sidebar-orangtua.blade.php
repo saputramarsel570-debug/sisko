@@ -47,19 +47,19 @@
             </li>
             <li class="menu-item {{ request()->routeIs('orangtua.absensi.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.absensi.index') }}" class="menu-link">
-                  <i class="menu-icon tf-icons ti ti-home"></i>
+                <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
                   Absensi Siswa
               </a>
             </li>
             <li class="menu-item {{ request()->routeIs('orangtua.pengumuman.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.pengumuman.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-home"></i>
+                <i class="menu-icon tf-icons ti ti-news"></i>
                 Pengumuman Sekolah
               </a>
             </li>
             <li class="menu-item {{ request()->routeIs('orangtua.keluhan.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.keluhan.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-home"></i>
+                <i class="menu-icon tf-icons ti ti-message"></i>
                 Keluhan & Saran
               </a>
             </li>
