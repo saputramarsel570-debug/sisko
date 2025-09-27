@@ -24,6 +24,7 @@ class AbsensiController extends Controller
         $siswaList = collect();
         $tanggalList = collect();
         $rekap = [];
+        $hadirCounts = [];
 
         if ($kelasId) {
             $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
@@ -31,28 +32,50 @@ class AbsensiController extends Controller
             $query = Absensi::where('kelas_id', $kelasId);
 
             if ($periode === 'hari' && $tanggal) {
-                $tanggalList = collect([$tanggal]);
                 $query->whereDate('tanggal', $tanggal);
             } elseif ($periode === 'bulan' && $bulan) {
                 $m = date('m', strtotime($bulan));
                 $y = date('Y', strtotime($bulan));
-
-                $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $m, $y);
-                for ($d = 1; $d <= $daysInMonth; $d++) {
-                    $tanggalList->push(date('Y-m-d', strtotime("$y-$m-$d")));
-                }
-
                 $query->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
             }
 
-            $absensi = $query->get();
+            $absensi = $query->orderBy('tanggal')->get();
 
+            if ($periode === 'bulan' && $bulan) {
+                $m = date('m', strtotime($bulan));
+                $y = date('Y', strtotime($bulan));
+
+                // generate full tanggal dalam bulan
+                $start = Carbon::createFromDate($y, $m, 1);
+                $end   = $start->copy()->endOfMonth();
+                $tanggalList = collect();
+                while ($start <= $end) {
+                    $tanggalList->push($start->toDateString());
+                    $start->addDay();
+                }
+            } else {
+                // default (harian atau data absensi biasa)
+                $tanggalList = $absensi->pluck('tanggal')->unique()->sort()->values();
+            }
+
+            // build mapping absensi per siswa per tanggal
             foreach ($absensi as $a) {
-                $rekap[$a->siswa_id][$a->tanggal] = $a;
+                $rekap[$a->siswa_id][(string)$a->tanggal] = $a;
+            }
+
+            // hitung total semua status
+            $totalStatus = [];
+            foreach ($siswaList as $s) {
+                $totalStatus[$s->id] = [
+                    'hadir' => $absensi->where('siswa_id', $s->id)->where('status', 'hadir')->count(),
+                    'sakit' => $absensi->where('siswa_id', $s->id)->where('status', 'sakit')->count(),
+                    'izin'  => $absensi->where('siswa_id', $s->id)->where('status', 'izin')->count(),
+                    'alfa'  => $absensi->where('siswa_id', $s->id)->where('status', 'alfa')->count(),
+                ];
             }
         }
 
-        return view('pages.admin.absensi.rekap', compact(
+        return view('admin.absensi.rekap', compact(
             'kelasList',
             'siswaList',
             'tanggalList',
@@ -60,7 +83,8 @@ class AbsensiController extends Controller
             'kelasId',
             'periode',
             'tanggal',
-            'bulan'
+            'bulan',
+            'hadirCounts'
         ));
     }
 
@@ -71,6 +95,6 @@ class AbsensiController extends Controller
             $request->periode,
             $request->tanggal,
             $request->bulan
-        ), 'rekap_absensi.xlsx');
+        ), 'rekap_absensi_'.now()->format('Ymd_His').'.xlsx');
     }
 }
