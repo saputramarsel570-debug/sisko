@@ -3,17 +3,32 @@
 @section('title', 'Absensi Kelas')
 
 @section('content')
-<div class="card shadow-sm">
-    <div class="card-header">
-        @if (session('success'))
-                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
-                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
-                    {{ session('success') }}
-                </div>
-            @endif
-        <h4 class="mb-0">Isi Absensi</h4>
-    </div>
-    <div class="card-body">
+<div class="card-body">
+    @if(session('success'))
+        <div id="success" class="alert alert-success d-flex align-items-center" role="alert">
+            <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <span class="alert-icon rounded"><i class="ti ti-alert-triangle"></i></span>
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if($isWeekend)
+        <div class="alert alert-warning d-flex align-items-center" role="alert">
+            <span class="alert-icon rounded"><i class="ti ti-calendar-x"></i></span>
+            Absensi hanya berlaku Senin sampai Jumat
+        </div>
+    @elseif($sudahAdaAbsensi)
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <span class="alert-icon rounded"><i class="ti ti-alert-triangle"></i></span>
+            Anda sudah mengisi absensi hari ini
+        </div>
+    @else
         <form action="{{ route('siswa_perwakilan.absensi.store') }}" method="POST">
             @csrf
 
@@ -54,7 +69,7 @@
                 <button type="submit" class="btn btn-primary">SIMPAN</button>
             </div>
         </form>
-    </div>
+    @endif
 </div>
 @endsection
 
@@ -67,16 +82,34 @@
 @push('scripts')
     <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
     <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-    <script type='text/javascript'>
-setTimeout(function () {
-    let alert = document.getElementById('success');
-    if (alert) {
+    <script type="text/javascript">
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
 
-        alert.style.transition = "opacity 0.5s ease";
-        alert.style.opacity = 0;
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
 
-        setTimeout(() => alert.remove(), 500);
-    }
-}, 3000);
-</script>
+        setTimeout(function () {
+            let alert = document.getElementById('success');
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = 0;
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+    </script>
 @endpush

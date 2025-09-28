@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Absensi;
 use App\Models\Siswa;
+use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
@@ -21,11 +22,20 @@ class AbsensiController extends Controller
         $kelas = $siswaPerwakilan->kelas;
         $siswaKelas = Siswa::where('kelas_id', $kelas->id)->get();
 
+        $tanggalHariIni = Carbon::now()->toDateString();
+        $isWeekend = Carbon::now()->isWeekend();
+
+        $sudahAdaAbsensi = Absensi::where('kelas_id', $kelas->id)
+            ->whereDate('tanggal', $tanggalHariIni)
+            ->exists();
+
         $absensiHariIni = Absensi::where('kelas_id', $kelas->id)
-            ->where('tanggal', now()->toDateString())
+            ->where('tanggal', $tanggalHariIni)
             ->get();
 
-        return view('pages.siswa_perwakilan.absensi.index', compact('kelas', 'siswaKelas', 'absensiHariIni'));
+        return view('pages.siswa_perwakilan.absensi.index', compact(
+            'kelas', 'siswaKelas', 'absensiHariIni', 'sudahAdaAbsensi', 'isWeekend'
+        ));
     }
 
     public function store(Request $request)
@@ -36,16 +46,31 @@ class AbsensiController extends Controller
         if (!$siswaPerwakilan) {
             abort(403, 'Anda bukan perwakilan kelas');
         }
+        if (Carbon::now()->isWeekend()) {
+            return redirect()->route('siswa_perwakilan.absensi.index')
+                ->with('error', 'Absensi hanya bisa diisi Senin sampai Jumat');
+        }
 
         $kelasId = $siswaPerwakilan->kelas_id;
+        $tanggalHariIni = now()->toDateString();
+        $sudahAda = Absensi::where('kelas_id', $kelasId)
+            ->whereDate('tanggal', $tanggalHariIni)
+            ->exists();
+
+        if ($sudahAda) {
+            return redirect()->route('siswa_perwakilan.absensi.index')
+                ->with('error', 'Anda sudah mengisi absensi hari ini');
+        }
 
         $request->validate([
             'absensi' => 'required|array',
+            'absensi.*.status' => 'required|in:hadir,izin,sakit,alfa',
+            'absensi.*.keterangan' => 'nullable|string',
         ]);
 
         foreach ($request->absensi as $siswa_id => $data) {
             Absensi::create([
-                'tanggal' => now()->toDateString(),
+                'tanggal' => $tanggalHariIni,
                 'kelas_id' => $kelasId,
                 'siswa_id' => $siswa_id,
                 'status' => $data['status'],
@@ -57,10 +82,6 @@ class AbsensiController extends Controller
             ->with('success', 'Absensi berhasil disimpan');
     }
 
-    public function edit(Absensi $absensi)
-    {
-        return view('pages.siswa_perwakilan.absensi.edit', compact('absensi'));
-    }
 
     public function update(Request $request, Absensi $absensi)
     {
