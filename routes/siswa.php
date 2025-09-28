@@ -14,7 +14,7 @@ use App\Http\Controllers\Siswa\KeluhanController;
 use App\Http\Controllers\Siswa\AbsensiController;
 use App\Http\Controllers\Siswa\DashboardController;
 use App\Http\Controllers\Siswa\ProfileController;
-
+use App\Http\Controllers\Siswa\JadwalEkskulController;
 
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
 {   
@@ -28,6 +28,7 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa']);
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'siswa']);
     Route::resource('/absensi', AbsensiController::class, ['as' => 'siswa']);
+    Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'siswa']);
 });
 
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->group(function () {

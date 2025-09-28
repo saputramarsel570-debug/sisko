@@ -14,6 +14,8 @@ use App\Http\Controllers\SiswaPerwakilan\JadwalPelajaranController;
 use App\Http\Controllers\SiswaPerwakilan\KeluhanController;
 use App\Http\Controllers\SiswaPerwakilan\DashboardController;
 use App\Http\Controllers\SiswaPerwakilan\ProfileController;
+use App\Http\Controllers\SiswaPerwakilan\JadwalEkskulController;
+use App\Http\Controllers\SiswaPerwakilan\EkstrakurikulerController;
 
 Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->group(function ()
 {
@@ -26,6 +28,8 @@ Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])
     Route::resource('/mapel', MataPelajaranController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'siswa_perwakilan']);
+    Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'siswa_perwakilan']);
+    Route::resource('/ekskul', EkstrakurikulerController::class, ['as' => 'siswa_perwakilan']);
 });
 
 Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->name('siswa_perwakilan.')->group(function () {

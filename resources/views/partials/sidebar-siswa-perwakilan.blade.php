@@ -69,5 +69,11 @@
         Keluhan & Saran
     </a>
    </li>
+   <li class="menu-item {{ request()->routeIs('siswa_perwakilan.jadwal_ekskul.*') ? 'active' : '' }}">
+    <a href="{{ route('siswa_perwakilan.jadwal_ekskul.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-calendar"></i>
+        <span>Jadwal Ekskul</span>
+    </a>
+  </li>
     </ul>
   </aside>
