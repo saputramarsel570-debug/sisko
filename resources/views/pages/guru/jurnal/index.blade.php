@@ -3,82 +3,71 @@
 @section('title', 'Jurnal Guru')
 
 @section('content')
-<div class="card shadow-sm">
-    <div class="card-body">
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title">Jurnal Guru - {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, d F Y') }}</h3>
 
-        <form method="GET" action="{{ route('guru.jurnal.index') }}" class="mb-3">
-            <div class="row g-2 align-items-center">
-                <div class="col-md-6">
-                    <select name="kelas_id" class="form-control" onchange="this.form.submit()">
+        <div class="card card-body">
+            <form method="GET" action="{{ route('guru.jurnal.index') }}" class="row g-2 mb-3">
+                <div class="col-md-4">
+                    <select name="kelas_id" class="form-select" onchange="this.form.submit()">
                         <option value="">-- Pilih Kelas --</option>
                         @foreach($kelas as $k)
-                            <option value="{{ $k->id }}" {{ $kelasId == $k->id ? 'selected' : '' }}>
+                            <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>
                                 {{ $k->nama_kelas }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-            </div>
-        </form>
+                <div class="col-md-8 text-end">
+                    <a href="{{ route('guru.jurnal.create') }}" class="btn btn-primary btn-sm">+ Tambah Jurnal</a>
+                    <a href="{{ route('guru.jurnal.index', ['tanggal' => \Carbon\Carbon::parse($tanggal)->subDay()->toDateString()]) }}" class="btn btn-outline-secondary btn-sm">Sebelumnya</a>
+                    <a href="{{ route('guru.jurnal.index', ['tanggal' => \Carbon\Carbon::parse($tanggal)->addDay()->toDateString()]) }}" class="btn btn-outline-secondary btn-sm">Berikutnya</a>
+                </div>
+            </form>
 
-        @if(!$kelasId)
-            <div class="alert alert-info">
-                Silakan pilih kelas untuk melihat daftar jurnal.
-            </div>
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Jurnal Guru</h4>
-                <a href="{{ route('guru.jurnal.create') }}" class="btn btn-primary btn-sm">Tambah Jurnal</a>
-            </div>
-        @endif
-
-
-        @if($kelasId && $jurnal->isEmpty())
-            <div class="alert alert-warning">
-                Belum ada untuk kelas ini.
-            </div>
-        @endif
-
-        @if($jurnal->isNotEmpty())
-        <div class="card card-body">
-            <table class="table table-striped dataTable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Tanggal</th>
-                        <th>Kelas</th>
-                        <th>Guru</th>
-                        <th>Mata Pelajaran</th>
-                        <th>Materi</th>
-                        <th>Catatan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($jurnal as $i => $item)
-                    <tr>
-                        <td>{{ $i+1 }}</td>
-                        <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                        <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
-                        <td>{{ $item->guru->nama ?? '-' }}</td>
-                        <td>{{ $item->mapel ?? '-' }}</td>
-                        <td>{{ $item->materi }}</td>
-                        <td>{{ $item->catatan ?? '-' }}</td>
-                        <td>
-                            <div class="btn-group" role="">
-                                <a href="{{ route('guru.jurnal.show', $item->id) }}" class="btn btn-sm btn-secondary">
-                                    <span class="ti ti-eye"></span>
-                                </a>
-                                <a href="{{ route('guru.jurnal.edit', $item->id) }}" class="btn btn-sm btn-primary">
-                                    <span class="ti ti-pencil"></span>
-                                </a>
-                             </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            @if($jurnal->isEmpty())
+                <div class="alert alert-info">
+                    Belum ada jurnal pada tanggal ini.
+                </div>
+            @else
+                <table class="table table-striped dataTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Kelas</th>
+                            <th>Mata Pelajaran</th>
+                            <th>Materi</th>
+                            <th>Catatan</th>
+                            <th>Guru</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($jurnal as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
+                                <td>{{ $item->mapel ?? '-' }}</td>
+                                <td>{{ $item->materi }}</td>
+                                <td>{{ $item->catatan ?? '-' }}</td>
+                                <td>{{ $item->guru->nama ?? '-' }}</td>
+                                <td>
+                                    <div class="btn-group" role="">
+                                        <a href="{{ route('guru.jurnal.show', $item->id) }}" class="btn btn-sm btn-secondary">
+                                            <span class="ti ti-eye"></span>
+                                        </a>
+                                        <a href="{{ route('guru.jurnal.edit', $item->id) }}" class="btn btn-sm btn-primary">
+                                            <span class="ti ti-pencil"></span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
-        @endif
     </div>
 </div>
 @endsection
@@ -93,5 +82,11 @@
     <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
     <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script type="text/javascript">
-</script>
+    $(function() {
+        $('.dataTable').DataTable({
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50]
+        });
+    });
+    </script>
 @endpush
