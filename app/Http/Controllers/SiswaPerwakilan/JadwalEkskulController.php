@@ -15,4 +15,10 @@ class JadwalEkskulController extends Controller
         $jadwal = JadwalEkskul::with('ekstrakurikuler')->get();
         return view('pages.siswa_perwakilan.jadwal_ekskul.index', compact('jadwal'));
     }
+    public function show(JadwalEkskul $jadwal_ekskul)
+    {
+        $jadwal_ekskul->load('ekstrakurikuler');
+        return view('pages.siswa_perwakilan.jadwal_ekskul.show', compact('jadwal_ekskul'));
+    }
+
 }
