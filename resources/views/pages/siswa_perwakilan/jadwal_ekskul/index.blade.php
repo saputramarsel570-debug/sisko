@@ -32,6 +32,9 @@
                                 {{ is_array($item->hari) ? implode(', ', $item->hari) : $item->hari }}
                             </td>
                         </tr>
+                        <a href="{{ route('siswa_perwakilan.jadwal_ekskul.show', $item->id) }}" class="btn btn-sm btn-info">
+                            <i class="ti ti-eye"></i> Detail
+                        </a>
                     @empty
                         <tr>
                             <td colspan="3" class="text-center">Belum ada jadwal ekskul</td>
