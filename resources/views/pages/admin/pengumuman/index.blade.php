@@ -1,59 +1,67 @@
 @extends('layouts.app')
 
-@section('title', 'Halaman Pengumuman Admin')
+@section('title', 'Kelola Pengumuman')
 
 @section('content')
 <div class="row">
     <div class="col-md-12">
+
+        {{-- Notifikasi sukses --}}
         @if (session('success'))
             <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
                 <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
                 {{ session('success') }}
             </div>
         @endif
-        <h3 class="page-title">Pengumuman Admin</h3>
 
-        <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-primary my-3">
-            <span class="ti ti-plus me-1"></span>
-            Tambah
-        </a>
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white rounded-top-4">
+                <h4 class="mb-0 fw-bold"><i class="ti ti-bell"></i> Kelola Pengumuman</h4>
+                <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-light btn-sm">
+                    <i class="ti ti-plus"></i> Tambah Pengumuman
+                </a>
+            </div>
 
-        <div class="card card-body">
-            <table class="table table-striped dataTable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Judul</th>
-                        <th>Isi</th>
-                        <th>Dibuat Oleh</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($pengumuman as $item)
+            <div class="card-body">
+                {{-- Tabel Pengumuman --}}
+                <table class="table table-striped table-hover align-middle dataTable">
+                    <thead class="table-light">
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->judul }}</td>
-                            <td>{{ Str::limit($item->isi, 80) }}</td>
-                            <td>{{ $item->user->name ?? 'Tidak diketahui' }}</td>
-                            <td>
-                                <div class="btn-group" role="">
-                                <a href="{{ route('admin.pengumuman.show', $item->id) }}" class="btn btn-sm btn-secondary">
-                                    <span class="ti ti-eye"></span>
-                                </a>
-                                <a href="{{ route('admin.pengumuman.edit', $item->id) }}" class="btn btn-sm btn-primary">
-                                    <span class="ti ti-pencil"></span>
-                                </a>
-                                <a href="javascript:;" class="btn btn-sm btn-danger"
-                                    onclick="actionDelete('{{ route('admin.pengumuman.destroy', $item->id) }}')">
-                                    <span class="ti ti-trash"></span>
-                                </a>
-                             </div>
-                            </td>
+                            <th>No</th>
+                            <th>Judul</th>
+                            <th>Isi</th>
+                            <th>Dibuat Oleh</th>
+                            <th width="200">Aksi</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($pengumuman as $index => $item)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td class="fw-bold">{{ $item->judul }}</td>
+                                <td>{{ Str::limit($item->isi, 80) }}</td>
+                                <td>{{ $item->user->name ?? 'Tidak diketahui' }}</td>
+                                <td>
+                                    <a href="{{ route('admin.pengumuman.show', $item->id) }}" class="btn btn-sm btn-info">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                    <a href="{{ route('admin.pengumuman.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                                        <i class="ti ti-pencil"></i>
+                                    </a>
+                                    <a href="javascript:;" class="btn btn-sm btn-danger"
+                                       onclick="actionDelete('{{ route('admin.pengumuman.destroy', $item->id) }}')">
+                                        <i class="ti ti-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center">Belum ada pengumuman</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -73,18 +81,19 @@
 @push('scripts')
     <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
     <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-    <script type="text/javascript">
+    <script type='text/javascript'>
     $(function() {
         $('.dataTable').DataTable();
     });
 
     function actionDelete(url) {
         Swal.fire({
-            title :"Yakin mau dihapus?",
+            title : "Apakah kamu yakin?",
             text : "Data yang dihapus tidak dapat dikembalikan!",
             icon : "warning",
-            showCancelButton : true,
-            confirmButtonText : "Ya, hapus!"
+            showCancelButton: true,
+            confirmButtonText : "Ya, hapus saja!",
+            cancelButtonText : "Batal"
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#form-delete').attr('action', url);
@@ -96,10 +105,8 @@
     setTimeout(function () {
         let alert = document.getElementById('success');
         if (alert) {
-
             alert.style.transition = "opacity 0.5s ease";
             alert.style.opacity = 0;
-
             setTimeout(() => alert.remove(), 500);
         }
     }, 3000);

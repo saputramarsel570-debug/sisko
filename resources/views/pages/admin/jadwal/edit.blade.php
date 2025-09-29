@@ -5,12 +5,20 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <h3 class="page-title">Edit Jadwal - {{ $kelas->nama_kelas }}</h3>
 
-        <form action="{{ route('admin.jadwal.updateSchedule', $kelas->id) }}" method="POST">
-            @csrf
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center rounded-top-4">
+                <h4 class="mb-0 fw-bold">
+                    <i class="ti ti-edit"></i> Edit Jadwal - {{ $kelas->nama_kelas }}
+                </h4>
+                <a href="{{ route('admin.jadwal.index', ['kelas_id' => $kelas->id]) }}" class="btn btn-light btn-sm">
+                    <i class="ti ti-arrow-left"></i> Kembali
+                </a>
+            </div>
 
-            <div class="card">
+            <form action="{{ route('admin.jadwal.updateSchedule', $kelas->id) }}" method="POST">
+                @csrf
+
                 <div class="card-body table-responsive">
                     <table class="table table-bordered text-center align-middle">
                         @php
@@ -29,9 +37,9 @@
                         @endphp
                         <thead class="table-light">
                             <tr>
-                                <th>Hari</th>
+                                <th class="text-center align-middle" style="width: 100px;">Hari</th>
                                 @for($jam = 1; $jam <= 10; $jam++)
-                                    <th>
+                                    <th style="min-width: 160px;">
                                         Jam {{ $jam }} <br>
                                         <small class="text-muted">{{ $jamRanges[$jam] }}</small>
                                     </th>
@@ -41,24 +49,28 @@
                         <tbody>
                             @foreach(['Senin','Selasa','Rabu','Kamis','Jumat'] as $hari)
                                 <tr>
-                                    <td><strong>{{ $hari }}</strong></td>
+                                    <td class="fw-bold">{{ $hari }}</td>
                                     @for($jam = 1; $jam <= 10; $jam++)
                                         @php
                                             $data = $jadwalByHari[$hari][$jam] ?? null;
                                         @endphp
                                         <td>
-                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][mapel_id]" class="form-select w-100 text-dark" style="min-width: 150px;">
+                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][mapel_id]"
+                                                    class="form-select form-select-sm text-dark mb-1">
                                                 <option value="">- Mapel -</option>
                                                 @foreach($mapel as $m)
-                                                    <option value="{{ $m->id }}" {{ $data && $data->mata_pelajaran_id == $m->id ? 'selected' : '' }}>
+                                                    <option value="{{ $m->id }}"
+                                                        {{ $data && $data->mata_pelajaran_id == $m->id ? 'selected' : '' }}>
                                                         {{ $m->nama_mapel }}
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][guru_id]" class="form-select w-100 text-dark mt-1" style="min-width: 150px;">
+                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][guru_id]"
+                                                    class="form-select form-select-sm text-dark mb-1">
                                                 <option value="">- Guru -</option>
                                                 @foreach($guru as $g)
-                                                    <option value="{{ $g->id }}" {{ $data && $data->guru_id == $g->id ? 'selected' : '' }}>
+                                                    <option value="{{ $g->id }}"
+                                                        {{ $data && $data->guru_id == $g->id ? 'selected' : '' }}>
                                                         {{ $g->nama }}
                                                     </option>
                                                 @endforeach
@@ -70,17 +82,14 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
 
-            <div class="mt-3">
-                <button type="submit" class="btn btn-primary">
-                    <i class="ti ti-device-floppy"></i> Simpan Jadwal
-                </button>
-                <a href="{{ route('admin.jadwal.index', ['kelas_id' => $kelas->id]) }}" class="btn btn-secondary">
-                    Kembali
-                </a>
-            </div>
-        </form>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="ti ti-device-floppy"></i> Simpan Jadwal
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

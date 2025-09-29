@@ -75,7 +75,7 @@ class AbsensiController extends Controller
             }
         }
 
-        return view('admin.absensi.rekap', compact(
+        return view('pages.admin.absensi.rekap', compact(
             'kelasList',
             'siswaList',
             'tanggalList',
