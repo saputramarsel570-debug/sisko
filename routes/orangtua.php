@@ -13,6 +13,7 @@ use App\Http\Controllers\Orangtua\AbsensiController;
 use App\Http\Controllers\Orangtua\PengumumanController;
 use App\Http\Controllers\Orangtua\KeluhanController;
 use App\Http\Controllers\Orangtua\ProfileController;
+use App\Http\Controllers\Orangtua\JadwalEkskulController;
 
 Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->group(function ()
 {
@@ -30,6 +31,7 @@ Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->group(function
     Route::resource('/jadwal-pelajaran', JadwalPelajaranController::class, ['as' => 'orangtua']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'orangtua']);
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'orangtua']);
+    Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'orangtua']);
 });
 Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->name('orangtua.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
