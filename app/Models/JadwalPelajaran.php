@@ -34,4 +34,9 @@ class JadwalPelajaran extends Model
     {
         return $this->belongsTo(Guru::class, 'guru_id');
     }
+
+    public function getJamTextAttribute()
+{
+    return Carbon::parse($this->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($this->jam_selesai)->format('H:i');
+}
 }

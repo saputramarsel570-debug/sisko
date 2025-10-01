@@ -3,53 +3,70 @@
 @section('title', 'Halaman Kelola User')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            @if (session('success'))
-                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
-                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
-                    {{ session('success') }}
+<div class="row">
+    <div class="col-md-12">
+        @if (session('success'))
+            <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white rounded-top-4">
+                <h4 class="mb-0 fw-bold"><i class="ti ti-users"></i> Kelola User</h4>
+                <div>
+                    <a href="{{ route('admin.users.create') }}" class="btn btn-light btn-sm me-2">
+                        <i class="ti ti-plus"></i> Tambah
+                    </a>
+                    <a href="{{ route('admin.users.export') }}" class="btn btn-success btn-sm">
+                        <i class="ti ti-download"></i> Export
+                    </a>
                 </div>
-            @endif
-            <h3 class="page-title">Halaman Kelola User</h3>
+            </div>
 
-            <a href="{{ route('admin.users.create') }}" class="btn btn-primary my-3">
-                <span class="ti ti-plus me-1"></span>
-                Tambah
-            </a>
-
-            <a href="{{ route('admin.users.export') }}" class="btn btn-success my-3">
-                <i class="ti ti-download"></i> Export Users
-            </a>
-
-            <div class="card card-body">
-                <table class="table table-striped dataTable">
-                    <thead>
+            <div class="card-body">
+                <table class="table table-striped table-hover align-middle dataTable">
+                    <thead class="table-light">
                         <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Nama</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Aksi</th>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th width="200">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($users as $index => $user)
                             <tr>
-                                <th scope="row">{{ $index + 1 }}</th>
+                                <td>{{ $index + 1 }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td><span class="badge bg-info">{{ ucfirst($user->role) }}</span></td>
                                 <td>
-                                    <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-sm btn-primary" >
-                                        <span class="ti ti-eye"></span> Detail
+                                    @php
+                                        $badgeColors = [
+                                            'admin' => 'danger',
+                                            'guru' => 'success',
+                                            'siswa' => 'primary',
+                                            'orangtua' => 'warning'
+                                        ];
+                                    @endphp
+                                    <span class="badge bg-{{ $badgeColors[$user->role] ?? 'info' }}">
+                                        {{ ucfirst($user->role) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.users.show', $user->id) }}"
+                                       class="btn btn-sm btn-info">
+                                        <i class="ti ti-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">
-                                        <span class="ti ti-pencil"></span> Edit
+                                    <a href="{{ route('admin.users.edit', $user->id) }}"
+                                       class="btn btn-sm btn-warning">
+                                        <i class="ti ti-pencil"></i>
                                     </a>
                                     <a href="javascript:;" class="btn btn-sm btn-danger"
                                        onclick="actionDelete('{{ route('admin.users.destroy', $user->id) }}')">
-                                        <span class="ti ti-trash"></span> Hapus
+                                        <i class="ti ti-trash"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -63,10 +80,11 @@
             </div>
         </div>
     </div>
+</div>
 
 <form id="form-delete" action="" method="POST" class="d-none">
-        @csrf
-        @method('DELETE')
+    @csrf
+    @method('DELETE')
 </form>
 @endsection
 

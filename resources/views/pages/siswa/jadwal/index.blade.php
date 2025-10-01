@@ -7,6 +7,9 @@
     <div class="col-md-12">
         <h3 class="page-title mb-3">Jadwal Pelajaran</h3>
         <div class="card mb-4">
+            <a href="{{ route('admin.jadwal.export') }}" class="btn btn-success btn-sm me-2">
+                <i class="ti ti-download"></i> Export
+            </a>
             <div class="card-body">
                 <form method="GET" class="mb-0">
                     <div class="row g-2">

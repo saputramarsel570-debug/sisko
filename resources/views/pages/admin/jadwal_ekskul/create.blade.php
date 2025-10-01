@@ -5,14 +5,17 @@
 @section('content')
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <h3 class="page-title">Tambah Jadwal Ekskul</h3>
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-primary text-white rounded-top-4">
+                <h4 class="mb-0 fw-bold"><i class="ti ti-calendar-plus"></i> Tambah Jadwal Ekskul</h4>
+            </div>
 
-        <div class="card">
             <div class="card-body">
                 <form action="{{ route('admin.jadwal_ekskul.store') }}" method="POST">
                     @csrf
 
-                    <div class="form-group mb-3">
+                    {{-- Pilih Ekskul --}}
+                    <div class="mb-3">
                         <label for="ekstrakurikuler_id" class="form-label">Ekskul</label>
                         <select name="ekstrakurikuler_id" id="ekstrakurikuler_id"
                                 class="form-control @error('ekstrakurikuler_id') is-invalid @enderror" required>
@@ -28,7 +31,8 @@
                         @enderror
                     </div>
 
-                    <div class="form-group mb-3">
+                    {{-- Pilih Hari --}}
+                    <div class="mb-3">
                         <label class="form-label">Hari</label>
                         <div class="d-flex flex-wrap gap-3">
                             @foreach(['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'] as $hari)
@@ -50,13 +54,14 @@
                         @enderror
                     </div>
 
-                    <div class="flex mt-3">
-                        <button type="submit" class="btn btn-primary">
-                            <span class="ti ti-send me-1"></span> Simpan
-                        </button>
+                    {{-- Tombol Aksi --}}
+                    <div class="d-flex justify-content-between">
                         <a href="{{ route('admin.jadwal_ekskul.index') }}" class="btn btn-secondary">
-                            Batal
+                            <i class="ti ti-arrow-left"></i> Kembali
                         </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-device-floppy"></i> Simpan
+                        </button>
                     </div>
                 </form>
             </div>

@@ -3,60 +3,61 @@
 @section('title', 'Detail User')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <h3 class="page-title">Detail User</h3>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-info text-white rounded-top-4">
+                <h4 class="mb-0 fw-bold">
+                    <i class="ti ti-user"></i> Detail User
+                </h4>
+            </div>
 
-                <div class="card card-body p-0">
-                    <table class="table table-striped">
-                        <tr>
-                            <th width="25%">ID</th>
-                            <th width="10px">:</th>
-                            <td>{{ $user->id }}</td>
-                        </tr>
-                        <tr>
-                            <th width="25%">Username</th>
-                            <th width="10px">:</th>
-                            <td>{{ $user->username }}</td>
-                        </tr>
-                        <tr>
-                            <th width="25%">Name</th>
-                            <th width="10px">:</th>
-                            <td>{{ $user->name }}</td>
-                        </tr>
-                        <tr>
-                            <th width="25%">Email</th>
-                            <th width="10px">:</th>
-                            <td>{{ $user->email }}</td>
-                        </tr>
-                        <tr>
-                            <th width="25%">Role</th>
-                            <th width="10px">:</th>
-                            <td>{{ $user->role }}</td>
-                        </tr>
-                        <tr>
-                            <th width="25%">Terdaftar Pada</th>
-                            <th width="10px">:</th>
-                            <td>{{ $user->created_at->isoFormat('DD MMM Y HH:mm') }}</td>
-                        </tr>
-                        <tr>
-                            <th width="25%">Diperbarui Pada</th>
-                            <th width="10px">:</th>
-                            <td>{{ $user->updated_at->isoFormat('DD MMM Y HH:mm') }}</td>
-                        </tr>
-                    </table>
-                </div>
+            <div class="card-body">
+                <table class="table table-bordered mb-0">
+                    <tr>
+                        <th width="30%">ID</th>
+                        <td>{{ $user->id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Username</th>
+                        <td>{{ $user->username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nama</th>
+                        <td>{{ $user->name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ $user->email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Role</th>
+                        <td>
+                            <span class="badge bg-primary">
+                                {{ ucfirst($user->role) }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Terdaftar Pada</th>
+                        <td>{{ $user->created_at->isoFormat('DD MMM Y HH:mm') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Diperbarui Pada</th>
+                        <td>{{ $user->updated_at->isoFormat('DD MMM Y HH:mm') }}</td>
+                    </tr>
+                </table>
+            </div>
 
-                <div class="d-flex gap-2 mt-3">
-                    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
-                        <span class="ti ti-arrow-left me-1"></span>
-                        Kembali
-                    </a>
-                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-primary">
-                        <span class="ti ti-pencil me-1"></span>
-                        Edit
-                    </a>
-                </div>
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
+                    <i class="ti ti-arrow-left"></i> Kembali
+                </a>
+                <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning">
+                    <i class="ti ti-pencil"></i> Edit
+                </a>
+            </div>
         </div>
     </div>
+</div>
 @endsection

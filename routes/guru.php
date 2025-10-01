@@ -15,36 +15,23 @@ use App\Http\Controllers\Guru\ProfileController;
 use App\Http\Controllers\Guru\KeluhanController;
 use App\Http\Controllers\Guru\AbsensiController;
 
-
-Route::prefix('guru')->middleware(['auth', 'role:guru'])->group(function ()
-{
-    Route::resource('/guru', GuruController::class, ['as' => 'guru']);
-    Route::resource('/kelas', KelasController::class, ['as' => 'guru']);
-    Route::resource('/siswa', SiswaController::class, ['as' => 'guru']);
-    Route::resource('/orangtua', OrangtuaController::class, ['as' => 'guru']);
-    Route::resource('/jadwal', JadwalController::class, ['as' => 'guru']);
-    Route::resource('/jadwal-pelajaran', JadwalPelajaranController::class, ['as' => 'guru']);
-    Route::resource('/mapel', MataPelajaranController::class, ['as' => 'guru']);
-    Route::resource('/jurnal', JurnalController::class, ['as' => 'guru']);
-    Route::resource('/pengumuman', PengumumanController::class, ['as' => 'guru']);
-    Route::resource('/keluhan', KeluhanController::class, ['as' => 'guru']);
-    Route::resource('/absensi', AbsensiController::class, ['as' => 'guru']);
-
-    Route::get('/absensi/riwayat', [AbsensiController::class, 'show'])->name('guru.absensi.show');
-});
-
 Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\Guru\DashboardController::class, 'index'])->name('dashboard');
-});
+    Route::resource('/guru', GuruController::class);
+    Route::resource('/kelas', KelasController::class);
+    Route::resource('/siswa', SiswaController::class);
+    Route::resource('/orangtua', OrangtuaController::class);
+    Route::resource('/jadwal-pelajaran', JadwalPelajaranController::class);
+    Route::resource('/mapel', MataPelajaranController::class);
+    Route::resource('/jurnal', JurnalController::class);
+    Route::resource('/pengumuman', PengumumanController::class);
+    Route::resource('/keluhan', KeluhanController::class);
+    Route::resource('/absensi', AbsensiController::class);
 
-Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(function () {
+    Route::get('/absensi/riwayat', [AbsensiController::class, 'show'])->name('absensi.show');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
- });
-
- Route::middleware(['auth'])->prefix('guru')->name('guru.')->group(function () {
-    Route::resource('jurnal', JurnalController::class);
 });
-
- 

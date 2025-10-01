@@ -5,65 +5,83 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
+
+        {{-- Notifikasi sukses --}}
         @if (session('success'))
             <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
                 <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
                 {{ session('success') }}
             </div>
         @endif
-        <h3 class="page-title">Kelola Mata Pelajaran</h3>
 
-        <div class="d-flex justify-content-between align-items-center my-3">
-            <a href="{{ route('admin.mapel.create') }}" class="btn btn-primary">
-                <i class="ti ti-plus"></i> Tambah Mata Pelajaran
-            </a>
-            <a href="{{ route('admin.mapel.export') }}" class="btn btn-info ms-2">
-                <i class="ti ti-download"></i> Export
-            </a>
-            <div>
-                <form action="{{ route('admin.mapel.import') }}" method="POST" enctype="multipart/form-data" class="d-flex">
-                    @csrf
-                    <input type="file" name="file" class="form-control me-2" style="max-width: 250px;" required>
-                    <button class="btn btn-success" type="submit">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white rounded-top-4">
+                <h4 class="mb-0 fw-bold"><i class="ti ti-book"></i> Kelola Mata Pelajaran</h4>
+                <div>
+                    <a href="{{ route('admin.mapel.create') }}" class="btn btn-light btn-sm me-2">
+                        <i class="ti ti-plus"></i> Tambah Mapel
+                    </a>
+                    <a href="{{ route('admin.mapel.export') }}" class="btn btn-success btn-sm me-2">
+                        <i class="ti ti-download"></i> Export
+                    </a>
+                    <button class="btn btn-info btn-sm" data-bs-toggle="collapse" data-bs-target="#importForm">
                         <i class="ti ti-upload"></i> Import
                     </button>
-                </form>
+                </div>
             </div>
-        </div>
 
-        <div class="card card-body">
-            <table class="table table-striped dataTable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Kode Mapel</th>
-                        <th>Nama Mapel</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($mapel as $item)
+            <div class="card-body">
+                {{-- Form Import (collapsible) --}}
+                <div class="collapse mb-3" id="importForm">
+                    <div class="card card-body border rounded-3">
+                        <form action="{{ route('admin.mapel.import') }}" method="POST" enctype="multipart/form-data" class="row g-2 align-items-center">
+                            @csrf
+                            <div class="col">
+                                <input type="file" name="file" class="form-control" required>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-success" type="submit">
+                                    <i class="ti ti-upload"></i> Import
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {{-- Tabel Mata Pelajaran --}}
+                <table class="table table-striped table-hover align-middle dataTable">
+                    <thead class="table-light">
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode_mapel }}</td>
-                            <td>{{ $item->nama_mapel }}</td>
-                            <td>
-                                <a href="{{ route('admin.mapel.edit', $item->id) }}" class="btn btn-sm btn-warning">
-                                    <i class="ti ti-pencil"></i> Edit
-                                </a>
-                                <a href="javascript:;" class="btn btn-sm btn-danger"
-                                   onclick="actionDelete('{{ route('admin.mapel.destroy', $item->id) }}')">
-                                    <i class="ti ti-trash"></i> Hapus
-                                </a>
-                            </td>
+                            <th>No</th>
+                            <th>Kode Mapel</th>
+                            <th>Nama Mapel</th>
+                            <th width="180">Aksi</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center">Belum ada data mata pelajaran</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($mapel as $index => $item)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td><span class="badge bg-info">{{ $item->kode_mapel }}</span></td>
+                                <td>{{ $item->nama_mapel }}</td>
+                                <td>
+                                    <a href="{{ route('admin.mapel.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                                        <i class="ti ti-pencil"></i>
+                                    </a>
+                                    <a href="javascript:;" class="btn btn-sm btn-danger"
+                                       onclick="actionDelete('{{ route('admin.mapel.destroy', $item->id) }}')">
+                                        <i class="ti ti-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">Belum ada data mata pelajaran</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -75,44 +93,42 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
-<link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
-<link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 @endpush
 
 @push('scripts')
-<script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
-<script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-<script type="text/javascript">
-    $(function() {
-        $('.dataTable').DataTable();
-    });
-
-    function actionDelete(url) {
-        Swal.fire({
-            title: "Apakah kamu yakin?",
-            text: "Data yang dihapus tidak dapat dikembalikan!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Ya, hapus saja!",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#form-delete').attr('action', url);
-                $('#form-delete').submit();
-            }
+    <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+    <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('.dataTable').DataTable();
         });
-    }
 
-    setTimeout(function () {
-        let alert = document.getElementById('success');
-        if (alert) {
-
-            alert.style.transition = "opacity 0.5s ease";
-            alert.style.opacity = 0;
-
-            setTimeout(() => alert.remove(), 500);
+        function actionDelete(url) {
+            Swal.fire({
+                title : "Apakah kamu yakin?",
+                text : "Data yang dihapus tidak dapat dikembalikan!",
+                icon : "warning",
+                showCancelButton: true,
+                confirmButtonText : "Ya, hapus saja!",
+                cancelButtonText : "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#form-delete').attr('action', url);
+                    $('#form-delete').submit();
+                }
+            });
         }
-    }, 3000);
 
-</script>
+        setTimeout(function () {
+            let alert = document.getElementById('success');
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = 0;
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+    </script>
 @endpush

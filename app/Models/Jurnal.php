@@ -17,7 +17,7 @@ class Jurnal extends Model
         'jam_selesai',
         'guru_id',
         'kelas_id',
-        'mapel_id',
+        'mata_pelajaran_id',
         'materi',
         'catatan',
     ];
@@ -32,8 +32,13 @@ class Jurnal extends Model
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
-    public function mapel()
+    public function mataPelajaran()
     {
-        return $this->belongsTo(MataPelajaran::class, 'mapel_id');
+        return $this->belongsTo(MataPelajaran::class, 'mata_pelajaran_id');
+    }
+
+    public function getJamTextAttribute()
+    {
+        return "Jam {$this->jam_mulai}" . ($this->jam_mulai != $this->jam_selesai ? "-{$this->jam_selesai}" : "");
     }
 }

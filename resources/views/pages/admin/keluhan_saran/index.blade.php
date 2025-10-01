@@ -3,18 +3,25 @@
 @section('title', 'Kelola Keluhan & Saran')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            @if (session('success'))
-                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
-                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
-                    {{ session('success') }}
-                </div>
-            @endif
-            <h3 class="page-title">Kelola Keluhan & Saran</h3>
+<div class="row">
+    <div class="col-md-12">
 
-            <div class="card card-body table-responsive">
-                <table class="table table-bordered align-middle text-center">
+        {{-- Notifikasi sukses --}}
+        @if (session('success'))
+            <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white rounded-top-4">
+                <h4 class="mb-0 fw-bold"><i class="ti ti-message-2"></i> Kelola Keluhan & Saran</h4>
+            </div>
+
+            <div class="card-body">
+                {{-- Tabel Keluhan & Saran --}}
+                <table class="table table-striped table-hover align-middle dataTable">
                     <thead class="table-light">
                         <tr>
                             <th>No</th>
@@ -23,39 +30,43 @@
                             <th>Isi</th>
                             <th>Status</th>
                             <th>Dikirim</th>
-                            <th>Aksi</th>
+                            <th width="200">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($keluhanSaran as $index => $item)
-                        <tr>
-                            <td>{{ $index + $keluhanSaran->firstItem() }}</td>
-                            <td>{{ $item->user->name ?? '-' }}</td>
-                            <td><span class="badge bg-{{ $item->kategori == 'keluhan' ? 'danger' : 'info' }}">{{ ucfirst($item->kategori) }}</span></td>
-                            <td class="text-start">{{ Str::limit($item->isi, 50) }}</td>
-                            <td>
-                            @if ($item->status == 'pending')
-                                <span class="badge bg-secondary">Pending</span>
-                            @elseif ($item->status == 'proses')
-                                <span class="badge bg-warning text-dark">Proses</span>
-                            @else
-                                <span class="badge bg-success">Selesai</span>
-                            @endif
-                            </td>
-                            <td>{{ $item->created_at->format('d M Y H:i') }}</td>
-                            <td>
-                                <a href="{{ route('admin.keluhan_saran.show', $item->id) }}" class="btn btn-sm btn-info">
-                                    <i class="ti ti-eye"></i> Lihat
-                                </a>
-                                <a href="{{ route('admin.keluhan_saran.edit', $item->id) }}" class="btn btn-sm btn-warning">
-                                    <i class="ti ti-edit"></i> Edit
-                                </a>
-                                <a href="javascript:;" class="btn btn-sm btn-danger"
-                                   onclick="actionDelete('{{ route('admin.keluhan_saran.destroy', $item->id) }}')">
-                                    <i class="ti ti-trash"></i> Hapus
-                                </a>
-                            </td>
-                        </tr>
+                        @forelse($keluhanSaran as $index => $item)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $item->user->name ?? '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{{ $item->kategori == 'keluhan' ? 'danger' : 'info' }}">
+                                        {{ ucfirst($item->kategori) }}
+                                    </span>
+                                </td>
+                                <td class="text-start">{{ Str::limit($item->isi, 50) }}</td>
+                                <td>
+                                    @if ($item->status == 'pending')
+                                        <span class="badge bg-secondary">Pending</span>
+                                    @elseif ($item->status == 'proses')
+                                        <span class="badge bg-warning text-dark">Proses</span>
+                                    @else
+                                        <span class="badge bg-success">Selesai</span>
+                                    @endif
+                                </td>
+                                <td>{{ $item->created_at->format('d M Y H:i') }}</td>
+                                <td>
+                                    <a href="{{ route('admin.keluhan_saran.show', $item->id) }}" class="btn btn-sm btn-info">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                    <a href="{{ route('admin.keluhan_saran.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                                        <i class="ti ti-pencil"></i>
+                                    </a>
+                                    <a href="javascript:;" class="btn btn-sm btn-danger"
+                                       onclick="actionDelete('{{ route('admin.keluhan_saran.destroy', $item->id) }}')">
+                                        <i class="ti ti-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center text-muted">Belum ada keluhan atau saran.</td>
@@ -63,15 +74,18 @@
                         @endforelse
                     </tbody>
                 </table>
-                <div class="mt-3">
-                    {{ $keluhanSaran->links() }}
-                </div>
+            </div>
+
+            <div class="card-footer">
+                {{ $keluhanSaran->links() }}
             </div>
         </div>
     </div>
+</div>
+
 <form id="form-delete" action="" method="POST" class="d-none">
-        @csrf
-        @method('DELETE')
+    @csrf
+    @method('DELETE')
 </form>
 @endsection
 
@@ -94,7 +108,9 @@
             title : "Apakah kamu yakin?",
             text : "Data yang dihapus tidak dapat dikembalikan!",
             icon : "warning",
-            confirmButtonText : "Ya, hapus saja!"
+            showCancelButton: true,
+            confirmButtonText : "Ya, hapus saja!",
+            cancelButtonText : "Batal"
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#form-delete').attr('action', url);
@@ -106,13 +122,10 @@
     setTimeout(function () {
         let alert = document.getElementById('success');
         if (alert) {
-
             alert.style.transition = "opacity 0.5s ease";
             alert.style.opacity = 0;
-
             setTimeout(() => alert.remove(), 500);
         }
     }, 3000);
-
     </script>
 @endpush

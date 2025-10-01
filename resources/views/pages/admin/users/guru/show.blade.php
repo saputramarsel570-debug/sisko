@@ -5,17 +5,19 @@
 @section('content')
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <h3 class="page-title mb-3">Detail Guru</h3>
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-info text-white rounded-top-4">
+                <h4 class="mb-0 fw-bold"><i class="ti ti-user"></i> Detail Guru</h4>
+            </div>
 
-        <div class="card">
             <div class="card-body">
-                <table class="table table-borderless">
+                <table class="table table-bordered mb-0">
                     <tr>
-                        <th>ID</th>
+                        <th width="30%">ID</th>
                         <td>{{ $guru->id }}</td>
                     </tr>
                     <tr>
-                        <th>User_ID</th>
+                        <th>User ID</th>
                         <td>{{ $guru->user_id }}</td>
                     </tr>
                     <tr>
@@ -23,19 +25,19 @@
                         <td>{{ $guru->nip ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th style="width: 200px;">Nama</th>
+                        <th>Nama</th>
                         <td>{{ $guru->nama }}</td>
                     </tr>
                     <tr>
-                        <th>Mapel</th>
+                        <th>Mata Pelajaran</th>
                         <td>{{ $guru->mapel }}</td>
                     </tr>
                     <tr>
-                        <th>Dibuat pada</th>
+                        <th>Dibuat Pada</th>
                         <td>{{ $guru->created_at->format('d M Y H:i') }}</td>
                     </tr>
                     <tr>
-                        <th>Terakhir diperbarui</th>
+                        <th>Diperbarui Pada</th>
                         <td>{{ $guru->updated_at->format('d M Y H:i') }}</td>
                     </tr>
                     <tr>
@@ -48,15 +50,15 @@
                     </tr>
                 </table>
             </div>
-        </div>
 
-        <div class="mt-3">
-            <a href="{{ route('admin.guru.index') }}" class="btn btn-secondary">
-                <i class="ti ti-arrow-left"></i> Kembali
-            </a>
-            <a href="{{ route('admin.guru.edit', $guru->id) }}" class="btn btn-warning">
-                <i class="ti ti-pencil"></i> Edit
-            </a>
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{{ route('admin.guru.index') }}" class="btn btn-secondary">
+                    <i class="ti ti-arrow-left"></i> Kembali
+                </a>
+                <a href="{{ route('admin.guru.edit', $guru->id) }}" class="btn btn-warning text-white">
+                    <i class="ti ti-pencil"></i> Edit
+                </a>
+            </div>
         </div>
     </div>
 </div>
