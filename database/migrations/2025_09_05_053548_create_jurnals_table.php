@@ -6,28 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('jurnal', function (Blueprint $table) {
             $table->id();
             $table->date('tanggal');
+            $table->unsignedInteger('jam_mulai');
+            $table->unsignedInteger('jam_selesai');
             $table->foreignId('guru_id')->constrained('guru')->onDelete('cascade');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
-            $table->string('mapel', 64);
+            $table->foreignId('mapel_id')->constrained('mata_pelajaran')->onDelete('cascade');
             $table->text('materi');
             $table->text('catatan')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('jurnals');
+        Schema::dropIfExists('jurnal');
     }
 };

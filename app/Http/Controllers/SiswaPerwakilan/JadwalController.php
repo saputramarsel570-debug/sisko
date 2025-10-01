@@ -36,28 +36,6 @@ class JadwalController extends Controller
             }
         }
 
-        return view('pages.siswa_perwakilan.jadwal_ekskul.index', compact('kelasList', 'kelasId', 'jadwalByHari'));
-    }
-
-    public function show(JadwalEkskul $jadwal_ekskul)
-    {
-        $jadwal_ekskul->load('ekstrakurikuler');
-        return view('pages.siswa_perwakilan.jadwal_ekskul.show', compact('jadwal_ekskul'));
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'ekstrakurikuler_id' => 'required|exists:ekstrakurikuler,id',
-            'hari' => 'required|array|min:1',
-            'hari.*' => 'in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-        ]);
-
-        JadwalEkskul::create([
-            'ekstrakurikuler_id' => $request->ekstrakurikuler_id,
-            'hari' => $request->hari,
-        ]);
-
-        return redirect()->route('siswa_perwakilan.jadwal_ekskul.index');
+        return view('pages.siswa_perwakilan.jadwal.index', compact('kelasList', 'kelasId', 'jadwalByHari'));
     }
 }

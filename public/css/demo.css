@@ -127,3 +127,16 @@
   text-align: center;
   margin-top: 1rem;
 }
+.app-brand-logo.demo {
+  height: auto !important;
+  width: auto !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-brand-logo.demo img {
+  max-height: clamp(30px, 5vw, 50px);   /* ubah sesuai kebutuhan */
+  width: auto;
+  object-fit: contain;
+}

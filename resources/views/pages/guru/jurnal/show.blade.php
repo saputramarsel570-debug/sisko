@@ -1,45 +1,19 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Jurnal Guru')
-
 @section('content')
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Detail Jurnal Guru</h5>
-                <a href="{{ route('guru.jurnal.index') }}" class="btn btn-sm btn-secondary">
-                    <i class="ti ti-arrow-left"></i> Kembali
-                </a>
-            </div>
-            <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">Tanggal</dt>
-                    <dd class="col-sm-8">{{ \Carbon\Carbon::parse($jurnal->tanggal)->translatedFormat('l, d F Y') }}</dd>
+<div class="container">
+    <h3>Detail Jurnal</h3>
 
-                    <dt class="col-sm-4">Kelas</dt>
-                    <dd class="col-sm-8">{{ $jurnal->kelas->nama_kelas ?? '-' }}</dd>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Kelas:</strong> {{ $jurnal->kelas->nama_kelas }}</li>
+        <li class="list-group-item"><strong>Mapel:</strong> {{ $jurnal->mapel->nama_mapel }}</li>
+        <li class="list-group-item"><strong>Guru:</strong> {{ $jurnal->guru->nama }}</li>
+        <li class="list-group-item"><strong>Tanggal:</strong> {{ $jurnal->tanggal }}</li>
+        <li class="list-group-item"><strong>Jam:</strong> {{ $jurnal->jam_mulai }} - {{ $jurnal->jam_selesai }}</li>
+        <li class="list-group-item"><strong>Materi:</strong> {{ $jurnal->materi }}</li>
+        <li class="list-group-item"><strong>Catatan:</strong> {{ $jurnal->catatan }}</li>
+    </ul>
 
-                    <dt class="col-sm-4">Mata Pelajaran</dt>
-                    <dd class="col-sm-8">{{ $jurnal->mapel ?? '-' }}</dd>
-
-                    <dt class="col-sm-4">Materi</dt>
-                    <dd class="col-sm-8">{{ $jurnal->materi }}</dd>
-
-                    <dt class="col-sm-4">Catatan</dt>
-                    <dd class="col-sm-8">{{ $jurnal->catatan ?? '-' }}</dd>
-
-                    <dt class="col-sm-4">Guru Pembuat</dt>
-                    <dd class="col-sm-8">{{ $jurnal->guru->nama ?? '-' }}</dd>
-
-                    <dt class="col-sm-4">Dibuat pada</dt>
-                    <dd class="col-sm-8">{{ $jurnal->created_at->translatedFormat('d F Y H:i') }}</dd>
-
-                    <dt class="col-sm-4">Terakhir diupdate</dt>
-                    <dd class="col-sm-8">{{ $jurnal->updated_at->translatedFormat('d F Y H:i') }}</dd>
-                </dl>
-            </div>
-        </div>
-    </div>
+    <a href="{{ route('guru.jurnal.index') }}" class="btn btn-secondary mt-3">Kembali</a>
 </div>
 @endsection

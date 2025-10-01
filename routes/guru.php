@@ -43,4 +43,8 @@ Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(f
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
  });
 
+ Route::middleware(['auth'])->prefix('guru')->name('guru.')->group(function () {
+    Route::resource('jurnal', JurnalController::class);
+});
+
  
