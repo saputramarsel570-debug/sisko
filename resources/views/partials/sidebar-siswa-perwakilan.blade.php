@@ -39,24 +39,42 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
+      <li class="menu-header small text-uppercase">
+        <span class="menu-header-text">Main</span>
+        </li>
       <li class="menu-item {{ request()->routeIs('siswa_perwakilan.dashboard') ? 'active' : '' }}">
           <a href="{{ route('siswa_perwakilan.dashboard') }}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-home"></i>
               Dashboard
           </a>
       </li>
+      <li class="menu-header small text-uppercase">
+        <span class="menu-header-text">Data Master</span>
+        </li>
+        <li class="menu-item {{ request()->routeIs('siswa_perwakilan.absensi.*') ? 'active' : '' }}">
+          <a href="{{ route('siswa_perwakilan.absensi.index') }}" class="menu-link">
+            <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
+              Kelola Absensi Siswa
+          </a>
+       </li>
+      <li class="menu-header small text-uppercase">
+        <span class="menu-header-text">AKADEMIK</span>
+        </li>
       <li class="menu-item {{ request()->routeIs('siswa_perwakilan.jadwal.*') ? 'active' : '' }}">
         <a href="{{ route('siswa_perwakilan.jadwal.index') }}" class="menu-link">
           <i class="menu-icon tf-icons ti ti-calendar-event"></i>
             Jadwal Pelajaran
         </a>
      </li>
-     <li class="menu-item {{ request()->routeIs('siswa_perwakilan.absensi.*') ? 'active' : '' }}">
-        <a href="{{ route('siswa_perwakilan.absensi.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
-            Absensi Siswa
-        </a>
-     </li>
+     <li class="menu-item {{ request()->routeIs('siswa_perwakilan.jadwal_ekskul.*') ? 'active' : '' }}">
+      <a href="{{ route('siswa_perwakilan.jadwal_ekskul.index') }}" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-calendar"></i>
+          <span>Jadwal Ekskul</span>
+      </a>
+    </li>
+     <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">INFORMASI & KOMUNIKASI</span>
+      </li>
      <li class="menu-item {{ request()->routeIs('siswa_perwakilan.pengumuman.*') ? 'active' : '' }}">
       <a href="{{ route('siswa_perwakilan.pengumuman.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-news"></i>
@@ -69,11 +87,5 @@
         Keluhan & Saran
     </a>
    </li>
-   <li class="menu-item {{ request()->routeIs('siswa_perwakilan.jadwal_ekskul.*') ? 'active' : '' }}">
-    <a href="{{ route('siswa_perwakilan.jadwal_ekskul.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-calendar"></i>
-        <span>Jadwal Ekskul</span>
-    </a>
-  </li>
     </ul>
   </aside>

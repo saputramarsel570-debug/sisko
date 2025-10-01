@@ -3,28 +3,15 @@
 namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
-use App\Models\Siswa;
-use App\Models\Guru;
-use App\Models\Kelas;
-use App\Models\OrangTua;
-use App\Models\MataPelajaran;
-use App\Models\KeluhanSaran;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $totalSiswa = Siswa::count();
-        $totalGuru = Guru::count();
-        $totalKelas = Kelas::count();
-        $totalOrtu = OrangTua::count();
-        $totalMapel = MataPelajaran::count();
-        $totalKeluhan = KeluhanSaran::count();
+        $user = Auth::user();
+        $siswa = $user->siswa;
 
-        $kelasLabels = Kelas::pluck('nama_kelas');
-        $kelasCounts = Kelas::withCount('siswa')->pluck('siswa_count');
-
-        return view('pages.siswa.dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalOrtu', 'totalMapel', 'totalKeluhan', 'kelasLabels', 'kelasCounts'));
+        return view('pages.siswa.dashboard.index', compact('user', 'siswa'));
     }
 }

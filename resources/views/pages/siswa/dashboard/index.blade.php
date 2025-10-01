@@ -1,103 +1,64 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard Siswa')
 
 @section('content')
-    <div class="d-flex justify-content-center align-items-center">
-        <div class="container">
-            <h2 class="text-center mb-4 fw-bold">Dashboard Siswa</h2>
-            <div class="row g-4 justify-content-center">
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4">👋 Dashboard Siswa</h3>
 
-                <div class="col-md-3 col-sm-6">
-                    <div class="card shadow-lg border-0 text-center bg-primary text-white rounded-4">
-                        <div class="card-body py-4">
-                            <h6 class="fw-light">Total Siswa</h6>
-                            <h2 class="fw-bold">{{ $totalSiswa }}</h2>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="card shadow-lg border-0 text-center bg-primary text-white rounded-4">
-                        <div class="card-body py-4">
-                            <h6 class="fw-light">Total Guru</h6>
-                            <h2 class="fw-bold">{{ $totalGuru }}</h2>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="card shadow-lg border-0 text-center bg-primary text-white rounded-4">
-                        <div class="card-body py-4">
-                            <h6 class="fw-light">Total Kelas</h6>
-                            <h2 class="fw-bold">{{ $totalKelas }}</h2>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="card shadow-lg border-0 text-center bg-primary text-white rounded-4">
-                        <div class="card-body py-4">
-                            <h6 class="fw-light">Total Orang Tua</h6>
-                            <h2 class="fw-bold">{{ $totalOrtu }}</h2>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="card shadow-lg border-0 text-center bg-primary text-white rounded-4">
-                        <div class="card-body py-4">
-                            <h6 class="fw-light">Mata Pelajaran</h6>
-                            <h2 class="fw-bold">{{ $totalMapel }}</h2>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="card shadow-lg border-0 text-center bg-primary text-white rounded-4">
-                        <div class="card-body py-4">
-                            <h6 class="fw-light">Keluhan & Saran</h6>
-                            <h2 class="fw-bold">{{ $totalKeluhan }}</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card shadow-lg border-0 mt-5 rounded-4">
-                <div class="card-body">
-                    <h5 class="text-center mb-4 fw-bold">Statistik Siswa per Kelas</h5>
-                    <canvas id="siswaChart" height="120"></canvas>
-                </div>
-            </div>
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-gradient bg-primary text-white">
+            <h5 class="mb-0">Detail Siswa</h5>
+        </div>
+        <div class="card-body p-4">
+            <table class="table table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th width="200">NIS</th>
+                        <td>{{ $siswa->nis }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nama</th>
+                        <td>{{ $siswa->nama }}</td>
+                    </tr>
+                    <tr>
+                        <th>Kelas</th>
+                        <td>
+                            <span class="badge bg-success">
+                                {{ $siswa->kelas->nama_kelas ?? '-' }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Alamat</th>
+                        <td>{{ $siswa->alamat }}</td>
+                    </tr>
+                    <tr>
+                        <th>Username</th>
+                        <td>{{ $user->username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ $user->email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Role</th>
+                        <td>
+                            <span class="badge bg-info text-dark">
+                                {{ ucfirst($user->role) }}
+                            </span>
+                            <br>
+                            <small class="text-muted">
+                                @if($user->role == 'siswa')
+                                @elseif($user->role == 'guru')
+                                @elseif($user->role == 'orang_tua')
+                                @endif
+                            </small>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 @endsection
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const ctx = document.getElementById('siswaChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: @json($kelasLabels),
-            datasets: [{
-                label: 'Jumlah Siswa',
-                data: @json($kelasCounts),
-                backgroundColor: '#0d6efd',
-                borderRadius: 8,
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: { enabled: true }
-            },
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
-</script>
-@endpush

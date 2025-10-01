@@ -39,18 +39,35 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
-            <li class="menu-item {{ request()->routeIs('siswa.dashboard') ? 'active' : '' }}">
-                <a href="{{ route('siswa.dashboard') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-home"></i>
-                    Dashboard
-                </a>
+            <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Main</span>
             </li>
+            <li class="menu-item {{ request()->routeIs('siswa.dashboard') ? 'active' : '' }}">
+            <a href="{{ route('siswa.dashboard') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-home"></i>
+                <div>Dashboard</div>
+            </a>
+            </li>
+
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Akademik</span>
+              </li>
             <li class="menu-item {{ request()->routeIs('siswa.jadwal.*') ? 'active' : '' }}">
               <a href="{{ route('siswa.jadwal.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-calendar-event"></i>
                   Jadwal Pelajaran
               </a>
            </li>
+           <li class="menu-item {{ request()->routeIs('siswa.jadwal_ekskul.*') ? 'active' : '' }}">
+          <a href="{{ route('siswa.jadwal_ekskul.index') }}" class="menu-link">
+              <i class="menu-icon tf-icons ti ti-calendar"></i>
+              <span>Jadwal Ekskul</span>
+          </a>
+        </li>
+
+           <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Informasi & Komunikasi</span>
+            </li>
            <li class="menu-item {{ request()->routeIs('siswa.pengumuman.*') ? 'active' : '' }}">
             <a href="{{ route('siswa.pengumuman.index') }}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-news"></i>
@@ -63,11 +80,5 @@
               Keluhan & Saran
           </a>
          </li>
-         <li class="menu-item {{ request()->routeIs('siswa.jadwal_ekskul.*') ? 'active' : '' }}">
-          <a href="{{ route('siswa.jadwal_ekskul.index') }}" class="menu-link">
-              <i class="menu-icon tf-icons ti ti-calendar"></i>
-              <span>Jadwal Ekskul</span>
-          </a>
-        </li>
           </ul>
         </aside>

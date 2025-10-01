@@ -3,44 +3,24 @@
 @section('title', 'Detail Pengumuman')
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <h3 class="page-title">Detail Pengumuman</h3>
+<div class="row justify-content-center">
+    <div class="col-md-8">
 
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <tr>
-                        <th style="width: 200px">ID</th>
-                        <td>{{ $pengumuman->id }}</td>
-                    </tr>
-                    <tr>
-                        <th>Judul</th>
-                        <td>{{ $pengumuman->judul }}</td>
-                    </tr>
-                    <tr>
-                        <th>Isi</th>
-                        <td>{!! nl2br(e($pengumuman->isi)) !!}</td>
-                    </tr>
-                    <tr>
-                        <th>Dibuat Oleh</th>
-                        <td>{{ $pengumuman->user->name ?? 'Guru' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tanggal</th>
-                        <td>{{ $pengumuman->created_at->format('d-m-Y H:i') }}</td>
-                    </tr>
-                </table>
-
-                <div class="mt-3 d-flex justify-content-betwen">
-                    <a href="{{ route('siswa.pengumuman.index') }}" class="btn btn-primary">
-                        <span class="ti ti-arrow-left me-1"></span> 
-                        Kembali
-                    </a>
-                   
-                </div>
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+                <span class="badge bg-primary mb-2">Pengumuman</span>
+                <h2 class="fw-bold">{{ $pengumuman->judul }}</h2>
+                <p class="text-muted small">Diposting: {{ $pengumuman->created_at->format('d-m-Y H:i') }}</p>
+                <hr>
+                <p class="fs-5">{!! nl2br(e($pengumuman->isi)) !!}</p>
+            </div>
+            <div class="card-footer text-end">
+                <a href="{{ route('siswa.pengumuman.index') }}" class="btn btn-secondary">
+                    <i class="ti ti-arrow-left"></i> Kembali
+                </a>
             </div>
         </div>
+
     </div>
 </div>
 @endsection
