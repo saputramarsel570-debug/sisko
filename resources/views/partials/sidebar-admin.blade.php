@@ -110,10 +110,11 @@
                 <div>Rekap Absensi</div>
             </a>
             </li>
-            <li class="menu-item {{ request()->routeIs('admin.kalender_akademik.*') ? 'active' : '' }}">
-            <a href="{{ route('admin.kalender_akademik.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-calendar-event"></i>
-                <div>Kalender Akademik</div>
+
+            <li class="menu-item {{ request()->routeIs('admin.rekap.jurnal.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.rekap.jurnal.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-notebook"></i>
+                <div>Rekap Jurnal</div>
             </a>
             </li>
 

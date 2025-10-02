@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports\SiswaPerwakilan\JadwalPelajaranExport;
+namespace App\Exports\SiswaPerwakilan;
 
 use App\Models\JadwalPelajaran;
 use Maatwebsite\Excel\Concerns\FromCollection;
