@@ -21,6 +21,8 @@ use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
 {
+    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
+
     Route::resource('/users', UserController::class);
 
     Route::resource('/guru', GuruController::class);
@@ -55,7 +57,6 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
     Route::get('/siswa/export', [SiswaController::class, 'export'])->name('siswa.export');
 
-    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
 
     Route::get('/absensi/rekap', [AbsensiController::class, 'rekap'])->name('absensi.rekap');
 

@@ -17,17 +17,11 @@ use App\Http\Controllers\Siswa\ProfileController;
 use App\Http\Controllers\Siswa\JadwalEkskulController;
 
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
-{   
+{
     Route::resource('/jadwal', JadwalController::class, ['as' => 'siswa']);
-    Route::resource('/kelas', KelasController::class, ['as' => 'siswa']);
-    Route::resource('/guru', GuruController::class, ['as' => 'siswa']);
-    Route::resource('/orangtua', OrangtuaController::class, ['as' => 'siswa']);
-    Route::resource('/siswa', SiswaController::class, ['as' => 'siswa']);
-    Route::resource('/mapel', MataPelajaranController::class, ['as' => 'siswa']);
-    Route::resource('/jadwal-pelajaran', JadwalPelajaranController::class, ['as' => 'siswa']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa']);
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'siswa']);
-    Route::resource('/absensi', AbsensiController::class, ['as' => 'siswa']);
+
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'siswa']);
 });
 
@@ -39,4 +33,3 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->grou
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
  });
- 

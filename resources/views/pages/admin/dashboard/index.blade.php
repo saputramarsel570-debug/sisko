@@ -56,9 +56,9 @@
         <div class="col-md-4 col-sm-6">
             <div class="card shadow-sm border-0 text-center bg-purple text-white rounded-4">
                 <div class="card-body py-4">
-                    <i class="ti ti-message fs-1 mb-2"></i>
-                    <h6>Keluhan & Saran</h6>
-                    <h2 class="fw-bold">{{ $totalKeluhan }}</h2>
+                    <i class="ti ti-award fs-1 mb-2"></i>
+                    <h6>Total Ekskul</h6>
+                    <h2 class="fw-bold">{{ $totalEkstrakurikuler }}</h2>
                 </div>
             </div>
         </div>
@@ -85,11 +85,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-12">
-            <div class="card shadow-sm border-0 rounded-4 mt-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 rounded-4 h-80">
                 <div class="card-body">
                     <h5 class="text-center mb-4 fw-bold">Tren Keluhan / Saran</h5>
-                    <canvas id="keluhanChart" height="120"></canvas>
+                    <canvas id="keluhanChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 rounded-4 h-80">
+                <div class="card-body">
+                    <h5 class="text-center mb-4 fw-bold">Distribusi Guru per Mapel</h5>
+                    <canvas id="mapelChart" height="150"></canvas>
                 </div>
             </div>
         </div>
@@ -172,6 +180,30 @@
             plugins: {
                 legend: { position: 'bottom' },
                 tooltip: { enabled: true }
+            }
+        }
+    });
+
+    const mapelCtx = document.getElementById('mapelChart').getContext('2d');
+    new Chart(mapelCtx, {
+        type: 'bar',
+        data: {
+            labels: @json($mapelLabels),
+            datasets: [{
+                label: 'Jumlah Guru',
+                data: @json($mapelCounts),
+                backgroundColor: '#6610f2',
+                borderRadius: 8,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: { enabled: true },
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
             }
         }
     });

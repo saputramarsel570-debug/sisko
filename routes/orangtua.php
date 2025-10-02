@@ -21,14 +21,7 @@ Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->group(function
         Route::get('/dashboard', [App\Http\Controllers\Orangtua\DashboardController::class, 'index'])->name('dashboard');
     });
 
-    Route::resource('/jadwal', JadwalController::class, ['as' => 'orangtua']);
-    Route::resource('/guru', GuruController::class, ['as' => 'orangtua']);
-    Route::resource('/orangtua', OrangtuaController::class, ['as' => 'orangtua']);
-    Route::resource('/kelas', KelasController::class, ['as' => 'orangtua']);
-    Route::resource('/siswa', SiswaController::class, ['as' => 'orangtua']);
     Route::resource('/absensi', AbsensiController::class, ['as' => 'orangtua']);
-    Route::resource('/mapel', MataPelajaranController::class, ['as' => 'orangtua']);
-    Route::resource('/jadwal-pelajaran', JadwalPelajaranController::class, ['as' => 'orangtua']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'orangtua']);
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'orangtua']);
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'orangtua']);

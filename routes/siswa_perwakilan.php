@@ -21,15 +21,10 @@ Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])
 {
     Route::resource('/jadwal', JadwalController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/absensi', AbsensiController::class, ['as' => 'siswa_perwakilan']);
-    Route::resource('/guru', GuruController::class, ['as' => 'siswa_perwakilan']);
-    Route::resource('/orangtua', OrangtuaController::class, ['as' => 'siswa_perwakilan']);
-    Route::resource('/siswa', SiswaController::class, ['as' => 'siswa_perwakilan']);
-    Route::resource('/kelas', KelasController::class, ['as' => 'siswa_perwakilan']);
-    Route::resource('/mapel', MataPelajaranController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'siswa_perwakilan']);
-    Route::resource('/jadwal_pelajaran', JadwalPelajaranController::class, ['as' => 'siswa_perwakilan']);
+
 });
 Route::get('/absensi/rekap', [AbsensiController::class, 'rekap'])->name('siswa_perwakilan.absensi.rekap');
 Route::put('/absensi/update-bulk', [AbsensiController::class, 'updateBulk'])->name('siswa_perwakilan.absensi.update_bulk');
