@@ -11,18 +11,15 @@ use App\Exports\SiswaPerwakilan\JadwalPelajaranExport;
 
 class JadwalController extends Controller
 {
-    public function export()
+    public function export(Request $request)
     {
-       $kelasList = Kelas::all();
        $kelasId = $request->get('kelas_id');
-
        return Excel::download(new JadwalPelajaranExport($kelasId), 'jadwal-pelajaran.xlsx');
     }
 
     public function exportExcel($kelasId = null)
     {
-        $filename = 'jadwal-pelajaran.xlsx';
-        return Excel::download(new JadwalPelajaranExport($kelasId), $filename);
+        return Excel::download(new JadwalPelajaranExport($kelasId), 'jadwal-pelajaran.xlsx');
     }
 
     public function index(Request $request)

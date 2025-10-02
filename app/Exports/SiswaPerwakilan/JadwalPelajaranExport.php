@@ -6,8 +6,9 @@ use App\Models\JadwalPelajaran;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class JadwalPelajaranExport implements FromCollection, WithHeadings, WithMapping
+class JadwalPelajaranExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
 {
     protected $kelasId;
 
@@ -18,13 +19,9 @@ class JadwalPelajaranExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        $query = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'guru']);
-
-        if ($this->kelasId) {
-            $query->where('kelas_id', $this->kelasId);
-        }
-
-        return $query->get();
+        return JadwalPelajaran::with(['kelas', 'mataPelajaran', 'guru'])
+            ->when($this->kelasId, fn($q) => $q->where('kelas_id', $this->kelasId))
+            ->get();
     }
 
     public function map($jadwal): array
