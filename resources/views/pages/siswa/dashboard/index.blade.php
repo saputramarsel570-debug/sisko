@@ -38,10 +38,6 @@
                         <td>{{ $user->username }}</td>
                     </tr>
                     <tr>
-                        <th>Email</th>
-                        <td>{{ $user->email }}</td>
-                    </tr>
-                    <tr>
                         <th>Role</th>
                         <td>
                             <span class="badge bg-info text-dark">

@@ -6,12 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Models\JadwalPelajaran;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SiswaPerwakilan\JadwalPelajaranExport;
 
 class JadwalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function export()
+    {
+       $kelasList = Kelas::all();
+       $kelasId = $request->get('kelas_id');
+
+       return Excel::download(new JadwalPelajaranExport($kelasId), 'jadwal-pelajaran.xlsx');
+    }
+
+    public function exportExcel($kelasId = null)
+    {
+        $filename = 'jadwal-pelajaran.xlsx';
+        return Excel::download(new JadwalPelajaranExport($kelasId), $filename);
+    }
+
     public function index(Request $request)
     {
         $kelasList = Kelas::all();
