@@ -12,28 +12,27 @@ class RekapJurnalController extends Controller
 {
     public function index(Request $request)
     {
-        $tanggal = $request->get('tanggal', Carbon::today()->toDateString());
         $kelasId = $request->get('kelas_id');
+        $tanggal = $request->get('tanggal') ?? Carbon::today()->toDateString();
 
-        $kelasList = Kelas::all();
+        // daftar kelas untuk dropdown
+        $kelasList = Kelas::orderBy('nama_kelas')->get();
 
-        $jurnalQuery = Jurnal::with(['guru', 'kelas', 'mataPelajaran'])
-            ->whereDate('tanggal', $tanggal);
-
+        // query jurnal
+        $jurnals = collect();
         if ($kelasId) {
-            $jurnalQuery->where('kelas_id', $kelasId);
+            $jurnals = Jurnal::with(['guru', 'mataPelajaran', 'kelas'])
+                ->where('kelas_id', $kelasId)
+                ->whereDate('tanggal', $tanggal)
+                ->orderBy('jam_mulai')
+                ->get();
         }
 
-        $jurnal = $jurnalQuery
-            ->orderBy('kelas_id')
-            ->orderBy('jam_mulai')
-            ->get();
-
-        return view('pages.admin.rekap-jurnal.index', compact(
-            'jurnal',
-            'tanggal',
+        return view('pages.admin.jurnal.rekap', compact(
+            'kelasList',
             'kelasId',
-            'kelasList'
+            'tanggal',
+            'jurnals'
         ));
     }
 }
