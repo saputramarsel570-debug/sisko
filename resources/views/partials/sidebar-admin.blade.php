@@ -111,8 +111,8 @@
             </a>
             </li>
 
-            <li class="menu-item {{ request()->routeIs('admin.rekap.jurnal.*') ? 'active' : '' }}">
-            <a href="{{ route('admin.rekap.jurnal.index') }}" class="menu-link">
+            <li class="menu-item {{ request()->routeIs('admin.jurnal.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.jurnal.rekap') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-notebook"></i>
                 <div>Rekap Jurnal</div>
             </a>

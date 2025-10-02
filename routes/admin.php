@@ -71,7 +71,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class);
 
-    Route::get('/rekap-jurnal', [RekapJurnalController::class, 'index'])->name('rekap.jurnal.index');
+    Route::get('/jurnal/rekap', [RekapJurnalController::class, 'index'])->name('jurnal.rekap');
 });
 
 Route::prefix('admin/jadwal')->middleware(['auth', 'role:admin'])->name('admin.jadwal.')->group(function () {
