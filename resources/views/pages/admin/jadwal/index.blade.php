@@ -8,9 +8,9 @@
 
         {{-- Notifikasi sukses --}}
         @if (session('success'))
-            <div id="success" class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
-                <i class="ti ti-check me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                {{ session('success') }}
             </div>
         @endif
 
