@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app-orangtua')
 
 @section('title', 'Detail Pengumuman')
 
