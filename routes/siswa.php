@@ -15,6 +15,7 @@ use App\Http\Controllers\Siswa\AbsensiController;
 use App\Http\Controllers\Siswa\DashboardController;
 use App\Http\Controllers\Siswa\ProfileController;
 use App\Http\Controllers\Siswa\JadwalEkskulController;
+use App\Http\Controllers\Siswa\PengaturanSekolahController;
 
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
 {   
@@ -34,6 +35,11 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Siswa\DashboardController::class, 'index'])->name('dashboard');
 });
+
+Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->group(function () {
+    Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
+    });
+
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');

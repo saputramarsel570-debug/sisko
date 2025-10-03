@@ -14,6 +14,7 @@ use App\Http\Controllers\SiswaPerwakilan\JadwalPelajaranController;
 use App\Http\Controllers\SiswaPerwakilan\KeluhanController;
 use App\Http\Controllers\SiswaPerwakilan\DashboardController;
 use App\Http\Controllers\SiswaPerwakilan\ProfileController;
+use App\Http\Controllers\SiswaPerwakilan\PengaturanSekolahController;
 use App\Http\Controllers\SiswaPerwakilan\JadwalEkskulController;
 
 
@@ -33,6 +34,10 @@ Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])
 });
 Route::get('/absensi/rekap', [AbsensiController::class, 'rekap'])->name('siswa_perwakilan.absensi.rekap');
 Route::put('/absensi/update-bulk', [AbsensiController::class, 'updateBulk'])->name('siswa_perwakilan.absensi.update_bulk');
+
+Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->name('siswa_perwakilan.')->group(function () {
+Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
+});
 
 Route::get('/jadwal/export/{kelasId?}', [JadwalController::class, 'exportExcel'])
     ->name('siswa_perwakilan.jadwal.exportExcel');
