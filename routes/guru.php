@@ -14,6 +14,7 @@ use App\Http\Controllers\Guru\PengumumanController;
 use App\Http\Controllers\Guru\ProfileController;
 use App\Http\Controllers\Guru\KeluhanController;
 use App\Http\Controllers\Guru\AbsensiController;
+use App\Http\Controllers\Guru\PengaturanSekolahController;
 
 Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(function () {
     Route::resource('/guru', GuruController::class);
@@ -35,3 +36,6 @@ Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(f
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
 });
+Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(function () {
+    Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
+    });

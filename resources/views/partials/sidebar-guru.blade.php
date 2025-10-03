@@ -69,5 +69,11 @@
             Keluhan & Saran
         </a>
     </li>
+    <li class="menu-item {{ request()->routeIs('guru.pengaturan.*') ? 'active' : '' }}">
+      <a href="{{ route('guru.pengaturan.index') }}" class="menu-link">
+          <i class="menu-icon tf-icons ti ti-settings"></i>
+          <div>Pengaturan Sekolah</div>
+      </a>
+      </li>
           </ul>
         </aside>

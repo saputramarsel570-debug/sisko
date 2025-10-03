@@ -14,6 +14,7 @@ use App\Http\Controllers\Orangtua\PengumumanController;
 use App\Http\Controllers\Orangtua\KeluhanController;
 use App\Http\Controllers\Orangtua\ProfileController;
 use App\Http\Controllers\Orangtua\JadwalEkskulController;
+use App\Http\Controllers\Orangtua\PengaturanSekolahController;
 
 Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->group(function ()
 {
@@ -37,4 +38,10 @@ Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->name('orangtua
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
+
+    
  });
+
+ Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->name('orangtua.')->group(function () {
+    Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
+    });

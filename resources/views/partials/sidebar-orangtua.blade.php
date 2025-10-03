@@ -36,6 +36,7 @@
                   Absensi Siswa
               </a>
             </li>
+            
             <li class="menu-item {{ request()->routeIs('orangtua.jadwal_ekskul.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.jadwal_ekskul.index') }}" class="menu-link">
                   <i class="menu-icon tf-icons ti ti-calendar"></i>
@@ -57,5 +58,14 @@
                 Keluhan & Saran
               </a>
             </li>
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">DATA MASTER</span>
+              </li>
+            <li class="menu-item {{ request()->routeIs('orangtua.pengaturan.*') ? 'active' : '' }}">
+              <a href="{{ route('orangtua.pengaturan.index') }}" class="menu-link">
+                  <i class="menu-icon tf-icons ti ti-settings"></i>
+                  <div>Pengaturan Sekolah</div>
+              </a>
+              </li>
           </ul>
         </aside>
