@@ -11,10 +11,16 @@ class PengumumanController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $pengumuman = Pengumuman::whereIn('target', ['orangtua', 'semua'])->latest()->get();
-        return view('pages.orangtua.pengumuman.index', compact('pengumuman'));
-    }
+{
+    $pengumuman = Pengumuman::whereIn('target', ['semua', 'orangtua'])
+                    ->latest()
+                    ->get();
+
+    $featured = $pengumuman->first(); 
+    $others = $pengumuman->skip(1); 
+     
+    return view('pages.orangtua.pengumuman.index', compact('featured', 'others'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -40,7 +46,6 @@ class PengumumanController extends Controller
         $pengumuman = Pengumuman::findOrFail($id);
         return view('pages.orangtua.pengumuman.show', compact('pengumuman'));
     }
-
     /**
      * Show the form for editing the specified resource.
      */

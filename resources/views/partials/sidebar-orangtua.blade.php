@@ -18,18 +18,33 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Main</span>
+              </li>
             <li class="menu-item"><li class="menu-item {{ request()->routeIs('orangtua.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('orangtua.dashboard') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
                 </a>
             </li>
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">AKADEMIK</span>
+              </li>
             <li class="menu-item {{ request()->routeIs('orangtua.absensi.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.absensi.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
                   Absensi Siswa
               </a>
             </li>
+            <li class="menu-item {{ request()->routeIs('orangtua.jadwal_ekskul.*') ? 'active' : '' }}">
+              <a href="{{ route('orangtua.jadwal_ekskul.index') }}" class="menu-link">
+                  <i class="menu-icon tf-icons ti ti-calendar"></i>
+                  <span>Jadwal Ekskul</span>
+              </a>
+            </li>
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">INFORMASI & KOMUNIKASI</span>
+              </li>
             <li class="menu-item {{ request()->routeIs('orangtua.pengumuman.*') ? 'active' : '' }}">
               <a href="{{ route('orangtua.pengumuman.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-news"></i>
@@ -42,12 +57,5 @@
                 Keluhan & Saran
               </a>
             </li>
-            <li class="menu-item {{ request()->routeIs('orangtua.jadwal_ekskul.*') ? 'active' : '' }}">
-              <a href="{{ route('orangtua.jadwal_ekskul.index') }}" class="menu-link">
-                  <i class="menu-icon tf-icons ti ti-calendar"></i>
-                  <span>Jadwal Ekskul</span>
-              </a>
-            </li>
-            
           </ul>
         </aside>

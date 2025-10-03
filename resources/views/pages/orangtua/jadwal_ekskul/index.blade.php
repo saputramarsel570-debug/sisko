@@ -6,77 +6,84 @@
 <div class="row">
     <div class="col-md-12">
         @if (session('success'))
-            <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
-                <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
-                {{ session('success') }}
+            <div id="success" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                <i class="ti ti-check me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
-        <h3 class="page-title">Jadwal Ekskul</h3>
+        <h3 class="fw-bold text-black mb-3">
+            <i class="ti ti-calendar-event"></i> Kelola Jadwal Ekskul
+        </h3>
 
-        <div class="card card-body">
-            <table class="table table-striped dataTable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Ekskul</th>
-                        <th>Hari</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($jadwal as $item)
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <table class="table table-hover align-middle dataTable">
+                    <thead class="table-primary">
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->ekstrakurikuler->nama }}</td>
-                            <td>
-                                {{-- tampilkan array hari dengan implode --}}
-                                {{ is_array($item->hari) ? implode(', ', $item->hari) : $item->hari }}
-                            </td>
-                            <td>
-                                <a href="{{ route('orangtua.jadwal_ekskul.show', $item->id) }}" class="btn btn-sm btn-info">
-                                    <i class="ti ti-eye"></i> Detail
-                                </a>
-                            </td>
+                            <th>No</th>
+                            <th>Ekskul</th>
+                            <th>Hari</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center">Belum ada jadwal ekskul</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($jadwal as $item)
+                            <tr>
+                                <td class="fw-bold">{{ $loop->iteration }}</td>
+                                <td>
+                                    <i class="ti ti-users text-primary me-1"></i>
+                                    {{ $item->ekstrakurikuler->nama }}
+                                </td>
+                                <td>
+                                    @php
+                                        $hariList = is_array($item->hari) ? $item->hari : [$item->hari];
+                                    @endphp
+                                    @foreach($hariList as $h)
+                                        <span class="badge bg-info text-dark me-1 mb-1">{{ $h }}</span>
+                                    @endforeach
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ route('orangtua.jadwal_ekskul.show', $item->id) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="ti ti-eye"></i> Detail
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">
+                                    <i class="ti ti-info-circle"></i> Belum ada jadwal ekskul
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
-<form id="form-delete" action="" method="POST" class="d-none">
-    @csrf
-    @method('DELETE')
-</form>
 @endsection
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
 <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
-<link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f1f8ff !important;
+        transition: 0.2s;
+    }
+</style>
 @endpush
 
 @push('scripts')
 <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
-<script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-<script type="text/javascript">
+<script>
     $(function() {
-        $('.dataTable').DataTable();
+        $('.dataTable').DataTable({
+            pageLength: 5,
+            responsive: true,
+        });
     });
-
-    setTimeout(function () {
-        let alert = document.getElementById('success');
-        if (alert) {
-            alert.style.transition = "opacity 0.5s ease";
-            alert.style.opacity = 0;
-            setTimeout(() => alert.remove(), 500);
-        }
-    }, 3000);
 </script>
 @endpush
