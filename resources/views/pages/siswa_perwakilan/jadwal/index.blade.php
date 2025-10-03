@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app-siswa_perwakilan')
 
 @section('title', 'Jadwal Pelajaran')
 
@@ -20,13 +20,13 @@
                         </select>
                     </form>
                 </div>
-                <div class="mt-2 mt-md-0">
-                    <a 
-                        href="{{ route('siswa_perwakilan.jadwal.exportExcel', $kelasId ?? '') }}" 
-                        class="btn btn-success mb-3 {{ !$kelasId ? 'disabled' : '' }}">
-                        <i class="ti ti-file-spreadsheet"></i> Export Excel
+                @if($kelasId)
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="{{ route('jadwal.exportPdf', $kelasId) }}" target="_blank" class="btn btn-danger btn-sm">
+                        <i class="ti ti-file-pdf"></i> Export PDF
                     </a>
                 </div>
+            @endif
             </div>
 
             @if($kelasId)

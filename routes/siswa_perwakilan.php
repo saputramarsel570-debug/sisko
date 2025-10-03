@@ -39,8 +39,9 @@ Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])
 Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
 });
 
-Route::get('/jadwal/export/{kelasId?}', [JadwalController::class, 'exportExcel'])
-    ->name('siswa_perwakilan.jadwal.exportExcel');
+Route::get('/jadwal/export-pdf/{kelasId?}', [JadwalController::class, 'exportPdf'])
+    ->name('jadwal.exportPdf');
+
 Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->name('siswa_perwakilan.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\SiswaPerwakilan\DashboardController::class, 'index'])->name('dashboard');
 });

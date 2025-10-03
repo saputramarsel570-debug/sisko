@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app-guru')
 
 @section('title', 'Halaman Pengumuman Guru')
 

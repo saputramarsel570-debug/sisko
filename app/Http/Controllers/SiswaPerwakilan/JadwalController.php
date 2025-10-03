@@ -8,20 +8,40 @@ use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SiswaPerwakilan\JadwalPelajaranExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class JadwalController extends Controller
 {
-    public function export(Request $request)
+    public function exportPdf($kelasId = null)
     {
-       $kelasId = $request->get('kelas_id');
-       return Excel::download(new JadwalPelajaranExport($kelasId), 'jadwal-pelajaran.xlsx');
-    }
+        $hariList = ['Senin','Selasa','Rabu','Kamis','Jumat'];
+        $jadwalByHari = [];
 
-    public function exportExcel($kelasId = null)
-    {
-        return Excel::download(new JadwalPelajaranExport($kelasId), 'jadwal-pelajaran.xlsx');
-    }
+        foreach ($hariList as $hari) {
+            $jadwalByHari[$hari] = [];
+        }
 
+        $kelas = null;
+
+        if ($kelasId) {
+            $kelas = Kelas::find($kelasId);
+
+            $jadwal = JadwalPelajaran::with(['mataPelajaran', 'guru'])
+                ->where('kelas_id', $kelasId)
+                ->get();
+
+            foreach ($jadwal as $j) {
+                for ($i = $j->jam_mulai; $i <= $j->jam_selesai; $i++) {
+                    $jadwalByHari[$j->hari][$i] = $j;
+                }
+            }
+        }
+
+        $pdf = Pdf::loadView('exports.pdf', compact('jadwalByHari', 'kelas'))
+                ->setPaper('A4', 'landscape');
+        
+        return $pdf->download('jadwal-pelajaran.pdf');
+    }
     public function index(Request $request)
     {
         $kelasList = Kelas::all();

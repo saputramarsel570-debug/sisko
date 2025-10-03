@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app-siswa_perwakilan')
 
 @section('title', 'Detail Jadwal Ekskul')
 
