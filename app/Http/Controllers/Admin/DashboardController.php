@@ -10,7 +10,9 @@ use App\Models\OrangTua;
 use App\Models\MataPelajaran;
 use App\Models\KeluhanSaran;
 use App\Models\Absensi;
+use App\Models\Ekstrakurikuler;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -22,7 +24,7 @@ class DashboardController extends Controller
         $totalKelas = Kelas::count();
         $totalOrtu = OrangTua::count();
         $totalMapel = MataPelajaran::count();
-        $totalKeluhan = KeluhanSaran::count();
+        $totalEkstrakurikuler = Ekstrakurikuler::count();
 
         $kelasLabels = Kelas::pluck('nama_kelas');
         $kelasCounts = Kelas::withCount('siswa')->pluck('siswa_count');
@@ -62,6 +64,14 @@ class DashboardController extends Controller
         $keluhanLabels = $keluhanTren->pluck('kategori');
         $keluhanCounts = $keluhanTren->pluck('total');
 
-        return view('pages.admin.dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalOrtu', 'totalMapel', 'totalKeluhan', 'kelasLabels', 'kelasCounts', 'kelasAbsensiLabels', 'kelasAbsensiHadir', 'kelasAbsensiAlfa', 'keluhanLabels', 'keluhanCounts'));
+        $mapelDistribusi = Guru::select('mapel', DB::raw('COUNT(*) as total'))
+            ->groupBy('mapel')
+            ->orderByDesc('total')
+            ->get();
+
+        $mapelLabels = $mapelDistribusi->pluck('mapel');
+        $mapelCounts = $mapelDistribusi->pluck('total');
+
+        return view('pages.admin.dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalOrtu', 'totalMapel', 'totalEkstrakurikuler', 'kelasLabels', 'kelasCounts', 'kelasAbsensiLabels', 'kelasAbsensiHadir', 'kelasAbsensiAlfa', 'keluhanLabels', 'keluhanCounts', 'mapelLabels', 'mapelCounts'));
     }
 }

@@ -46,7 +46,6 @@ class AbsensiController extends Controller
                 $m = date('m', strtotime($bulan));
                 $y = date('Y', strtotime($bulan));
 
-                // generate full tanggal dalam bulan
                 $start = Carbon::createFromDate($y, $m, 1);
                 $end   = $start->copy()->endOfMonth();
                 $tanggalList = collect();
@@ -62,7 +61,6 @@ class AbsensiController extends Controller
                 $rekap[$a->siswa_id][(string)$a->tanggal] = $a;
             }
 
-            // hitung total H, S, I, A
             foreach ($siswaList as $s) {
                 $totalStatus[$s->id] = [
                     'hadir' => $absensi->where('siswa_id', $s->id)->where('status', 'hadir')->count(),

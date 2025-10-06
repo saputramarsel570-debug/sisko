@@ -36,6 +36,22 @@ Route::get('/notifications/read/{id}', function($id) {
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/siswa', function () {
+    return view('sis');
+})->name('siswa');
+
+Route::get('/guru', function () {
+    return view('gurr');
+})->name('guru');
+
+Route::get('/orangtua', function () {
+    return view('ortu');
+})->name('ortu');
+
+Route::get('/admin', function () {
+    return view('adm');
+})->name('admin');
+
 require __DIR__.'/auth.php';
 require __DIR__.'/siswa_perwakilan.php';
 require __DIR__.'/admin.php';

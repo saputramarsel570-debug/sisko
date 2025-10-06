@@ -5,8 +5,9 @@ namespace App\Exports;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class UserExport implements FromCollection, WithHeadings
+class UserExport implements FromCollection, WithHeadings, WithMapping
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -22,7 +23,7 @@ class UserExport implements FromCollection, WithHeadings
             'email_verified_at',
             'role',
             'created_at',
-            'updated_at'
+            'updated_at',
         )->get();
     }
 
@@ -37,7 +38,22 @@ class UserExport implements FromCollection, WithHeadings
             'Email Verified At',
             'Role',
             'Created At',
-            'Updated At'
+            'Updated At',
+        ];
+    }
+
+    public function map($user): array
+    {
+        return [
+            $user->id,
+            $user->username,
+            $user->name,
+            $user->email,
+            $user->profile_photo,
+            $user->email_verified_at,
+            $user->role,
+            $user->created_at ? $user->created_at->format('d-m-Y H:i') : null,
+            $user->updated_at ? $user->updated_at->format('d-m-Y H:i') : null,
         ];
     }
 }

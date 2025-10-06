@@ -2,56 +2,59 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>Aplikasi SISKO - Sistem Informasi Sekolah Online</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-gradient-to-br from-blue-600 via-sky-500 to-blue-300 text-gray-800">
 
   <!-- Navbar -->
-  <nav class="bg-white/20 backdrop-blur-md shadow-md p-4 flex justify-between items-center text-white">
-    <div class="flex items-center space-x-3">
-      <img src="{{ asset('img/Sisko0.jpg') }}" alt="Logo Sekolah" class="w-10 h-10 rounded-full object-cover shadow-md">
-      <h1 class="font-bold text-xl tracking-wide">SISKO</h1>
+  <nav class="bg-white/20 backdrop-blur-md shadow-md p-4 flex justify-center items-center text-white">
+    <div class="flex items-center justify-center space-x-3">
+      <h1 class="font-bold text-xl tracking-wide">Sistem Informasi Sekolah Online</h1>
     </div>
   </nav>
 
   <!-- Hero Section -->
-  <section class="flex-1 flex flex-col md:flex-row items-center justify-center px-6 md:px-16 py-16 gap-12">
+  <section class="flex-1 flex flex-col md:flex-row items-center justify-center px-4 sm:px-6 md:px-16 py-12 md:py-16 gap-8 md:gap-12 overflow-hidden">
 
-    <!-- Text -->
-    <div class="md:w-1/2 text-center md:text-left bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl animate-fadeInLeft">
-      <h2 class="text-4xl md:text-5xl font-extrabold text-blue-700 leading-tight animate-fadeInUp delay-200">
+    <!-- Ilustrasi -->
+    <div class="md:w-1/2 flex justify-center order-1 md:order-1 animate-fadeInLeft delay-800 mb-8 md:mb-0">
+      <img src="{{ asset('img/cuyy.png') }}" 
+           alt="Ilustrasi Sekolah" 
+           class="w-64 sm:w-72 md:w-80 lg:w-96 max-w-full h-auto drop-shadow-2xl animate-floating">
+    </div>
+    
+    <!-- Kotak Teks -->
+    <div class="md:w-1/2 text-center md:text-left bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-xl order-2 md:order-2 animate-fadeInRight">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-700 leading-tight animate-fadeInUp delay-200">
         Selamat Datang di <br>
-        <span class="text-sky-500">Sistem Informasi Sekolah Online</span>
+        <span class="text-sky-500">SISKO - Sistem Informasi Sekolah Online</span>
       </h2>
-      <p class="mt-5 text-gray-600 text-lg leading-relaxed animate-fadeInUp delay-400">
+      <p class="mt-5 text-gray-600 text-base sm:text-lg leading-relaxed animate-fadeInUp delay-400">
         Kelola data siswa, guru, dan kegiatan sekolah dengan mudah dalam satu platform modern.
       </p>
-      <div class="mt-8 flex justify-center md:justify-start gap-5 animate-fadeInUp delay-600">
+
+      <!-- Tombol -->
+      <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-4 animate-fadeInUp delay-600">
+        <!-- Tombol Login -->
         <a href="/login" 
-           class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition">
+           class="bg-gradient-to-r from-blue-600 to-sky-500 text-white px-7 py-3 rounded-full shadow-lg hover:shadow-blue-300 hover:scale-105 transition-all duration-300 font-semibold">
            Login Sekarang
         </a>
+        <!-- Tombol Pelajari -->
         <a href="{{ route('about') }}" 
-           class="bg-white border border-blue-600 text-blue-600 px-6 py-3 rounded-full shadow hover:bg-blue-50 transition">
+           class="bg-white text-blue-600 border-2 border-blue-500 px-7 py-3 rounded-full font-semibold shadow-md hover:bg-blue-50 hover:text-blue-700 hover:scale-105 transition-all duration-300">
            Pelajari
         </a>
       </div>
-    </div>
-
-    <!-- Ilustrasi -->
-    <div class="md:w-1/2 flex justify-center animate-fadeInRight delay-800">
-      <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" 
-           alt="Ilustrasi Sekolah" 
-           class="w-80 md:w-96 drop-shadow-2xl">
     </div>
 
   </section>
 
   <!-- Footer -->
   <footer class="bg-white/20 backdrop-blur-md text-white text-center py-5 mt-auto">
-    <p>&copy; Copyright © 2025. Created by Tamarog</p>
+    <p>Copyright &copy; {{ date('Y') }}. Created by Tamarog</p>
   </footer>
 
   <!-- Animasi halus -->
@@ -88,6 +91,15 @@
     @keyframes fadeInRight {
       from { opacity: 0; transform: translateX(20px); }
       to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Logo bergerak lembut */
+    @keyframes floating {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .animate-floating {
+      animation: floating 3s ease-in-out infinite;
     }
   </style>
 

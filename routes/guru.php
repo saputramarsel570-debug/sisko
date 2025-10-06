@@ -17,12 +17,7 @@ use App\Http\Controllers\Guru\AbsensiController;
 use App\Http\Controllers\Guru\PengaturanSekolahController;
 
 Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(function () {
-    Route::resource('/guru', GuruController::class);
-    Route::resource('/kelas', KelasController::class);
-    Route::resource('/siswa', SiswaController::class);
-    Route::resource('/orangtua', OrangtuaController::class);
-    Route::resource('/jadwal-pelajaran', JadwalPelajaranController::class);
-    Route::resource('/mapel', MataPelajaranController::class);
+
     Route::resource('/jurnal', JurnalController::class);
     Route::resource('/pengumuman', PengumumanController::class);
     Route::resource('/keluhan', KeluhanController::class);

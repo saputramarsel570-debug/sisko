@@ -35,7 +35,7 @@ class SiswaOrtuExport implements FromCollection, WithHeadings, WithMapping
 
     public function map($siswa): array
     {
-        $ortu = $siswa->orangTua->first(); // asumsi satu siswa satu ortu utama
+        $ortu = $siswa->orangTua->first();
 
         return [
             $siswa->nis,

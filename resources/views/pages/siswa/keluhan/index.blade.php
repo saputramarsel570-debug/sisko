@@ -19,6 +19,7 @@
             </a>
 
             <div class="card card-body">
+                <div class="table-responsive">
                 <table class="table table-striped dataTable">
                     <thead>
                         <tr>
@@ -67,6 +68,7 @@
                     </tbody>
                 </table>
             </div>
+            </div>
         </div>
     </div>
 
@@ -87,7 +89,9 @@
     <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script type='text/javascript'>
         $(function() {
-            $('.dataTable').DataTable();
+            $('.dataTable').DataTable({
+                responsive: true
+            })
         });
 
         function actionDelete(url) {

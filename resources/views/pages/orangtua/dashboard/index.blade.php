@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h3 class="fw-bold mb-4">👋 Dashboard Orangtua</h3>
+    <h3 class="fw-bold mb-4">Dashboard Orangtua</h3>
 
     <div class="card shadow-lg border-0 rounded-3">
         <div class="card-header bg-gradient bg-primary text-white">
@@ -24,14 +24,6 @@
                     <tr>
                         <th>Nama Siswa</th>
                         <td>{{ $orangtua->siswa->nama }}</td>
-                    </tr>
-                    <tr>
-                        <th>Kelas</th>
-                        <td>
-                            <span class="badge bg-success">
-                                {{ $siswa->kelas->nama_kelas ?? '-' }}
-                            </span>
-                        </td>
                     </tr>
                     <tr>
                     

@@ -21,13 +21,21 @@ use App\Models\KeluhanSaran;
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
 {
+    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
+
     Route::resource('/users', UserController::class);
 
+    Route::get('/guru/export', [GuruController::class, 'export'])->name('guru.export');
+
     Route::resource('/guru', GuruController::class);
+
+    Route::get('/siswa/export', [SiswaController::class, 'export'])->name('siswa.export');
 
     Route::resource('/siswa', SiswaController::class);
 
     Route::resource('/orangtua', OrangtuaController::class);
+
+    Route::get('/kelas/export', [KelasController::class, 'export'])->name('kelas.export');
 
     Route::resource('/kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
 
@@ -48,14 +56,6 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::get('/export', [JadwalPelajaranController::class, 'export'])->name('jadwal.export');
 
     Route::get('/mapel/export', [MataPelajaranController::class, 'export'])->name('mapel.export');
-
-    Route::get('/kelas/export', [KelasController::class, 'export'])->name('kelas.export');
-
-    Route::get('/guru/export', [GuruController::class, 'export'])->name('guru.export');
-
-    Route::get('/siswa/export', [SiswaController::class, 'export'])->name('siswa.export');
-
-    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
 
     Route::get('/absensi/rekap', [AbsensiController::class, 'rekap'])->name('absensi.rekap');
 

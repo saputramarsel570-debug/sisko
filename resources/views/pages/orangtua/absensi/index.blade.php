@@ -32,8 +32,9 @@
                 <button class="btn btn-primary" type="submit">Filter</button>
             </div>
         </form>
-
-        <table class="table table-bordered align-middle">
+        <div class="card card-body">
+            <div class="table-responsive">
+            <table class="table table-striped dataTable">
             <thead>
                 <tr>
                     <th>Nama Siswa</th>
@@ -69,7 +70,8 @@
                 @endforelse
             </tbody>
         </table>
-
+            </div>
+        </div>
     </div>
 </div>
 @endsection

@@ -2,7 +2,7 @@
           <div class="app-brand demo">
             <a href="{{ route('orangtua.dashboard') }}" class="app-brand-link">
                   <span class="app-brand-logo demo">
-                    <img src="{{ asset('/img/gambar.png') }}" alt="Logo SISKO">
+                    <img src="{{ asset('/img/BBB.png') }}" alt="Logo SISKO">
                   </span>
                 </svg>
               </span>
