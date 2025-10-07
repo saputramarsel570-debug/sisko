@@ -8,6 +8,7 @@ use App\Models\Jurnal;
 use App\Models\JadwalPelajaran;
 use App\Models\Kelas;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RekapJurnalController extends Controller
 {
@@ -98,4 +99,49 @@ class RekapJurnalController extends Controller
             'jamRanges'
         ));
     }
+    public function exportPdf(Request $request)
+    {
+        $kelasId = $request->kelas_id;
+        $tanggal = $request->tanggal ?? date('Y-m-d');
+
+        // ambil data yang sama seperti tampilan normal
+        $kelasList = Kelas::all();
+        $jadwalGabung = JadwalPelajaran::with(['mataPelajaran', 'guru'])
+            ->where('kelas_id', $kelasId)
+            ->get();
+
+        $jurnalHariIni = Jurnal::where('tanggal', $tanggal)
+                            ->where('kelas_id', $kelasId)
+                            ->get()
+                            ->keyBy(fn($item) => $item->jam_mulai.'-'.$item->jam_selesai);
+
+        // jam ranges (biar jam tampil sama kayak di index)
+        $jamRanges = [
+            1 => '07:00 - 07:45',
+            2 => '07:45 - 08:30',
+            3 => '08:30 - 09:15',
+            4 => '09:30 - 10:15',
+            5 => '10:15 - 11:00',
+            6 => '11:00 - 11:45',
+            7 => '12:30 - 13:15',
+            8 => '13:15 - 14:00',
+            9 => '14:00 - 14:45',
+            10 => '14:45 - 15:30',
+        ];
+
+        $data = [
+            'kelasList' => $kelasList,
+            'kelasId' => $kelasId,
+            'tanggal' => $tanggal,
+            'jadwalGabung' => $jadwalGabung,
+            'jurnalHariIni' => $jurnalHariIni,
+            'jamRanges' => $jamRanges,
+        ];
+
+        $pdf = Pdf::loadView('pages.admin.jurnal.rekap_pdf', $data)
+                ->setPaper('a4', 'portrait');
+
+        return $pdf->stream('Rekap_Jurnal_' . $tanggal . '.pdf');
+    }
 }
+

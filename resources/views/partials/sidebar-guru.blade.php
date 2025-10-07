@@ -2,7 +2,8 @@
           <div class="app-brand demo">
             <a href="{{ route('guru.dashboard') }}" class="app-brand-link">
               <span class="app-brand-logo demo">
-                <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <img src="{{ asset('/img/BBB.png') }}" alt="Logo SISKO">
+              </span>
                   <path
                     fill-rule="evenodd"
                     clip-rule="evenodd"
@@ -39,41 +40,53 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Main</span>
+              </li>
               <li class="menu-item {{ request()->routeIs('guru.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('guru.dashboard') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-home"></i>
                     Dashboard
                 </a>
             </li>
-            <li class="menu-item {{ request()->routeIs('guru.absensi.*') ? 'active' : '' }}">
-              <a href="{{ route('guru.absensi.index') }}" class="menu-link">
-                  <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
-                  Absensi Siswa
-              </a>
-          </li>
-          <li class="menu-item {{ request()->routeIs('guru.jurnal.*') ? 'active' : '' }}">
-            <a href="{{ route('guru.jurnal.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-home"></i>
-                Jurnal Guru
-            </a>
-        </li>
-        <li class="menu-item {{ request()->routeIs('guru.pengumuman.*') ? 'active' : '' }}">
-          <a href="{{ route('guru.pengumuman.index') }}" class="menu-link">
-            <i class="menu-icon tf-icons ti ti-news"></i>
-              Pengumuman Sekolah
-          </a>
-      </li>
-      <li class="menu-item {{ request()->routeIs('guru.keluhan.*') ? 'active' : '' }}">
-        <a href="{{ route('guru.keluhan.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-message"></i>
-            Keluhan & Saran
-        </a>
-    </li>
-    <li class="menu-item {{ request()->routeIs('guru.pengaturan.*') ? 'active' : '' }}">
-      <a href="{{ route('guru.pengaturan.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-settings"></i>
-          <div>Pengaturan Sekolah</div>
-      </a>
-      </li>
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">DATA MASTER</span>
+              </li>
+              <li class="menu-item {{ request()->routeIs('guru.pengaturan.*') ? 'active' : '' }}">
+                <a href="{{ route('guru.pengaturan.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-settings"></i>
+                    <div>Pengaturan Sekolah</div>
+                </a>
+                </li>
+                <li class="menu-header small text-uppercase">
+                  <span class="menu-header-text">AKADEMIK</span>
+                  </li>
+                  <li class="menu-item {{ request()->routeIs('guru.absensi.*') ? 'active' : '' }}">
+                    <a href="{{ route('guru.absensi.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
+                        Absensi Siswa
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('guru.jurnal.*') ? 'active' : '' }}">
+                  <a href="{{ route('guru.jurnal.index') }}" class="menu-link">
+                      <i class="menu-icon tf-icons ti ti-home"></i>
+                      Jurnal Guru
+                  </a>
+              </li>
+              <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">INFORMASI & KOMUNIKASI</span>
+                </li>
+                <li class="menu-item {{ request()->routeIs('guru.pengumuman.*') ? 'active' : '' }}">
+                  <a href="{{ route('guru.pengumuman.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-news"></i>
+                      Pengumuman Sekolah
+                  </a>
+              </li>
+              <li class="menu-item {{ request()->routeIs('guru.keluhan.*') ? 'active' : '' }}">
+                <a href="{{ route('guru.keluhan.index') }}" class="menu-link">
+                  <i class="menu-icon tf-icons ti ti-message"></i>
+                    Keluhan & Saran
+                </a>
+              </li>
           </ul>
         </aside>

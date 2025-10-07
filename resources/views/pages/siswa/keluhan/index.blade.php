@@ -67,7 +67,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
+                </div>
             </div>
         </div>
     </div>
@@ -89,9 +89,7 @@
     <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script type='text/javascript'>
         $(function() {
-            $('.dataTable').DataTable({
-                responsive: true
-            })
+            $('.dataTable').DataTable();
         });
 
         function actionDelete(url) {
@@ -112,13 +110,10 @@
         setTimeout(function () {
         let alert = document.getElementById('success');
         if (alert) {
-
             alert.style.transition = "opacity 0.5s ease";
             alert.style.opacity = 0;
-
             setTimeout(() => alert.remove(), 500);
         }
     }, 3000);
-
     </script>
 @endpush

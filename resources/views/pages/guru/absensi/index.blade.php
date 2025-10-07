@@ -3,25 +3,32 @@
 @section('title', 'Absensi Siswa - Hari Ini')
 
 @section('content')
-<div class="card shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Absensi Siswa - Hari Ini</h4>
+
+<div class="card shadow-sm border-0 rounded-4">
+    <!-- Header biru -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
+        <div>
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-calendar-check"></i> Absensi Siswa - Hari Ini
+            </h4>
+        </div>
         <div>
             <!-- Tombol Riwayat -->
-            <a href="{{ route('guru.absensi.show') }}" class="btn btn-secondary btn-sm">
+            <a href="{{ route('guru.absensi.show') }}" class="btn btn-light btn-sm text-primary fw-semibold">
                 <i class="bi bi-clock-history"></i> Riwayat
             </a>
         </div>
     </div>
+
     <div class="card-body">
 
         <!-- Filter Pilih Kelas -->
         <form method="GET" class="row g-2 mb-3">
             <div class="col-md-4">
-                <select name="kelas_id" class="form-control" onchange="this.form.submit()">
+                <select name="kelas_id" class="form-select" onchange="this.form.submit()">
                     <option value="">-- Pilih Kelas --</option>
                     @foreach($kelas as $k)
-                        <option value="{{ $k->id }}" {{ $selectedKelas == $k->id ? 'selected' : '' }}>
+                        <option value="{{ $k->ide }}" {{ $selectedKelas == $k->ide ? 'selected' : '' }}>
                             {{ $k->nama_kelas }}
                         </option>
                     @endforeach
@@ -31,7 +38,7 @@
 
         <!-- Tabel Absensi -->
         <table class="table table-bordered align-middle">
-            <thead>
+            <thead class="table-primary">
                 <tr>
                     <th>Nama Siswa</th>
                     <th>Tanggal</th>
@@ -61,7 +68,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted">
+                        <td colspan="5" class="text-center text-muted py-4">
                             Belum ada data absensi hari ini
                         </td>
                     </tr>
@@ -71,20 +78,21 @@
 
     </div>
 </div>
+
 @endsection
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+<link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
+<link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+<link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
-    <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-    <script type="text/javascript">
-    $(function() {
-        $('.dataTable').DataTable();
-    });
-    </script>
+<script src="{{ asset('/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+<script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+<script type="text/javascript">
+$(function() {
+    $('.dataTable').DataTable();
+});
+</script>
 @endpush

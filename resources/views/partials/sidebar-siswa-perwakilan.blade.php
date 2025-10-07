@@ -2,7 +2,8 @@
     <div class="app-brand demo">
       <a href="{{ route('siswa_perwakilan.dashboard') }}" class="app-brand-link">
         <span class="app-brand-logo demo">
-          <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <img src="{{ asset('/img/BBB.png') }}" alt="Logo SISKO">
+        </span>
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"

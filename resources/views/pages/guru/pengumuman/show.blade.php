@@ -3,45 +3,47 @@
 @section('title', 'Detail Pengumuman')
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <h3 class="page-title">Detail Pengumuman</h3>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
+                <h4 class="mb-0"><i class="ti ti-bell me-2"></i> Detail Pengumuman</h4>
+            </div>
 
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <tr>
-                        <th style="width: 200px">ID</th>
-                        <td>{{ $pengumuman->id }}</td>
-                    </tr>
-                    <tr>
-                        <th>Judul</th>
-                        <td>{{ $pengumuman->judul }}</td>
-                    </tr>
-                    <tr>
-                        <th>Isi</th>
-                        <td>{!! nl2br(e($pengumuman->isi)) !!}</td>
-                    </tr>
-                    <tr>
-                        <th>Dibuat Oleh</th>
-                        <td>{{ $pengumuman->user->name ?? 'Guru' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tanggal</th>
-                        <td>{{ $pengumuman->created_at->format('d-m-Y H:i') }}</td>
-                    </tr>
-                </table>
+            <div class="card-body bg-light rounded-bottom-4">
+                <div class="mb-3">
+                    <h6 class="text-primary fw-semibold mb-1">Judul</h6>
+                    <div class="p-3 bg-white rounded shadow-sm border">
+                        {{ $pengumuman->judul }}
+                    </div>
+                </div>
 
-                <div class="mt-3 d-flex justify-content-betwen">
-                    <a href="{{ route('guru.pengumuman.index') }}" class="btn btn-primary">
-                        <span class="ti ti-arrow-left me-1"></span> 
-                        Kembali
+                <div class="mb-3">
+                    <h6 class="text-primary fw-semibold mb-1">Isi</h6>
+                    <div class="p-3 bg-white rounded shadow-sm border" style="min-height: 100px;">
+                        {!! nl2br(e($pengumuman->isi)) !!}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <h6 class="text-primary fw-semibold mb-1">Dibuat Oleh</h6>
+                        <div class="p-3 bg-white rounded shadow-sm border">
+                            {{ $pengumuman->user->name ?? 'Guru' }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary fw-semibold mb-1">Tanggal</h6>
+                        <div class="p-3 bg-white rounded shadow-sm border">
+                            {{ $pengumuman->created_at->format('d-m-Y H:i') }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <a href="{{ route('guru.pengumuman.index') }}" class="btn btn-primary px-4 rounded-3 shadow-sm">
+                        <i class="ti ti-arrow-left me-1"></i> Kembali
                     </a>
-                    <a href="{{ route('guru.pengumuman.edit', $pengumuman->id) }}" class="btn btn-warning">
-                        <span class="ti ti-pencil me-1"></span> 
-                        Edit
-                    </a>
-                   
                 </div>
             </div>
         </div>

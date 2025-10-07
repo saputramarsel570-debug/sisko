@@ -24,9 +24,11 @@
         </div>
 
         <!-- Card Jurnal -->
-        <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header bg-info text-white rounded-top-4">
-                <h5 class="mb-0">Jurnal Hari Ini ({{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, d M Y') }})</h5>
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    Jurnal Hari Ini ({{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, d M Y') }})
+                </h5>
             </div>
 
             <form action="{{ route('guru.jurnal.store') }}" method="POST">

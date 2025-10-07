@@ -23,7 +23,7 @@
                 @if($kelasId)
                 <div class="d-flex justify-content-end mb-3">
                     <a href="{{ route('jadwal.exportPdf', $kelasId) }}" target="_blank" class="btn btn-danger btn-sm">
-                        <i class="ti ti-file-pdf"></i> Export PDF
+                        <i class="ti ti-file-type-pdf"></i> Export PDF
                     </a>
                 </div>
             @endif

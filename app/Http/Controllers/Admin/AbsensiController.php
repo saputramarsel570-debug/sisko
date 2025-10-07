@@ -10,6 +10,7 @@ use App\Models\Kelas;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapAbsensiExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AbsensiController extends Controller
 {
@@ -93,5 +94,39 @@ class AbsensiController extends Controller
             $request->tanggal,
             $request->bulan
         ), 'rekap_absensi_'.now()->format('Ymd_His').'.xlsx');
+    }
+    public function exportPdf(Request $request)
+    {
+        $kelasId = $request->kelas_id;
+        $periode = $request->periode;
+        $bulan   = $request->bulan;
+        $tanggal = now()->toDateString();
+
+        $kelas = \App\Models\Kelas::findOrFail($kelasId);
+        $siswaList = \App\Models\Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
+        $absensiQuery = \App\Models\Absensi::where('kelas_id', $kelasId);
+
+        if ($periode === 'hari') {
+            $absensiQuery->whereDate('tanggal', $tanggal);
+        } elseif ($periode === 'bulan' && $bulan) {
+            $m = date('m', strtotime($bulan));
+            $y = date('Y', strtotime($bulan));
+            $absensiQuery->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
+        }
+
+        $absensi = $absensiQuery->orderBy('tanggal')->get();
+
+        $data = [
+            'kelas' => $kelas,
+            'siswaList' => $siswaList,
+            'absensi' => $absensi,
+            'periode' => $periode,
+            'bulan' => $bulan,
+            'tanggal' => $tanggal,
+        ];
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pages.admin.absensi.pdf', $data)
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('Rekap-Absensi-' . $kelas->nama_kelas . '.pdf');
     }
 }

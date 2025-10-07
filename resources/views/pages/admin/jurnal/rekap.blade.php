@@ -32,6 +32,12 @@
                         <i class="ti ti-search"></i> Tampilkan
                     </button>
                 </div>
+                <div class="col-md-3">
+                    <a href="{{ route('admin.jurnal.rekap.export', ['kelas_id' => $kelasId, 'tanggal' => $tanggal]) }}" 
+                       class="btn btn-danger w-100 shadow-sm" target="_blank">
+                        <i class="ti ti-file-type-pdf"></i> Export PDF
+                    </a>
+                </div>
             </form>
 
             <!-- Tabel Rekap -->

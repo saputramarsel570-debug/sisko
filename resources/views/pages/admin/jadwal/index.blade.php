@@ -39,6 +39,9 @@
                         <a href="{{ route('admin.jadwal.edit', $kelasId) }}" class="btn btn-light btn-sm me-2">
                             <i class="ti ti-pencil"></i> Edit Jadwal
                         </a>
+                        <a href="{{ route('jadwal.exportPdf', $kelasId) }}" target="_blank" class="btn btn-danger btn-sm">
+                            <i class="ti ti-file-type-pdf"></i> Export PDF
+                        </a>
                         <a href="{{ route('admin.jadwal.export') }}" class="btn btn-success btn-sm me-2">
                             <i class="ti ti-download"></i> Export
                         </a>

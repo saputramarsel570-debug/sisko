@@ -86,6 +86,15 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::put('/pengaturan/{id}', [PengaturanSekolahController::class, 'update'])->name('pengaturan.update');
 });
 
+Route::get('/jadwal/export-pdf/{kelasId?}', [JadwalController::class, 'exportPdf'])
+    ->name('jadwal.exportPdf');
+
+Route::get('/admin/jurnal/rekap/export-pdf', [RekapJurnalController::class, 'exportPdf'])
+    ->name('admin.jurnal.rekap.export');
+
+Route::get('/absensi/export-pdf', [AbsensiController::class, 'exportPdf'])
+    ->name('admin.absensi.exportPdf');
+
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 });

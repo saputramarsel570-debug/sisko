@@ -32,7 +32,7 @@
         <span class="text-sky-500">SISKO - Sistem Informasi Sekolah Online</span>
       </h2>
       <p class="mt-5 text-gray-600 text-base sm:text-lg leading-relaxed animate-fadeInUp delay-400">
-        Kelola data siswa, guru, dan kegiatan sekolah dengan mudah dalam satu platform modern.
+        Kelola data siswa, guru, orang tua, dan kegiatan sekolah dengan mudah dalam satu platform modern.
       </p>
 
       <!-- Tombol -->

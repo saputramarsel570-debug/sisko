@@ -19,6 +19,7 @@
             </a>
 
             <div class="card card-body">
+                <div class="table-responsive">
                 <table class="table table-striped dataTable">
                     <thead>
                         <tr>

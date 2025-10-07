@@ -8,6 +8,7 @@ use App\Models\Absensi;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AbsensiController extends Controller
 {
@@ -184,30 +185,65 @@ class AbsensiController extends Controller
 
     // Update banyak langsung di tabel harian
     public function updateBulk(Request $request)
-{
-    $kelasId = $request->kelas_id;
-    $tanggal = $request->tanggal;
-    $absensiData = $request->absensi ?? [];
+    {
+        $kelasId = $request->kelas_id;
+        $tanggal = $request->tanggal;
+        $absensiData = $request->absensi ?? [];
 
-    foreach ($absensiData as $siswaId => $data) {
-        \App\Models\Absensi::updateOrCreate(
-            [
-                'siswa_id' => $siswaId,
+        foreach ($absensiData as $siswaId => $data) {
+            \App\Models\Absensi::updateOrCreate(
+                [
+                    'siswa_id' => $siswaId,
+                    'tanggal' => $tanggal,
+                ],
+                [
+                    'status' => $data['status'] ?? null,
+                    'keterangan' => $data['keterangan'] ?? null,
+                ]
+            );
+        }
+
+        return redirect()
+            ->route('siswa_perwakilan.absensi.rekap', [
+                'kelas_id' => $kelasId,
+                'periode' => 'hari',
                 'tanggal' => $tanggal,
-            ],
-            [
-                'status' => $data['status'] ?? null,
-                'keterangan' => $data['keterangan'] ?? null,
-            ]
-        );
+            ])
+            ->with('success', 'Absensi telah diubah ✅');
     }
 
-    return redirect()
-        ->route('siswa_perwakilan.absensi.rekap', [
-            'kelas_id' => $kelasId,
-            'periode' => 'hari',
+     public function exportPdf(Request $request)
+    {
+        $kelasId = $request->kelas_id;
+        $periode = $request->periode;
+        $bulan   = $request->bulan;
+        $tanggal = now()->toDateString();
+
+        $kelas = \App\Models\Kelas::findOrFail($kelasId);
+        $siswaList = \App\Models\Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
+        $absensiQuery = \App\Models\Absensi::where('kelas_id', $kelasId);
+
+        if ($periode === 'hari') {
+            $absensiQuery->whereDate('tanggal', $tanggal);
+        } elseif ($periode === 'bulan' && $bulan) {
+            $m = date('m', strtotime($bulan));
+            $y = date('Y', strtotime($bulan));
+            $absensiQuery->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
+        }
+
+        $absensi = $absensiQuery->orderBy('tanggal')->get();
+
+        $data = [
+            'kelas' => $kelas,
+            'siswaList' => $siswaList,
+            'absensi' => $absensi,
+            'periode' => $periode,
+            'bulan' => $bulan,
             'tanggal' => $tanggal,
-        ])
-        ->with('success', 'Absensi telah diubah ✅');
-}
+        ];
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pages.siswa_perwakilan.absensi.pdf', $data)
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('Rekap-Absensi-' . $kelas->nama_kelas . '.pdf');
+    }
 }

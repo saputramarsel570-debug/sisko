@@ -20,6 +20,8 @@ use App\Http\Controllers\SiswaPerwakilan\JadwalEkskulController;
 
 Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->group(function ()
 {
+    Route::get('/absensi/export-pdf', [AbsensiController::class, 'exportPdf'])
+        ->name('siswa_perwakilan.absensi.exportPdf');
     Route::resource('/jadwal', JadwalController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/absensi', AbsensiController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa_perwakilan']);
@@ -36,6 +38,9 @@ Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('
 
 Route::get('/jadwal/export-pdf/{kelasId?}', [JadwalController::class, 'exportPdf'])
     ->name('jadwal.exportPdf');
+
+Route::get('/absensi/export-pdf', [AbsensiController::class, 'exportPdf'])
+    ->name('siswa_perwakilan.absensi.exportPdf');
 
 Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->name('siswa_perwakilan.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\SiswaPerwakilan\DashboardController::class, 'index'])->name('dashboard');

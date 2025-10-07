@@ -43,16 +43,38 @@
             </form>
 
             @if(!empty($kelasId))
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0">
-                        <strong>Kelas:</strong> {{ optional($kelasList->firstWhere('id', $kelasId))->nama_kelas ?? '-' }}
-                    </h6>
-                    <a href="{{ route('admin.absensi.export', ['kelas_id'=>$kelasId, 'periode'=>$periode, 'tanggal'=>$tanggal, 'bulan'=>$bulan]) }}"
-                       class="btn btn-success btn-sm shadow-sm">
-                        <i class="ti ti-file-export"></i> Export Excel
-                    </a>
-                </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <h6 class="mb-2 mb-md-0">
+                    <strong>Kelas:</strong> {{ optional($kelasList->firstWhere('id', $kelasId))->nama_kelas ?? '-' }}
+                </h6>
 
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <!-- Tombol Export Excel -->
+                    <a href="{{ route('admin.absensi.export', [
+                        'kelas_id' => $kelasId,
+                        'periode' => $periode,
+                        'tanggal' => $tanggal,
+                        'bulan' => $bulan
+                    ]) }}" 
+                    class="btn btn-success btn-sm shadow-sm d-flex align-items-center gap-1">
+                        <i class="ti ti-file-spreadsheet"></i> 
+                        <span>Excel</span>
+                    </a>
+
+                    <!-- Tombol Export PDF (muncul hanya saat bulanan) -->
+                    @if(($periode ?? '') === 'bulan')
+                    <a href="{{ route('admin.absensi.exportPdf', [
+                        'kelas_id' => $kelasId,
+                        'periode' => $periode,
+                        'bulan' => $bulan
+                    ]) }}" 
+                    class="btn btn-danger btn-sm shadow-sm d-flex align-items-center gap-1" target="_blank">
+                        <i class="ti ti-file-type-pdf"></i> 
+                        <span>PDF</span>
+                    </a>
+                    @endif
+                </div>
+            </div>
                 @if($tanggalList->isEmpty())
                     <div class="alert alert-warning text-center rounded-3 shadow-sm">
                         <i class="ti ti-alert-circle"></i> Tidak ada data absensi untuk filter yang dipilih.
