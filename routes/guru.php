@@ -15,6 +15,7 @@ use App\Http\Controllers\Guru\ProfileController;
 use App\Http\Controllers\Guru\KeluhanController;
 use App\Http\Controllers\Guru\AbsensiController;
 use App\Http\Controllers\Guru\PengaturanSekolahController;
+use App\Http\Controllers\NotificationsController;
 
 Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(function () {
 
@@ -23,10 +24,15 @@ Route::prefix('guru')->middleware(['auth', 'role:guru'])->name('guru.')->group(f
     Route::resource('/keluhan', KeluhanController::class);
     Route::resource('/absensi', AbsensiController::class);
 
+    Route::post('/guru/keluhan/{id}/balas', [App\Http\Controllers\Guru\KeluhanController::class, 'updateBalasan'])
+        ->name('guru.keluhan.balas');
+
+    Route::get('/notifications/{id}/read', [NotificationsController::class, 'read'])->name('notifications.read');
+    
+
     Route::get('/absensi/riwayat', [AbsensiController::class, 'show'])->name('absensi.show');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Profile routes
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');

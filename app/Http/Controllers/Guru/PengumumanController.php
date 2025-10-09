@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pengumuman;
+use App\Models\User;
 
 class PengumumanController extends Controller
 {
@@ -29,21 +30,38 @@ class PengumumanController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'judul'  => 'required|string|max:255',
-        'isi'    => 'required|string',
-        'target' => 'required|in:siswa,orangtua,semua',
-    ]);
+    {
+        $validated = $request->validate([
+            'judul'  => 'required|string|max:255',
+            'isi'    => 'required|string',
+            'target' => 'required|in:siswa,orangtua,semua',
+        ]);
 
-    $validated['dibuat_oleh'] = auth()->id();
+        $validated['dibuat_oleh'] = auth()->id();
 
-    Pengumuman::create($validated);
+        $pengumuman = Pengumuman::create($validated);
+        $targetUsers = collect();
 
-    return redirect()
-        ->route('guru.pengumuman.index')
-        ->with('success', 'Pengumuman terbaru berhasil dikirim');
-}
+        if ($validated['target'] === 'siswa') {
+            $targetUsers = User::whereIn('role', ['siswa', 'siswa_perwakilan', 'orangtua'])->get();
+        } elseif ($validated['target'] === 'orangtua') {
+            $targetUsers = User::where('role', 'orangtua')->get();
+        } else { 
+            $targetUsers = User::whereIn('role', ['siswa', 'siswa_perwakilan', 'orangtua'])->get();
+        }
+
+        foreach ($targetUsers as $user) {
+            $user->notify(new \App\Notifications\PengumumanBaruNotification(
+                $pengumuman->judul,
+                $pengumuman->isi,
+                $pengumuman->id
+            ));
+        }
+
+        return redirect()
+            ->route('guru.pengumuman.index')
+            ->with('success', 'Pengumuman terbaru berhasil dikirim');
+    }
 
     /**
      * Display the specified resource.

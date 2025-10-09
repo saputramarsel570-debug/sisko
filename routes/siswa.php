@@ -16,6 +16,7 @@ use App\Http\Controllers\Siswa\DashboardController;
 use App\Http\Controllers\Siswa\ProfileController;
 use App\Http\Controllers\Siswa\JadwalEkskulController;
 use App\Http\Controllers\Siswa\PengaturanSekolahController;
+use App\Http\Controllers\NotificationsController;
 
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
 {
@@ -29,6 +30,7 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Siswa\DashboardController::class, 'index'])->name('dashboard');
 });
+Route::get('/notifications/{id}/read', [NotificationsController::class, 'read'])->name('notifications.read');
 
 Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->group(function () {
     Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');

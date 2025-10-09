@@ -6,8 +6,9 @@
 <div class="row">
     <div class="col-md-12 offset-md-12">
         <div class="card shadow-sm rounded-3">
-            <div class="card-header">
-                <h5 class="mb-0">Edit Keluhan & Saran</h5>
+            <div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
+                <i class="ti ti-message-2 me-2"></i>
+                <h4 class="mb-0 fw-semibold">Detail Keluhan & Saran</h4>
             </div>
             <div class="card-body">
                 <form action="{{ route('siswa_perwakilan.keluhan.update', $keluhan->id) }}" method="POST">

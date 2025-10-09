@@ -32,32 +32,28 @@ class KeluhanController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'kategori' => 'required|in:keluhan,saran',
-        'isi'      => 'required|string',
-    ]);
+    {
+        $request->validate([
+            'kategori' => 'required|in:keluhan,saran',
+            'isi'      => 'required|string',
+        ]);
 
-    $keluhan =KeluhanSaran::create([
-        'user_id'  => auth()->id(),
-        'kategori' => $request->kategori,
-        'isi'      => $request->isi,
-    ]);
+        $keluhan = KeluhanSaran::create([
+            'user_id'  => auth()->id(),
+            'kategori' => $request->kategori,
+            'isi'      => $request->isi,
+            'status'   => 'pending', 
+        ]);
 
-    $admins = User::where('role', 'admin')->get();
+        $gurus = User::where('role', 'guru')->get();
 
-    foreach ($admins as $admin) {
-        $admin->notify(new KeluhanSaranNotification(
-            $request->kategori,
-            auth()->user()->name,
-            $request->isi,
-            $keluhan->id
-        ));
+        foreach ($gurus as $guru) {
+            $guru->notify(new \App\Notifications\KeluhanBaruNotification($keluhan));
+        }
+
+        return redirect()->route('siswa_perwakilan.keluhan.index')
+            ->with('success', 'Keluhan atau Saran berhasil dikirim dan telah diteruskan ke guru.');
     }
-
-    return redirect()->route('siswa_perwakilan.keluhan.index')
-        ->with('success', 'Keluhan/Saran berhasil dikirim');
-}
 
     /**
      * Display the specified resource.

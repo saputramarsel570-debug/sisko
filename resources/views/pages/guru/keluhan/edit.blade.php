@@ -10,9 +10,6 @@
                 <h5 class="mb-0">
                     <i class="ti ti-edit me-2"></i> Edit Keluhan & Saran
                 </h5>
-                <a href="{{ route('guru.keluhan.index') }}" class="btn btn-light btn-sm">
-                    <i class="ti ti-arrow-left me-1"></i> Kembali
-                </a>
             </div>
             <div class="card-body p-4">
                 <form action="{{ route('guru.keluhan.update', $keluhan->id) }}" method="POST">
@@ -48,15 +45,18 @@
                             <option value="selesai" {{ $keluhan->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
                         </select>
                     </div>
-
+                    
                     <div class="mb-4">
                         <label for="balasan" class="fw-semibold text-secondary">Balasan</label>
                         <textarea name="balasan" id="balasan" rows="4" class="form-control border-2 rounded-3">{{ old('balasan', $keluhan->balasan) }}</textarea>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="ti ti-device-floppy me-1"></i> Simpan Perubahan
+                        <a href="{{ route('guru.keluhan.index') }}" class="btn btn-secondary">
+                            <span class="ti ti-arrow-left"></span> Kembali
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="ti ti-device-floppy"></span> Simpan
                         </button>
                     </div>
                 </form>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\SiswaPerwakilan\DashboardController as SiswaPerwakilanDashboardController;
 use App\Http\Controllers\Orangtua\DashboardController as OrangtuaDashboardController;
 use App\Models\User;
+Use App\Http\Controllers\NotificationsController;
 
 Route::get('/', function () {
     return view('welcome');

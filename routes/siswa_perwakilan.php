@@ -16,7 +16,7 @@ use App\Http\Controllers\SiswaPerwakilan\DashboardController;
 use App\Http\Controllers\SiswaPerwakilan\ProfileController;
 use App\Http\Controllers\SiswaPerwakilan\PengaturanSekolahController;
 use App\Http\Controllers\SiswaPerwakilan\JadwalEkskulController;
-
+use App\Http\Controllers\NotificationsController;
 
 Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->group(function ()
 {
@@ -29,6 +29,9 @@ Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'siswa_perwakilan']);
 
 });
+
+Route::get('/notifications/{id}/read', [NotificationsController::class, 'read'])->name('notifications.read');
+
 Route::get('/absensi/rekap', [AbsensiController::class, 'rekap'])->name('siswa_perwakilan.absensi.rekap');
 Route::put('/absensi/update-bulk', [AbsensiController::class, 'updateBulk'])->name('siswa_perwakilan.absensi.update_bulk');
 

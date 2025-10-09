@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KeluhanSaran;
+use App\Models\User;
+use App\Notifications\KeluhanSaranNotification;
 
 class KeluhanController extends Controller
 {
@@ -50,6 +52,13 @@ class KeluhanController extends Controller
             'status'  => $request->status,
             'balasan' => $request->balasan,
         ]);
+
+        if ($request->filled('balasan')) {
+            $user = $keluhan->user;
+            if ($user) {
+                $user->notify(new \App\Notifications\BalasanKeluhanNotification($keluhan));
+            }
+        }
 
         return redirect()->route('guru.keluhan.index')
             ->with('success', 'Keluhan/Saran berhasil diperbarui');
