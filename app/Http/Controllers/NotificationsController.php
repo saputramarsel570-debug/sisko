@@ -22,6 +22,10 @@ class NotificationsController extends Controller
             case 'guru':
                 return redirect()->route('guru.keluhan.index');
 
+            case 'orangtua':
+                return redirect()->route('orangtua.keluhan.index');
+
+
             default:
                 return redirect()->back()->with('info', 'Notifikasi dibaca.');
         }

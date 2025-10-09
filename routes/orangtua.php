@@ -15,6 +15,7 @@ use App\Http\Controllers\Orangtua\KeluhanController;
 use App\Http\Controllers\Orangtua\ProfileController;
 use App\Http\Controllers\Orangtua\JadwalEkskulController;
 use App\Http\Controllers\Orangtua\PengaturanSekolahController;
+use App\Http\Controllers\NotificationsController;
 
 Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->group(function ()
 {
@@ -34,6 +35,7 @@ Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->name('orangtua
 
     
  });
+ Route::get('/notifications/{id}/read', [NotificationsController::class, 'read'])->name('notifications.read');
 
  Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->name('orangtua.')->group(function () {
     Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
