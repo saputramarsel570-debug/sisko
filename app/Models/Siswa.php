@@ -33,6 +33,6 @@ class Siswa extends Model
     }
     public function orangTua()
     {
-        return $this->hasOne(OrangTua::class, 'siswa_id');
+        return $this->hasMany(OrangTua::class, 'siswa_id');
     }
 }

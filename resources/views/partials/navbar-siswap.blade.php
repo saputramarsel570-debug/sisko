@@ -79,7 +79,7 @@
                 <ul class="list-group list-group-flush">
                   @foreach($notifications as $notif)
                   <li class="list-group-item list-group-item-action dropdown-notifications-item {{ $notif->read_at ? 'marked-as-read' : '' }}">
-                    <a href="{{ route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
+                    <a href="{{ $notif->data['url'] ?? route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
                       <div class="flex-grow-1">
                         <h6 class="small mb-1">{{ $notif->data['title'] ?? 'Notifikasi Baru' }}</h6>
                         <small class="mb-1 d-block text-body">{{ $notif->data['message'] ?? 'Tidak ada detail.' }}</small>

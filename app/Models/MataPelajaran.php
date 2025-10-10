@@ -20,4 +20,9 @@ class MataPelajaran extends Model
     {
         return $this->hasMany(JadwalPelajaran::class, 'mata_pelajaran_id');
     }
+
+    public function guru()
+    {
+        return $this->hasMany(Guru::class, 'mata_pelajaran_id');
+    }
 }

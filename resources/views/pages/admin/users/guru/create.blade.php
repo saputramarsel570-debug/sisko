@@ -31,11 +31,17 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="mapel" class="form-label">Mata Pelajaran</label>
-                        <input type="text" name="mapel" id="mapel"
-                               class="form-control @error('mapel') is-invalid @enderror"
-                               value="{{ old('mapel') }}" required>
-                        @error('mapel') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <label for="mata_pelajaran_id" class="form-label">Mata Pelajaran</label>
+                            <select name="mata_pelajaran_id" id="mata_pelajaran_id"
+                                class="form-select @error('mata_pelajaran_id') is-invalid @enderror" required>
+                                <option value="">-- Pilih Mata Pelajaran --</option>
+                                @foreach($mataPelajaran as $mapel)
+                                    <option value="{{ $mapel->id }}" {{ old('mata_pelajaran_id') == $mapel->id ? 'selected' : '' }}>
+                                            {{ $mapel->nama_mapel }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @error('mata_pelajaran_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
                     <hr>

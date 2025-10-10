@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\User;
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
 use App\Models\User;
+use App\Models\MataPelajaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
@@ -34,20 +35,18 @@ class GuruController extends Controller
      */
     public function index()
     {
-        $guru = Guru::with('user')->get();
+        $guru = Guru::with(['user', 'mataPelajaran'])->get();
         return view('pages.admin.users.guru.index', compact('guru'));
     }
-
-
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('pages.admin.users.guru.create');
+        $mataPelajaran = MataPelajaran::all();
+        return view('pages.admin.users.guru.create', compact('mataPelajaran'));
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -57,7 +56,7 @@ class GuruController extends Controller
         $request->validate([
             'nip' => 'required|unique:guru,nip',
             'nama' => 'required|string|max:255',
-            'mapel' => 'required|string|max:255',
+            'mata_pelajaran_id' => 'required|exists:mata_pelajaran,id',
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
@@ -74,20 +73,19 @@ class GuruController extends Controller
         Guru::create([
             'nip' => $request->nip,
             'nama' => $request->nama,
-            'mapel' => $request->mapel,
+            'mata_pelajaran_id' => $request->mata_pelajaran_id,
             'user_id' => $user->id,
         ]);
 
         return redirect()->route('admin.guru.index')->with('success', 'Data guru berhasil ditambahkan');
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show(Guru $guru)
     {
-        $guru->load('user');
+        $guru->load(['user', 'mataPelajaran']);
         return view('pages.admin.users.guru.show', compact('guru'));
     }
 
@@ -96,7 +94,8 @@ class GuruController extends Controller
      */
     public function edit(Guru $guru)
     {
-        return view('pages.admin.users.guru.edit', compact('guru'));
+        $mataPelajaran = MataPelajaran::all();
+        return view('pages.admin.users.guru.edit', compact('guru', 'mataPelajaran'));
     }
 
     /**
@@ -107,7 +106,7 @@ class GuruController extends Controller
         $request->validate([
             'nip' => 'required|unique:guru,nip,' . $guru->id,
             'nama' => 'required|string|max:255',
-            'mapel' => 'required|string|max:255',
+            'mata_pelajaran_id' => 'required|exists:mata_pelajaran,id',
             'username' => 'required|string|max:255|unique:users,username,' . $guru->user_id,
             'email' => 'required|email|unique:users,email,' . $guru->user_id,
             'password' => 'nullable|confirmed|min:6',
@@ -124,18 +123,16 @@ class GuruController extends Controller
         $guru->update([
             'nip' => $request->nip,
             'nama' => $request->nama,
-            'mapel' => $request->mapel,
+            'mata_pelajaran_id' => $request->mata_pelajaran_id,
         ]);
 
         return redirect()->route('admin.guru.index')->with('success', 'Data guru berhasil diperbarui');
     }
 
-
-
     /**
      * Remove the specified resource from storage.
      */
-     public function destroy(Guru $guru)
+    public function destroy(Guru $guru)
     {
         $guru->user()->delete();
         $guru->delete();
