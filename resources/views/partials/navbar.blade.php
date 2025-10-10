@@ -7,6 +7,10 @@
               </a>
             </div>
 
+            <div class="navbar-center position-absolute top-50 start-50 translate-middle text-center">
+                <h4 class="fw-bold mb-0 text-primary">SISKO</h4>
+            </div>
+
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
 

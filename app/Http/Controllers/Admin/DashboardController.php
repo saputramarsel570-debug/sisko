@@ -9,11 +9,9 @@ use App\Models\Kelas;
 use App\Models\OrangTua;
 use App\Models\MataPelajaran;
 use App\Models\KeluhanSaran;
-use App\Models\Absensi;
 use App\Models\Ekstrakurikuler;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -32,7 +30,7 @@ class DashboardController extends Controller
         $bulan = Carbon::now()->month;
         $tahun = Carbon::now()->year;
 
-        $rekapAbsensi = Kelas::with(['siswa.absensi' => function($q) use ($bulan, $tahun) {
+        $rekapAbsensi = Kelas::with(['siswa.absensi' => function ($q) use ($bulan, $tahun) {
             $q->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun);
         }])->get();
 
@@ -40,8 +38,7 @@ class DashboardController extends Controller
         $kelasAbsensiHadir = [];
         $kelasAbsensiAlfa = [];
 
-        foreach ($rekapAbsensi as $kelas)
-        {
+        foreach ($rekapAbsensi as $kelas) {
             $kelasAbsensiLabels[] = $kelas->nama_kelas;
             $hadir = 0;
             $alfa = 0;
@@ -64,14 +61,31 @@ class DashboardController extends Controller
         $keluhanLabels = $keluhanTren->pluck('kategori');
         $keluhanCounts = $keluhanTren->pluck('total');
 
-        $mapelDistribusi = Guru::select('mapel', DB::raw('COUNT(*) as total'))
-            ->groupBy('mapel')
+        $mapelDistribusi = Guru::join('mata_pelajaran', 'guru.mata_pelajaran_id', '=', 'mata_pelajaran.id')
+            ->select('mata_pelajaran.nama_mapel', DB::raw('COUNT(guru.id) as total'))
+            ->groupBy('mata_pelajaran.nama_mapel')
             ->orderByDesc('total')
             ->get();
 
-        $mapelLabels = $mapelDistribusi->pluck('mapel');
+        $mapelLabels = $mapelDistribusi->pluck('nama_mapel');
         $mapelCounts = $mapelDistribusi->pluck('total');
 
-        return view('pages.admin.dashboard.index', compact('totalSiswa', 'totalGuru', 'totalKelas', 'totalOrtu', 'totalMapel', 'totalEkstrakurikuler', 'kelasLabels', 'kelasCounts', 'kelasAbsensiLabels', 'kelasAbsensiHadir', 'kelasAbsensiAlfa', 'keluhanLabels', 'keluhanCounts', 'mapelLabels', 'mapelCounts'));
+        return view('pages.admin.dashboard.index', compact(
+            'totalSiswa',
+            'totalGuru',
+            'totalKelas',
+            'totalOrtu',
+            'totalMapel',
+            'totalEkstrakurikuler',
+            'kelasLabels',
+            'kelasCounts',
+            'kelasAbsensiLabels',
+            'kelasAbsensiHadir',
+            'kelasAbsensiAlfa',
+            'keluhanLabels',
+            'keluhanCounts',
+            'mapelLabels',
+            'mapelCounts'
+        ));
     }
 }

@@ -14,7 +14,7 @@ class GuruExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
-        return Guru::with('user')->get();
+        return Guru::with(['user', 'mataPelajaran'])->get();
     }
 
     public function map($guru): array
@@ -23,11 +23,11 @@ class GuruExport implements FromCollection, WithHeadings, WithMapping
             $guru->id,
             $guru->user->username ?? '-',
             $guru->user->email ?? '-',
-            $guru->nip,
-            $guru->nama,
-            $guru->mapel,
-            $guru->created_at,
-            $guru->updated_at,
+            $guru->nip ?? '-',
+            $guru->nama ?? '-',
+            $guru->mataPelajaran->nama_mapel ?? '-',
+            $guru->created_at ? $guru->created_at->format('d-m-Y H:i') : '-',
+            $guru->updated_at ? $guru->updated_at->format('d-m-Y H:i') : '-',
         ];
     }
 

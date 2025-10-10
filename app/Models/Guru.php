@@ -14,7 +14,7 @@ class Guru extends Model
         'user_id',
         'nip',
         'nama',
-        'mapel',
+        'mata_pelajaran_id',
     ];
     Public function user()
     {
@@ -35,5 +35,9 @@ class Guru extends Model
     public function absensi()
     {
         return $this->hasManyThrough(Absensi::class, Kelas::class, 'wali_kelas_id', 'kelas_id');
+    }
+    public function mataPelajaran()
+    {
+        return $this->belongsTo(MataPelajaran::class, 'mata_pelajaran_id');
     }
 }

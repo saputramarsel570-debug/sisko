@@ -67,7 +67,7 @@
                                 <td>{{ $item->nip }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td>
-                                    <span class="badge bg-primary">{{ $item->mapel }}</span>
+                                    <span class="badge bg-primary">{{ $item->mataPelajaran->nama_mapel ?? '-' }}</span>
                                 </td>
                                 <td>{{ $item->user->email ?? '-' }}</td>
                                 <td>

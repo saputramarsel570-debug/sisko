@@ -43,7 +43,7 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         if ($user->profile_photo && file_exists(public_path('uploads/profile/' . $user->profile_photo))) {
-            unlink(public_path('uploads/profile' . $user->profile_photo));
+            unlink(public_path('uploads/profile/' . $user->profile_photo));
         }
 
         $filename = time() . '-' . $request->profile_photo->extension();

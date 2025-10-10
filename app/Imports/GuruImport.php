@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Guru;
 use App\Models\User;
+use App\Models\MataPelajaran;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -17,6 +18,8 @@ class GuruImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
+        $mataPelajaran = MataPelajaran::where('nama_mapel', $row['mata_pelajaran'] ?? $row['mapel'] ?? null)->first();
+
         $user = User::firstOrCreate(
             ['email' => $row['email']],
             [
@@ -32,7 +35,7 @@ class GuruImport implements ToModel, WithHeadingRow
             'user_id' => $user->id,
             'nip' => $row['nip'] ?? null,
             'nama' => $row['nama'],
-            'mapel' => $row['mapel'] ?? null,
+            'mata_pelajaran_id' => $mataPelajaran ? $mataPelajaran->id : null,
         ]);
     }
 }

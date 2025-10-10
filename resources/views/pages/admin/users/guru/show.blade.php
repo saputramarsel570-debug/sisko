@@ -30,7 +30,7 @@
                     </tr>
                     <tr>
                         <th>Mata Pelajaran</th>
-                        <td>{{ $guru->mapel }}</td>
+                        <td>{{ $guru->mataPelajaran->nama_mapel ?? '-' }}</td>
                     </tr>
                     <tr>
                         <th>Dibuat Pada</th>
