@@ -49,7 +49,7 @@
                 </div>
 
                 {{-- Filter --}}
-                <form action="{{ route('admin.siswa.index') }}" method="GET" class="mb-3">
+                <form action="{{ route('admin.siswa.index') }}" method="GET" class="row g-2 mb-3 mt-3">
                     <div class="row g-2">
                         <div class="col-md-3">
                             <select name="kelas_id" id="kelas_id" class="form-select form-select-sm" onchange="this.form.submit()">

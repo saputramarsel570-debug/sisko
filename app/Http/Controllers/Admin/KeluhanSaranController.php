@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\KeluhanSaran;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Notifications\KeluhanSaranNotification;
 
 class KeluhanSaranController extends Controller
 {
@@ -14,64 +15,52 @@ class KeluhanSaranController extends Controller
      */
     public function index()
     {
-        $keluhanSaran = KeluhanSaran::with('user')->latest()->paginate(10);
-        return view('pages.admin.keluhan_saran.index', compact('keluhanSaran'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $keluhan = KeluhanSaran::all();
+        return view('pages.admin.keluhan_saran.index', compact('keluhan'));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(KeluhanSaran $keluhanSaran)
+    public function show(string $id)
     {
-        return view('pages.admin.keluhan_saran.show', compact('keluhanSaran'));
+        $keluhan = KeluhanSaran::findOrFail($id);
+        return view('pages.admin.keluhan_saran.show', compact('keluhan'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(KeluhanSaran $keluhanSaran)
+    public function edit(string $id)
     {
-        return view('pages.admin.keluhan_saran.edit', compact('keluhanSaran'));
+        $keluhan = KeluhanSaran::findOrFail($id);
+        return view('pages.admin.keluhan_saran.edit', compact('keluhan'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, KeluhanSaran $keluhanSaran)
+    public function update(Request $request, string $id)
     {
         $request->validate([
             'status'  => 'required|in:pending,proses,selesai',
             'balasan' => 'nullable|string',
         ]);
 
-        $keluhanSaran->update($request->only(['status', 'balasan']));
+        $keluhan = KeluhanSaran::findOrFail($id);
+        $keluhan->update([
+            'status'  => $request->status,
+            'balasan' => $request->balasan,
+        ]);
 
-        return redirect()->route('admin.keluhan_saran.index')->with('success', 'Keluhan/Saran berhasil diperbarui.');
-    }
+        if ($request->filled('balasan')) {
+            $user = $keluhan->user;
+            if ($user) {
+                $user->notify(new \App\Notifications\BalasanKeluhanNotification($keluhan));
+            }
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(KeluhanSaran $keluhanSaran)
-    {
-        $keluhanSaran->delete();
-
-        return redirect()->route('admin.keluhan_saran.index')->with('success', 'Keluhan/Saran berhasil dihapus.');
+        return redirect()->route('admin.keluhan_saran.index')
+            ->with('success', 'Keluhan/Saran berhasil diperbarui');
     }
 }

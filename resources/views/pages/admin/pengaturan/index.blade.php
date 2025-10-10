@@ -26,7 +26,7 @@
                 <div class="row align-items-center mb-4">
                     <div class="col-md-3 text-center">
                         @if($pengaturan->logo)
-                            <img src="{{ asset('storage/'.$pengaturan->logo) }}" class="rounded border mb-2" height="100" alt="Logo Sekolah">
+                            <img src="{{ asset('storage/'.$pengaturan->logo) }}" class="rounded border mb-2 mt-3" height="100" alt="Logo Sekolah">
                         @else
                             <div class="bg-light text-muted d-flex align-items-center justify-content-center rounded mb-2" style="width:100px; height:100px;">
                                 <i class="ti ti-building fs-2"></i>

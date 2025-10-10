@@ -15,7 +15,7 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="mb-3 p-3 border rounded-3 bg-light">
+                    <div class="mb-3 p-3 border rounded-3 bg-light mt-3">
                         <label class="form-label fw-bold">Kategori</label>
                         <select name="kategori" class="form-select" required>
                             <option value="keluhan" {{ $keluhan->kategori == 'keluhan' ? 'selected' : '' }}>Keluhan</option>

@@ -11,7 +11,7 @@
 
         <div class="card-body">
             <!-- Filter -->
-            <form method="GET" class="row g-2 mb-4 align-items-center">
+            <form method="GET" class="row g-2 mb-4 align-items-center mt-3">
                 <div class="col-md-3">
                     <select name="kelas_id" class="form-select shadow-sm" onchange="this.form.submit()">
                         <option value="">-- Pilih Kelas --</option>

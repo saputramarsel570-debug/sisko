@@ -12,7 +12,7 @@
                     <h4 class="mb-0 fw-semibold">Detail Keluhan & Saran</h4>
                 </div>
             <div class="card-body">
-                <div class="mb-3 p-3 border rounded bg-light">
+                <div class="mb-3 p-3 border rounded bg-light mt-3">
                     <label class="fw-bold d-block">Kategori</label>
                     <p class="mb-0">{{ ucfirst($keluhan->kategori) }}</p>
                 </div>

@@ -8,16 +8,9 @@
             </div>
 
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-              <!-- Search -->
-              <div class="navbar-nav align-items-center">
-                <div class="nav-item navbar-search-wrapper mb-0">
-                  <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
-                    <i class="ti ti-search ti-md me-2 me-lg-4 ti-lg"></i>
-                    <span class="d-none d-md-inline-block text-muted fw-normal">Search (Ctrl+/)</span>
-                  </a>
-                </div>
-              </div>
-              <!-- /Search -->
+              <div class="navbar-center position-absolute top-50 start-50 translate-middle text-center">
+                <h4 class="fw-bold mb-0 text-primary">SISKO</h4>
+            </div>
 
               <ul class="navbar-nav flex-row align-items-center ms-auto">
 

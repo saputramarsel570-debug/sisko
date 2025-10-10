@@ -27,7 +27,7 @@
             <div class="card-body">
 
                 {{-- Filter --}}
-                <form action="{{ route('admin.orangtua.index') }}" method="GET" class="row g-2 mb-3">
+                <form action="{{ route('admin.orangtua.index') }}" method="GET" class="row g-2 mb-3 mt-3">
                     <div class="col-md-4">
                         <select name="kelas_id" id="kelas_id" class="form-select">
                             <option value="">-- Semua Kelas --</option>
