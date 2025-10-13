@@ -27,6 +27,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Kategori</th>
+                                <th>Foto</th>
                                 <th>Isi</th>
                                 <th>Status</th>
                                 <th>Balasan</th>
@@ -38,6 +39,18 @@
                                 <tr>
                                     <td class="fw-bold">{{ $loop->iteration }}</td>
                                     <td>{{ ucfirst($item->kategori) }}</td>
+                                    
+                                    {{-- Kolom foto pakai field "gambar" --}}
+                                    <td>
+                                        @if ($item->gambar)
+                                            <img src="{{ asset('storage/' . $item->gambar) }}"
+                                                 alt="{{ $item->kategori }}" width="60" 
+                                                 class="rounded shadow-sm border">
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+
                                     <td>{{ Str::limit($item->isi, 50) }}</td>
                                     <td>
                                         @if($item->status == 'pending')
@@ -81,7 +94,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-3">
+                                    <td colspan="7" class="text-center text-muted py-3">
                                         <i class="ti ti-info-circle"></i> Belum ada data keluhan
                                     </td>
                                 </tr>

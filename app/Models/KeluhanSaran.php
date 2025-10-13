@@ -16,6 +16,7 @@ class KeluhanSaran extends Model
         'isi',
         'status',
         'balasan',
+        'gambar',
     ];
 
     public function user()

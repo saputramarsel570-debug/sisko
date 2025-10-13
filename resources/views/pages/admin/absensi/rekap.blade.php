@@ -105,13 +105,13 @@
                                             <td>
                                                 @if($absen)
                                                     @if($absen->status === 'hadir')
-                                                        <span class="badge bg-success">H</span>
+                                                        <span>H</span>
                                                     @elseif($absen->status === 'izin')
-                                                        <span class="badge bg-warning text-dark">I</span>
+                                                        <span>I</span>
                                                     @elseif($absen->status === 'sakit')
-                                                        <span class="badge bg-info text-dark">S</span>
+                                                        <span>S</span>
                                                     @elseif($absen->status === 'alfa')
-                                                        <span class="badge bg-danger">A</span>
+                                                        <span>A</span>
                                                     @else
                                                         {{ strtoupper(substr($absen->status,0,1)) }}
                                                     @endif
@@ -120,10 +120,10 @@
                                                 @endif
                                             </td>
                                         @endforeach
-                                        <td><span class="badge bg-success">{{ $totalStatus[$siswa->id]['hadir'] ?? 0 }}</span></td>
-                                        <td><span class="badge bg-info text-dark">{{ $totalStatus[$siswa->id]['sakit'] ?? 0 }}</span></td>
-                                        <td><span class="badge bg-warning text-dark">{{ $totalStatus[$siswa->id]['izin'] ?? 0 }}</span></td>
-                                        <td><span class="badge bg-danger">{{ $totalStatus[$siswa->id]['alfa'] ?? 0 }}</span></td>
+                                        <td><span>{{ $totalStatus[$siswa->id]['hadir'] ?? 0 }}</span></td>
+                                        <td><span>{{ $totalStatus[$siswa->id]['sakit'] ?? 0 }}</span></td>
+                                        <td><span>{{ $totalStatus[$siswa->id]['izin'] ?? 0 }}</span></td>
+                                        <td><span>{{ $totalStatus[$siswa->id]['alfa'] ?? 0 }}</span></td>
                                     </tr>
                                 @endforeach
                             </tbody>

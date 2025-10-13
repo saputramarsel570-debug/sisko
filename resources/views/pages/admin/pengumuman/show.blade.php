@@ -3,53 +3,53 @@
 @section('title', 'Detail Pengumuman')
 
 @section('content')
-<div class="row">
-    <div class="col-md-8 offset-md-2">
+<div class="row justify-content-center">
+    <div class="col-md-8">
         <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header bg-info text-white rounded-top-4">
-                <h4 class="mb-0 fw-bold"><i class="ti ti-bell"></i> Detail Pengumuman</h4>
+            <div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
+                <h4 class="mb-0"><i class="ti ti-bell me-2"></i> Detail Pengumuman</h4>
             </div>
 
-            <div class="card-body">
-                <table class="table table-bordered mb-0">
-                    <tr>
-                        <th width="30%">ID</th>
-                        <td>{{ $pengumuman->id }}</td>
-                    </tr>
-                    <tr>
-                        <th>Judul</th>
-                        <td>{{ $pengumuman->judul }}</td>
-                    </tr>
-                    <tr>
-                        <th>Isi</th>
-                        <td>{!! nl2br(e($pengumuman->isi)) !!}</td>
-                    </tr>
-                    <tr>
-                        <th>Target Audiens</th>
-                        <td class="text-capitalize">{{ $pengumuman->target }}</td>
-                    </tr>
-                    <tr>
-                        <th>Dibuat Oleh</th>
-                        <td>{{ $pengumuman->user->name ?? 'Guru' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Dibuat Pada</th>
-                        <td>{{ $pengumuman->created_at->format('d M Y H:i') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Diperbarui Pada</th>
-                        <td>{{ $pengumuman->updated_at->format('d M Y H:i') }}</td>
-                    </tr>
-                </table>
-            </div>
+            <div class="card-body bg-light rounded-bottom-4">
+                <div class="mb-3">
+                    <h6 class="text-primary fw-semibold mb-1">Judul</h6>
+                    <div class="p-3 bg-white rounded shadow-sm border">
+                        {{ $pengumuman->judul }}
+                    </div>
+                </div>
 
-            <div class="card-footer d-flex justify-content-between">
-                <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-secondary">
-                    <i class="ti ti-arrow-left"></i> Kembali
-                </a>
-                <a href="{{ route('admin.pengumuman.edit', $pengumuman->id) }}" class="btn btn-warning text-white">
-                    <i class="ti ti-pencil"></i> Edit
-                </a>
+                <div class="mb-3">
+                    <h6 class="text-primary fw-semibold mb-1">Isi</h6>
+                    <div class="p-3 bg-white rounded shadow-sm border" style="min-height: 100px;">
+                        {!! nl2br(e($pengumuman->isi)) !!}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <h6 class="text-primary fw-semibold mb-1">Dibuat Oleh</h6>
+                        <div class="p-3 bg-white rounded shadow-sm border">
+                            {{ $pengumuman->user->name ?? 'Guru' }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary fw-semibold mb-1">Tanggal</h6>
+                        <div class="p-3 bg-white rounded shadow-sm border">
+                            {{ $pengumuman->created_at->format('d-m-Y H:i') }}
+                        </div>
+                    </div>
+                    @if ($pengumuman->gambar)
+                        <div class="mb-3 text-center">
+                            <img src="{{ asset('storage/'.$pengumuman->gambar) }}" alt="gambar pengumuman" class="img-fluid rounded shadow-sm">
+                        </div>
+                    @endif
+                </div>
+
+                <div class="text-end mt-4">
+                    <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-primary px-4 rounded-3 shadow-sm">
+                        <i class="ti ti-arrow-left me-1"></i> Kembali
+                    </a>
+                </div>
             </div>
         </div>
     </div>

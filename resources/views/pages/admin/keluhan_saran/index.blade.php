@@ -16,6 +16,7 @@
                     <thead class="table-primary text-center">
                         <tr>
                             <th style="width: 5%">No</th>
+                            <th style="width: 20%">Foto</th>
                             <th>Nama Siswa</th>
                             <th>Kategori</th>
                             <th>Isi</th>
@@ -28,6 +29,15 @@
                         @foreach ($keluhan as $item) 
                             <tr>
                                 <td class="text-center fw-semibold">{{ $loop->iteration }}</td>
+                                <td>
+                                    @if ($item->gambar)
+                                        <img src="{{ asset('storage/' . $item->gambar) }}"
+                                             alt="{{ $item->kategori }}" width="60" 
+                                             class="rounded shadow-sm border">
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                                 <td>{{ $item->user->name ?? '-' }}</td>
                                 <td>{{ ucfirst($item->kategori) }}</td>
                                 <td>{{ Str::limit($item->isi, 80) }}</td>

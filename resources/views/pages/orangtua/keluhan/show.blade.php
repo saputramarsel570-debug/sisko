@@ -6,13 +6,24 @@
 <div class="row">
     <div class="col-md-12 offset-md-12">
         <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">Detail Keluhan & Saran</h5>
-            </div>
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
+                    <i class="ti ti-message-2 me-2"></i>
+                    <h4 class="mb-0 fw-semibold">Detail Keluhan & Saran</h4>
+                </div>
             <div class="card-body">
-                <div class="mb-3 p-3 border rounded bg-light">
+                <div class="mb-3 p-3 border rounded bg-light mt-3">
                     <label class="fw-bold d-block">Kategori</label>
                     <p class="mb-0">{{ ucfirst($keluhan->kategori) }}</p>
+                </div>
+                <div class="mb-3">
+                    @if(isset($keluhan) && $keluhan->gambar)
+                        <div class="mt-2">
+                            <img src="{{ asset('storage/' . $keluhan->gambar) }}" 
+                                 alt="Gambar Keluhan" 
+                                 class="img-thumbnail" style="max-width: 200px;">
+                        </div>
+                    @endif
                 </div>
                 <div class="mb-3 p-3 border rounded bg-light">
                     <label class="fw-bold d-block">Isi</label>

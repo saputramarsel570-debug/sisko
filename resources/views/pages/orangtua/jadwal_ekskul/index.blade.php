@@ -3,34 +3,48 @@
 @section('title', 'Kelola Jadwal Ekskul')
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
+<div class="row justify-content-center">
+    <div class="col-lg-12">
         @if (session('success'))
             <div id="success" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                 <i class="ti ti-check me-2"></i> {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
-
-        <h3 class="fw-bold text-black mb-3">
-            <i class="ti ti-calendar-event"></i> Kelola Jadwal Ekskul
-        </h3>
-
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-primary text-white d-flex align-items-center py-3">
+                <h5 class="mb-0 fw-semibold">
+                    <i class="ti ti-calendar-event me-2"></i> Kelola Jadwal Ekskul
+                </h5>
+            </div>
             <div class="card-body">
                 <table class="table table-hover align-middle dataTable">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>No</th>
-                            <th>Ekskul</th>
-                            <th>Hari</th>
-                            <th class="text-center">Aksi</th>
+                    <thead class="table-light border-bottom">
+                        <tr class="text-center">
+                            <th style="width: 5%;">No</th>
+                            <th style="width: 40%;">Foto</th>
+                            <th style="width: 35%;">Ekskul</th>
+                            <th style="width: 30%;">Hari</th>
+                            <th style="width: 15%;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($jadwal as $item)
                             <tr>
-                                <td class="fw-bold">{{ $loop->iteration }}</td>
+                                <td class="fw-bold text-center">{{ $loop->iteration }}</td>
+                                <td>
+                                    @if ($item->ekstrakurikuler && $item->ekstrakurikuler->foto)
+                                        <img src="{{ asset('storage/' . $item->ekstrakurikuler->foto) }}"
+                                             alt="{{ $item->ekstrakurikuler->nama }}"
+                                             width="70" height="70"
+                                             class="rounded-3 shadow-sm object-fit-cover">
+                                    @else
+                                        <div class="bg-light border d-flex justify-content-center align-items-center rounded-3 shadow-sm"
+                                             style="width:70px; height:70px;">
+                                            <i class="ti ti-photo text-muted fs-4"></i>
+                                        </div>
+                                    @endif
+                                </td>
                                 <td>
                                     <i class="ti ti-users text-primary me-1"></i>
                                     {{ $item->ekstrakurikuler->nama }}
@@ -40,19 +54,22 @@
                                         $hariList = is_array($item->hari) ? $item->hari : [$item->hari];
                                     @endphp
                                     @foreach($hariList as $h)
-                                        <span class="badge bg-info text-dark me-1 mb-1">{{ $h }}</span>
+                                        <span class="badge bg-info-subtle text-dark border border-info me-1 mb-1 px-3 py-2">
+                                            {{ $h }}
+                                        </span>
                                     @endforeach
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ route('orangtua.jadwal_ekskul.show', $item->id) }}" 
-                                       class="btn btn-sm btn-primary">
-                                        <i class="ti ti-eye"></i> Detail
-                                    </a>
+                                        class="btn btn-sm btn-primary">
+                                         <i class="ti ti-eye"></i> Detail
+                                     </a>
+ 
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted">
+                                <td colspan="4" class="text-center text-muted py-4">
                                     <i class="ti ti-info-circle"></i> Belum ada jadwal ekskul
                                 </td>
                             </tr>
@@ -70,8 +87,11 @@
 <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
 <style>
     .table-hover tbody tr:hover {
-        background-color: #f1f8ff !important;
-        transition: 0.2s;
+        background-color: #f0f7ff !important;
+        transition: all 0.2s ease-in-out;
+    }
+    .badge.bg-info-subtle {
+        background-color: #e7f5ff !important;
     }
 </style>
 @endpush
@@ -83,6 +103,13 @@
         $('.dataTable').DataTable({
             pageLength: 5,
             responsive: true,
+            language: {
+                search: "Cari:",
+                zeroRecords: "Tidak ada data ditemukan",
+                info: "Menampilkan PAGE dari PAGES",
+                infoEmpty: "Tidak ada data tersedia",
+                infoFiltered: "(difilter dari total MAX data)"
+            }
         });
     });
 </script>

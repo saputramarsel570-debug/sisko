@@ -5,88 +5,117 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pengumuman;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use App\Notifications\PengumumanBaruNotification;
 
 class PengumumanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $pengumuman = Pengumuman::with('user')->latest()->get();
         return view('pages.admin.pengumuman.index', compact('pengumuman'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('pages.admin.pengumuman.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'judul'  => 'required|string|max:255',
-        'isi'    => 'required|string',
-        'target' => 'required|in:siswa,orangtua,semua',
-    ]);
+    {
+        $validated = $request->validate([
+            'judul'  => 'required|string|max:255',
+            'isi'    => 'required|string',
+            'target' => 'required|in:siswa,orangtua,semua',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $validated['dibuat_oleh'] = auth()->id();
+        $validated['dibuat_oleh'] = auth()->id();
 
-    Pengumuman::create($validated);
+        // Simpan gambar ke storage/public/pengumuman
+        if ($request->hasFile('gambar')) {
+            $path = $request->file('gambar')->store('pengumuman', 'public');
+            $validated['gambar'] = $path;
+        }
 
-    return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman terbaru berhasil dikirim');
-}
+        $pengumuman = Pengumuman::create($validated);
 
-    /**
-     * Display the specified resource.
-     */
+        // Kirim notifikasi
+        $targetUsers = collect();
+        if ($validated['target'] === 'siswa') {
+            $targetUsers = User::whereIn('role', ['siswa', 'siswa_perwakilan'])->get();
+        } elseif ($validated['target'] === 'orangtua') {
+            $targetUsers = User::where('role', 'orangtua')->get();
+        } else {
+            $targetUsers = User::whereIn('role', ['siswa', 'siswa_perwakilan', 'orangtua'])->get();
+        }
+
+        foreach ($targetUsers as $user) {
+            $user->notify(new PengumumanBaruNotification(
+                $pengumuman->judul,
+                $pengumuman->isi,
+                $pengumuman->id
+            ));
+        }
+
+        return redirect()
+            ->route('admin.pengumuman.index')
+            ->with('success', 'Pengumuman terbaru berhasil dikirim');
+    }
+
     public function show(string $id)
     {
         $pengumuman = Pengumuman::findOrFail($id);
         return view('pages.admin.pengumuman.show', compact('pengumuman'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $pengumuman = Pengumuman::findOrFail($id);
         return view('pages.admin.pengumuman.edit', compact('pengumuman'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
+            'target' => 'required|in:siswa,orangtua,semua',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Pengumuman::findOrFail($id)->update([
-            'judul' => $request->judul,
-            'isi' => $request->isi,
-            'dibuat_oleh' => auth()->id(),
-        ]);
+        $pengumuman = Pengumuman::findOrFail($id);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil diupdate');
+        // Hapus gambar lama jika upload baru
+        if ($request->hasFile('gambar')) {
+            if ($pengumuman->gambar && Storage::disk('public')->exists($pengumuman->gambar)) {
+                Storage::disk('public')->delete($pengumuman->gambar);
+            }
+
+            $path = $request->file('gambar')->store('pengumuman', 'public');
+            $validated['gambar'] = $path;
+        }
+
+        $validated['dibuat_oleh'] = auth()->id();
+
+        $pengumuman->update($validated);
+
+        return redirect()->route('admin.pengumuman.index')
+            ->with('success', 'Pengumuman berhasil diperbarui');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $pengumuman = Pengumuman::findOrFail($id);
+
+        if ($pengumuman->gambar && Storage::disk('public')->exists($pengumuman->gambar)) {
+            Storage::disk('public')->delete($pengumuman->gambar);
+        }
+
         $pengumuman->delete();
-        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil dihapus');
+
+        return redirect()->route('admin.pengumuman.index')
+            ->with('success', 'Pengumuman berhasil dihapus');
     }
 }

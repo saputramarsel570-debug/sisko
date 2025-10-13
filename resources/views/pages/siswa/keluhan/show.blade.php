@@ -16,6 +16,15 @@
                     <label class="fw-bold d-block">Kategori</label>
                     <p class="mb-0">{{ ucfirst($keluhan->kategori) }}</p>
                 </div>
+                <div class="mb-3">
+                    @if(isset($keluhan) && $keluhan->gambar)
+                        <div class="mt-2">
+                            <img src="{{ asset('storage/' . $keluhan->gambar) }}" 
+                                 alt="Gambar Keluhan" 
+                                 class="img-thumbnail" style="max-width: 200px;">
+                        </div>
+                    @endif
+                </div>
                 <div class="mb-3 p-3 border rounded bg-light">
                     <label class="fw-bold d-block">Isi</label>
                     <p class="mb-0">{{ $keluhan->isi }}</p>

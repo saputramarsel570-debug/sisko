@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KeluhanSaran;
 use App\Models\User;
-use App\Notifications\KeluhanSaranNotification;
+use Illuminate\Support\Facades\Storage;
 
 class KeluhanController extends Controller
 {
@@ -17,7 +17,6 @@ class KeluhanController extends Controller
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->get();
         return view('pages.siswa_perwakilan.keluhan.index', compact('keluhan'));
-
     }
 
     /**
@@ -36,17 +35,25 @@ class KeluhanController extends Controller
         $request->validate([
             'kategori' => 'required|in:keluhan,saran',
             'isi'      => 'required|string',
+            'gambar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        $gambarPath = null;
+
+        // Simpan gambar jika diunggah
+        if ($request->hasFile('gambar')) {
+            $gambarPath = $request->file('gambar')->store('keluhan', 'public');
+        }
 
         $keluhan = KeluhanSaran::create([
             'user_id'  => auth()->id(),
             'kategori' => $request->kategori,
             'isi'      => $request->isi,
-            'status'   => 'pending', 
+            'status'   => 'pending',
+            'gambar'   => $gambarPath,
         ]);
 
         $gurus = User::where('role', 'guru')->get();
-
         foreach ($gurus as $guru) {
             $guru->notify(new \App\Notifications\KeluhanBaruNotification($keluhan));
         }
@@ -61,7 +68,6 @@ class KeluhanController extends Controller
     public function show(string $id)
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
-
         return view('pages.siswa_perwakilan.keluhan.show', compact('keluhan'));
     }
 
@@ -71,7 +77,6 @@ class KeluhanController extends Controller
     public function edit(string $id)
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
-
         return view('pages.siswa_perwakilan.keluhan.edit', compact('keluhan'));
     }
 
@@ -82,14 +87,27 @@ class KeluhanController extends Controller
     {
         $request->validate([
             'kategori' => 'required|in:keluhan,saran',
-            'isi' => 'required|string',
+            'isi'      => 'required|string',
+            'gambar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
 
+        // Jika ada gambar baru
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama
+            if ($keluhan->gambar && Storage::disk('public')->exists($keluhan->gambar)) {
+                Storage::disk('public')->delete($keluhan->gambar);
+            }
+
+            // Simpan gambar baru
+            $keluhan->gambar = $request->file('gambar')->store('keluhan_saran', 'public');
+        }
+
         $keluhan->update([
             'kategori' => $request->kategori,
             'isi'      => $request->isi,
+            'gambar'   => $keluhan->gambar,
         ]);
 
         return redirect()->route('siswa_perwakilan.keluhan.index')
@@ -102,6 +120,12 @@ class KeluhanController extends Controller
     public function destroy(string $id)
     {
         $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
+
+        // Hapus gambar dari storage jika ada
+        if ($keluhan->gambar && Storage::disk('public')->exists($keluhan->gambar)) {
+            Storage::disk('public')->delete($keluhan->gambar);
+        }
+
         $keluhan->delete();
 
         return redirect()->route('siswa_perwakilan.keluhan.index')

@@ -8,10 +8,12 @@
         <div class="card shadow-sm rounded-3">
             <div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
                 <i class="ti ti-message-2 me-2"></i>
-                <h4 class="mb-0 fw-semibold">Detail Keluhan & Saran</h4>
+                <h4 class="mb-0 fw-semibold">Edit Keluhan & Saran</h4>
             </div>
             <div class="card-body">
-                <form action="{{ route('siswa.keluhan.update', $keluhan->id) }}" method="POST">
+                <form action="{{ route('siswa.keluhan.update', $keluhan->id) }}" 
+                      method="POST" 
+                      enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -30,10 +32,10 @@
 
                     <div class="d-flex justify-content-start gap-2 mt-3">
                         <a href="{{ route('siswa.keluhan.index') }}" class="btn btn-secondary">
-                            <span class="ti ti-arrow-left"></span> Kembali
+                            <i class="ti ti-arrow-left"></i> Kembali
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <span class="ti ti-device-floppy"></span> Simpan
+                            <i class="ti ti-device-floppy"></i> Simpan Perubahan
                         </button>
                     </div>
                 </form>

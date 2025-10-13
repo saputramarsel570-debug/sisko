@@ -22,6 +22,7 @@
                     <thead class="table-light border-bottom">
                         <tr class="text-center">
                             <th style="width: 5%;">No</th>
+                            <th style="width: 40%;">Foto</th>
                             <th style="width: 35%;">Ekskul</th>
                             <th style="width: 30%;">Hari</th>
                             <th style="width: 15%;">Aksi</th>
@@ -31,6 +32,19 @@
                         @forelse($jadwal as $item)
                             <tr>
                                 <td class="fw-bold text-center">{{ $loop->iteration }}</td>
+                                <td>
+                                    @if ($item->ekstrakurikuler && $item->ekstrakurikuler->foto)
+                                        <img src="{{ asset('storage/' . $item->ekstrakurikuler->foto) }}"
+                                             alt="{{ $item->ekstrakurikuler->nama }}"
+                                             width="70" height="70"
+                                             class="rounded-3 shadow-sm object-fit-cover">
+                                    @else
+                                        <div class="bg-light border d-flex justify-content-center align-items-center rounded-3 shadow-sm"
+                                             style="width:70px; height:70px;">
+                                            <i class="ti ti-photo text-muted fs-4"></i>
+                                        </div>
+                                    @endif
+                                </td>
                                 <td>
                                     <i class="ti ti-users text-primary me-1"></i>
                                     {{ $item->ekstrakurikuler->nama }}

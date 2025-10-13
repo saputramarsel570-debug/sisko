@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="min-h-screen flex flex-col bg-gradient-to-br from-blue-600 via-sky-500 to-blue-300 text-gray-800">
+<body class="min-h-screen flex flex-col bg-gradient-to-br from-blue-600 via-sky-500 to-blue-300 text-white">
 
   <!-- Navbar -->
   <nav class="relative bg-white/20 backdrop-blur-md shadow-md px-6 py-3 flex items-center justify-end text-white">
@@ -23,71 +23,85 @@
     </a>
   </nav>
 
-  <!-- Header -->
-  <section class="text-center py-12 px-6 animate-fadeInUp text-white">
-    <h2 class="text-4xl font-extrabold drop-shadow-lg">Panduan Penggunaan untuk Orang Tua</h2>
-    <p class="mt-4 text-blue-50 text-lg max-w-2xl mx-auto leading-relaxed">
-      Berikut langkah-langkah bagi orang tua untuk memantau kegiatan dan perkembangan anak di SISKO.
-    </p>
+  <!-- Hero Section -->
+  <section class="text-center py-12 px-6 animate-fadeInUp">
+    <h2 class="text-4xl font-extrabold text-white drop-shadow-lg">Panduan Penggunaan untuk Siswa</h2>
+    <p class="mt-4 text-blue-50 text-lg">Ikuti panduan ini untuk memahami semua fitur di aplikasi SISKO.</p>
   </section>
 
-  <!-- Panduan Langkah-langkah -->
-  <section class="px-6 md:px-16 py-12 space-y-16 text-white">
+  <!-- Panduan Fitur -->
+  <section class="px-6 md:px-16 py-12 space-y-10">
 
-    <!-- Langkah 1 -->
-    <div class="flex flex-col md:flex-row items-center gap-8 animate-fadeInLeft">
-      <img src="{{ asset('img/ortu1.jpg') }}" alt="Langkah 1" class="w-full md:w-1/2 rounded-2xl shadow-2xl">
-      <div class="md:w-1/2">
-        <h3 class="text-2xl font-bold text-blue-100">1. Login Sebagai Orang Tua</h3>
-        <p class="mt-3 text-blue-50 leading-relaxed">
-          Gunakan akun yang diberikan sekolah untuk masuk ke sistem SISKO. Setiap orang tua memiliki akun tersendiri untuk memantau anaknya.
-        </p>
+    <!-- 1. Dashboard -->
+    <div class="flex flex-col md:flex-row items-center bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 animate-fadeInLeft">
+      <div class="md:w-1/3 text-center md:text-left">
+        <h3 class="text-2xl font-bold text-blue-700">1. Dashboard</h3>
+      </div>
+      <div class="md:w-2/3 mt-3 md:mt-0 text-gray-700">
+        Halaman pertama setelah login adalah <strong>Dashboard</strong>. Siswa dapat melihat detail pribadi seperti NIS, nama, kelas, alamat, username, dan role. Dashboard berfungsi sebagai pusat informasi utama.
       </div>
     </div>
 
-    <!-- Langkah 2 -->
-    <div class="flex flex-col md:flex-row-reverse items-center gap-8 animate-fadeInRight">
-      <img src="{{ asset('img/ortu2.jpg') }}" alt="Langkah 2" class="w-full md:w-1/2 rounded-2xl shadow-2xl">
-      <div class="md:w-1/2">
-        <h3 class="text-2xl font-bold text-blue-100">2. Melihat Kehadiran Anak</h3>
-        <p class="mt-3 text-blue-50 leading-relaxed">
-          Di menu “Absensi”, orang tua dapat memeriksa catatan kehadiran anak setiap hari dan mengetahui bila ada ketidakhadiran.
-        </p>
+    <!-- 2. Kelola Absensi -->
+    <div class="flex flex-col md:flex-row-reverse items-center bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 animate-fadeInRight">
+      <div class="md:w-1/3 text-center md:text-left">
+        <h3 class="text-2xl font-bold text-blue-700">2. Kelola Absensi</h3>
+      </div>
+      <div class="md:w-2/3 mt-3 md:mt-0 text-gray-700">
+        Fitur ini khusus untuk <strong>siswa perwakilan kelas</strong>. Kamu dapat mencatat kehadiran teman-teman dengan memilih status: Hadir, Izin, Sakit, atau Alfa, dan menambahkan keterangan jika perlu.
+        <ul class="list-disc list-inside mt-2">
+          <li><strong>Absensi Harian:</strong> Lihat dan edit status siswa per hari.</li>
+          <li><strong>Rekap Harian:</strong> Mengubah data jika ada perubahan atau kesalahan.</li>
+          <li><strong>Absensi Bulanan:</strong> Melihat ringkasan kehadiran per bulan dengan filter tanggal.</li>
+        </ul>
       </div>
     </div>
 
-    <!-- Langkah 3 -->
-    <div class="flex flex-col md:flex-row items-center gap-8 animate-fadeInLeft">
-      <img src="{{ asset('img/ortu3.jpg') }}" alt="Langkah 3" class="w-full md:w-1/2 rounded-2xl shadow-2xl">
-      <div class="md:w-1/2">
-        <h3 class="text-2xl font-bold text-blue-100">3. Memantau Nilai dan Perkembangan</h3>
-        <p class="mt-3 text-blue-50 leading-relaxed">
-          Gunakan menu “Nilai” untuk melihat hasil belajar anak dalam setiap mata pelajaran, lengkap dengan grafik perkembangan nilai.
-        </p>
+    <!-- 3. Pengaturan Sekolah -->
+    <div class="flex flex-col md:flex-row items-center bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 animate-fadeInLeft">
+      <div class="md:w-1/3 text-center md:text-left">
+        <h3 class="text-2xl font-bold text-blue-700">3. Pengaturan Sekolah</h3>
+      </div>
+      <div class="md:w-2/3 mt-3 md:mt-0 text-gray-700">
+        Menampilkan informasi umum sekolah seperti nama, alamat, kontak, dan data penting lainnya untuk siswa.
       </div>
     </div>
 
-    <!-- Langkah 4 -->
-    <div class="flex flex-col md:flex-row-reverse items-center gap-8 animate-fadeInRight">
-      <img src="{{ asset('img/ortu4.jpg') }}" alt="Langkah 4" class="w-full md:w-1/2 rounded-2xl shadow-2xl">
-      <div class="md:w-1/2">
-        <h3 class="text-2xl font-bold text-blue-100">4. Menerima Pengumuman Sekolah</h3>
-        <p class="mt-3 text-blue-50 leading-relaxed">
-          Semua pengumuman penting dari pihak sekolah dapat dilihat melalui menu “Pengumuman”, termasuk agenda kegiatan dan rapat wali murid.
-        </p>
+    <!-- 4. Jadwal Pelajaran -->
+    <div class="flex flex-col md:flex-row-reverse items-center bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 animate-fadeInRight">
+      <div class="md:w-1/3 text-center md:text-left">
+        <h3 class="text-2xl font-bold text-blue-700">4. Jadwal Pelajaran</h3>
+      </div>
+      <div class="md:w-2/3 mt-3 md:mt-0 text-gray-700">
+        Klik <strong>Pilih Kelas</strong> untuk menampilkan daftar kelas. Setelah memilih, jadwal pelajaran sesuai kelas akan muncul, sehingga siswa mudah mengetahui jadwal harian dan mingguan.
       </div>
     </div>
 
-    <!-- Langkah 5 -->
-    <div class="flex flex-col md:flex-row items-center gap-8 animate-fadeInLeft">
-      <img src="{{ asset('img/ortu5.jpg') }}" alt="Langkah 5" class="w-full md:w-1/2 rounded-2xl shadow-2xl">
-      <div class="md:w-1/2">
-        <h3 class="text-2xl font-bold text-blue-100">5. Komunikasi dengan Guru</h3>
-        <p class="mt-3 text-blue-50 leading-relaxed">
-          Orang tua dapat berkomunikasi langsung dengan guru melalui fitur “Pesan” untuk berdiskusi tentang perkembangan anak di sekolah.
-        </p>
+    <!-- 5. Pengumuman Sekolah -->
+    <div class="flex flex-col md:flex-row items-center bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 animate-fadeInLeft">
+      <div class="md:w-1/3 text-center md:text-left">
+        <h3 class="text-2xl font-bold text-blue-700">5. Pengumuman Sekolah</h3>
+      </div>
+      <div class="md:w-2/3 mt-3 md:mt-0 text-gray-700">
+        Semua pengumuman dari guru akan muncul di menu ini. Klik <strong>Lihat Detail</strong> untuk membaca informasi lengkap agar tidak ketinggalan info penting.
       </div>
     </div>
+
+    <!-- 6. Keluhan & Saran -->
+    <div class="flex flex-col md:flex-row-reverse items-center bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 animate-fadeInRight">
+      <div class="md:w-1/3 text-center md:text-left">
+        <h3 class="text-2xl font-bold text-blue-700">6. Keluhan & Saran</h3>
+      </div>
+      <div class="md:w-2/3 mt-3 md:mt-0 text-gray-700">
+        Siswa dapat mengirimkan keluhan atau saran. Pilih jenis data yang ingin dikirim, simpan, dan dapat diedit, dilihat detail, atau dihapus.
+        <ul class="list-disc list-inside mt-2">
+          <li><strong>Pending:</strong> Belum diproses guru</li>
+          <li><strong>Proses:</strong> Sedang ditanggapi guru</li>
+          <li><strong>Selesai:</strong> Telah ditindaklanjuti, balasan guru bisa dilihat</li>
+        </ul>
+      </div>
+    </div>
+
   </section>
 
   <!-- Footer -->
@@ -99,7 +113,6 @@
 
   <!-- Animasi -->
   <style>
-    /* Fade-in efek */
     .animate-fadeInUp {
       animation: fadeInUp 1s forwards;
       opacity: 0;
@@ -126,7 +139,6 @@
       to { opacity: 1; transform: translateX(0); }
     }
 
-    /* Tombol kembali animasi lembut */
     @keyframes bounceSlow {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-3px); }
