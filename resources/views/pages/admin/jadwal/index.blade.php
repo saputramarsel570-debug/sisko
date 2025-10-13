@@ -123,7 +123,7 @@
                                                 @endphp
                                                 <td colspan="{{ $colspan }}">
                                                     <strong>{{ $current->mataPelajaran->nama_mapel }}</strong><br>
-                                                    <small class="badge bg-secondary">{{ $current->guru->nama ?? '-' }}</small>
+                                                    <small>{{ $current->guru->nama ?? '-' }}</small>
                                                 </td>
                                                 @php $jam += $colspan; @endphp
                                             @else

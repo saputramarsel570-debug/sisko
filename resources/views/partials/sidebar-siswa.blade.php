@@ -74,6 +74,12 @@
               <span>Jadwal Ekskul</span>
           </a>
         </li>
+        <li class="menu-item {{ request()->routeIs('siswa.absensi.*') ? 'active' : '' }}">
+          <a href="{{ route('siswa.absensi.index') }}" class="menu-link">
+              <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
+              Absensi Siswa
+          </a>
+      </li>
 
            <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Informasi & Komunikasi</span>

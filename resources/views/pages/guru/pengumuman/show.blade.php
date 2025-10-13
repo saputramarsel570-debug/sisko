@@ -38,6 +38,11 @@
                             {{ $pengumuman->created_at->format('d-m-Y H:i') }}
                         </div>
                     </div>
+                    @if ($pengumuman->gambar)
+                        <div class="mb-3 text-center">
+                            <img src="{{ asset('storage/'.$pengumuman->gambar) }}" alt="gambar pengumuman" class="img-fluid rounded shadow-sm">
+                        </div>
+                    @endif
                 </div>
 
                 <div class="text-end mt-4">

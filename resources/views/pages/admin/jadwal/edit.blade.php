@@ -37,10 +37,10 @@
                         @endphp
                         <thead class="table-light">
                             <tr>
-                                <th class="text-center align-middle" style="width: 100px;">Hari</th>
+                                <th style="width: 100px;">Hari</th>
                                 @for($jam = 1; $jam <= 10; $jam++)
-                                    <th style="min-width: 160px;">
-                                        Jam {{ $jam }} <br>
+                                    <th style="min-width: 180px;">
+                                        Jam {{ $jam }}<br>
                                         <small class="text-muted">{{ $jamRanges[$jam] }}</small>
                                     </th>
                                 @endfor
@@ -55,26 +55,25 @@
                                             $data = $jadwalByHari[$hari][$jam] ?? null;
                                         @endphp
                                         <td>
-                                            <select name="jadwal[{{ $hari }}][{{ $jam }}][mapel_id]"
-                                                    class="form-select form-select-sm text-dark mb-1">
-                                                <option value="">- Mapel -</option>
-                                                @foreach($mapel as $m)
-                                                    <option value="{{ $m->id }}"
-                                                        {{ $data && $data->mata_pelajaran_id == $m->id ? 'selected' : '' }}>
-                                                        {{ $m->nama_mapel }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            {{-- Guru --}}
                                             <select name="jadwal[{{ $hari }}][{{ $jam }}][guru_id]"
-                                                    class="form-select form-select-sm text-dark mb-1">
-                                                <option value="">- Guru -</option>
+                                                    class="form-select form-select-sm text-dark guru-select"
+                                                    data-hari="{{ $hari }}" data-jam="{{ $jam }}">
+                                                <option value="">- Pilih Guru -</option>
                                                 @foreach($guru as $g)
                                                     <option value="{{ $g->id }}"
+                                                        data-mapel="{{ $g->mata_pelajaran_id }}"
                                                         {{ $data && $data->guru_id == $g->id ? 'selected' : '' }}>
-                                                        {{ $g->nama }}
+                                                        {{ $g->nama }} ({{ $g->mataPelajaran->nama_mapel ?? '-' }})
                                                     </option>
                                                 @endforeach
                                             </select>
+
+                                            {{-- Hidden input mapel --}}
+                                            <input type="hidden"
+                                                name="jadwal[{{ $hari }}][{{ $jam }}][mapel_id]"
+                                                id="mapel-{{ $hari }}-{{ $jam }}"
+                                                value="{{ $data->mata_pelajaran_id ?? '' }}">
                                         </td>
                                     @endfor
                                 </tr>
@@ -92,4 +91,18 @@
         </div>
     </div>
 </div>
+
+{{-- Script otomatis isi mapel --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.guru-select').forEach(select => {
+            select.addEventListener('change', function() {
+                const hari = this.dataset.hari;
+                const jam = this.dataset.jam;
+                const mapelId = this.selectedOptions[0].getAttribute('data-mapel');
+                document.getElementById(mapel-${hari}-${jam}).value = mapelId || '';
+            });
+        });
+    });
+</script>
 @endsection

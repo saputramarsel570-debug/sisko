@@ -111,35 +111,47 @@ class JadwalPelajaranController extends Controller
     }
 
     public function updateSchedule(Request $request, $kelasId)
-    {
-        $request->validate([
-            'jadwal' => 'required|array',
-        ]);
+{
+    $request->validate([
+        'jadwal' => 'required|array',
+    ]);
 
-        $hariList = ['Senin','Selasa','Rabu','Kamis','Jumat'];
+    $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
 
-        foreach ($hariList as $hari) {
-            if (!isset($request->jadwal[$hari])) continue;
+    foreach ($hariList as $hari) {
+        if (!isset($request->jadwal[$hari])) continue;
 
-            foreach ($request->jadwal[$hari] as $jam => $data) {
-                if (!empty($data['mapel_id'])) {
-                    JadwalPelajaran::updateOrCreate(
-                        [
-                            'kelas_id'   => $kelasId,
-                            'hari'       => $hari,
-                            'jam_mulai'  => $jam,
-                            'jam_selesai'=> $jam,
-                        ],
-                        [
-                            'mata_pelajaran_id' => $data['mapel_id'],
-                            'guru_id'           => $data['guru_id'] ?? null,
-                        ]
-                    );
+        foreach ($request->jadwal[$hari] as $jam => $data) {
+            $guruId  = $data['guru_id'] ?? null;
+            $mapelId = $data['mapel_id'] ?? null;
+
+            // 🔹 Kalau mapel kosong, ambil dari data guru
+            if ($guruId && !$mapelId) {
+                $guru = \App\Models\Guru::find($guruId);
+                if ($guru) {
+                    $mapelId = $guru->mata_pelajaran_id;
                 }
             }
-        }
 
-        return redirect()->route('admin.jadwal.index', ['kelas_id' => $kelasId])
-                         ->with('success', 'Jadwal pelajaran berhasil diperbarui');
+            // 🔹 Simpan kalau minimal ada guru dan mapel
+            if ($guruId && $mapelId) {
+                JadwalPelajaran::updateOrCreate(
+                    [
+                        'kelas_id'    => $kelasId,
+                        'hari'        => $hari,
+                        'jam_mulai'   => $jam,
+                        'jam_selesai' => $jam,
+                    ],
+                    [
+                        'guru_id'           => $guruId,
+                        'mata_pelajaran_id' => $mapelId,
+                    ]
+                );
+            }
+        }
     }
+
+    return redirect()->route('admin.jadwal.index', ['kelas_id' => $kelasId])
+                     ->with('success', 'Jadwal pelajaran berhasil diperbarui');
+}
 }

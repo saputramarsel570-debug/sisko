@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Orangtua;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Guru;
 
 class DashboardController extends Controller
 {
@@ -12,6 +13,8 @@ class DashboardController extends Controller
         $user = Auth::user();
         $orangtua = $user->orangtua;
 
-        return view('pages.orangtua.dashboard.index', compact('user', 'orangtua'));
+        $gurus = Guru::with('mataPelajaran')->get();
+
+        return view('pages.orangtua.dashboard.index', compact('user', 'orangtua', 'gurus'));
     }
 }

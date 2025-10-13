@@ -13,15 +13,16 @@
                 </a>
             </div>
 
-            <div class="card-body bg-white rounded-bottom-4">
+            <div class="card-body bg-white rounded-bottom-4 mt-3">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle mb-0">
-                        <thead class="table-primary text-center">
+                    <table class="table table-bordered table-hover align-middle mb-0 mt-3">
+                        <thead class="table-primary text-center mt-3">
                             <tr>
                                 <th width="5%">No</th>
                                 <th width="20%">Judul</th>
                                 <th width="35%">Isi</th>
                                 <th width="20%">Dibuat Oleh</th>
+                                <th width="15%">Gambar</th>
                                 <th width="20%">Aksi</th>
                             </tr>
                         </thead>
@@ -32,6 +33,13 @@
                                     <td>{{ $item->judul }}</td>
                                     <td>{{ Str::limit($item->isi, 80) }}</td>
                                     <td>{{ $item->user->name ?? 'Tidak diketahui' }}</td>
+                                    <td>
+                                        @if ($item->gambar)
+                                        <img src="{{ asset('storage/'.$item->gambar) }}" alt="gambar" width="80" class="rounded shadow-sm">
+                                    @else
+                                        <span class="text-muted">Tidak ada gambar</span>
+                                    @endif
+                                    </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="">
                                             <a href="{{ route('guru.pengumuman.show', $item->id) }}" class="btn btn-sm btn-secondary">

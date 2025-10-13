@@ -29,6 +29,16 @@
                                   required>{{ old('isi', $pengumuman->isi) }}</textarea>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="gambar" class="form-label fw-semibold">Gambar (opsional)</label>
+                        <input type="file" class="form-control" name="gambar" accept="image/*">
+                        @if(isset($pengumuman) && $pengumuman->gambar)
+                            <div class="mt-2">
+                                <img src="{{ asset('storage/'.$pengumuman->gambar) }}" alt="Gambar" class="img-fluid rounded" width="200">
+                            </div>
+                        @endif
+                    </div>
+
                     <div class="mb-4">
                         <label for="target" class="form-label fw-semibold text-primary">Target Audiens</label>
                         <select name="target" id="target" class="form-select border-primary-subtle shadow-sm">

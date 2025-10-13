@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Guru;
+namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -35,7 +35,7 @@ class AbsensiController extends Controller
 
         $absensi = $query->orderBy('tanggal', 'desc')->get();
 
-        return view('pages.guru.absensi.index', compact(
+        return view('pages.siswa.absensi.index', compact(
             'absensi', 'kelas', 'selectedKelas', 'periode', 'tanggal', 'bulan', 'tahun'
         ));
     }

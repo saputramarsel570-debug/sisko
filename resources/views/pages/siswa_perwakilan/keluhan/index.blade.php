@@ -51,18 +51,31 @@
                                     <td>{{ $item->balasan ?? '-' }}</td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
+                                            {{-- Tombol Lihat selalu aktif --}}
                                             <a href="{{ route('siswa_perwakilan.keluhan.show', $item->id) }}" 
                                                class="btn btn-sm btn-secondary">
                                                 <i class="ti ti-eye"></i>
                                             </a>
-                                            <a href="{{ route('siswa_perwakilan.keluhan.edit', $item->id) }}" 
-                                               class="btn btn-sm btn-primary">
-                                                <i class="ti ti-pencil"></i>
-                                            </a>
-                                            <button type="button" class="btn btn-sm btn-danger"
-                                                onclick="actionDelete('{{ route('siswa_perwakilan.keluhan.destroy', $item->id) }}')">
-                                                <i class="ti ti-trash"></i>
-                                            </button>
+
+                                            {{-- Tombol Edit & Hapus --}}
+                                            @if($item->status == 'pending')
+                                                <a href="{{ route('siswa_perwakilan.keluhan.edit', $item->id) }}" 
+                                                   class="btn btn-sm btn-primary">
+                                                    <i class="ti ti-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-danger"
+                                                    onclick="actionDelete('{{ route('siswa_perwakilan.keluhan.destroy', $item->id) }}')">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+                                            @else
+                                                {{-- Disable tombol jika sudah proses/selesai --}}
+                                                <button type="button" class="btn btn-sm btn-primary disabled" disabled>
+                                                    <i class="ti ti-pencil-off"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger disabled" disabled>
+                                                    <i class="ti ti-trash-off"></i>
+                                                </button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -78,11 +91,11 @@
                 </div>
             </div>
         </div>
+
         <form id="form-delete" action="" method="POST" class="d-none">
             @csrf
             @method('DELETE')
         </form>
-
     </div>
 </div>
 @endsection
@@ -95,6 +108,10 @@
     .table-hover tbody tr:hover {
         background-color: #f1f8ff !important;
         transition: 0.2s;
+    }
+    .btn.disabled, .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed !important;
     }
 </style>
 @endpush

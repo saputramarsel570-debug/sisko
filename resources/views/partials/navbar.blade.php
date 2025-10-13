@@ -49,7 +49,9 @@
 
                 <!-- Notification -->
                 @php
-  $notifications = auth()->user()->notifications()->latest()->take(10)->get();
+  $notifications = auth()->user()->notifications()->latest()->take(20)->get();
+  $unread = $notifications->whereNull('read_at');
+  $read = $notifications->whereNotNull('read_at');
   $unreadCount = auth()->user()->unreadNotifications->count();
 @endphp
 
@@ -63,6 +65,7 @@
       @endif
     </span>
   </a>
+
   <ul class="dropdown-menu dropdown-menu-end p-0">
     <li class="dropdown-menu-header border-bottom">
       <div class="dropdown-header d-flex align-items-center py-3">
@@ -70,19 +73,53 @@
         <span class="badge bg-label-primary me-2">{{ $unreadCount }} Baru</span>
       </div>
     </li>
+
     <li class="dropdown-notifications-list scrollable-container">
       <ul class="list-group list-group-flush">
-        @foreach($notifications as $notif)
-          <li class="list-group-item list-group-item-action dropdown-notifications-item {{ $notif->read_at ? 'marked-as-read' : '' }}">
-            <a href="{{ route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
-              <div class="flex-grow-1">
-                <h6 class="small mb-1">{{ $notif->data['title'] }}</h6>
-                <small class="mb-1 d-block text-body">{{ $notif->data['message'] }}</small>
-                <small class="text-muted">{{ $notif->created_at->diffForHumans() }}</small>
-              </div>
-            </a>
+
+        {{-- Bagian Belum Dibaca --}}
+        @if($unread->count() > 0)
+          <li class="list-group-item bg-secondary text-white fw-bold">
+            Belum Dibaca
           </li>
-        @endforeach
+          @foreach($unread as $notif)
+            <li class="list-group-item list-group-item-action bg-primary-subtle">
+              <a href="{{ route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
+                <div class="flex-grow-1">
+                  <h6 class="small mb-1 fw-bold">{{ $notif->data['title'] }}</h6>
+                  <small class="mb-1 d-block text-body">{{ $notif->data['message'] }}</small>
+                  <small class="text-muted">{{ $notif->created_at->diffForHumans() }}</small>
+                </div>
+              </a>
+            </li>
+          @endforeach
+        @endif
+
+        {{-- Bagian Sudah Dibaca --}}
+        @if($read->count() > 0)
+          <li class="list-group-item bg-secondary text-white fw-bold">
+            Sudah Dibaca
+          </li>
+          @foreach($read as $notif)
+            <li class="list-group-item list-group-item-action bg-light text-muted">
+              <a href="{{ route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
+                <div class="flex-grow-1">
+                  <h6 class="small mb-1 fw-normal">{{ $notif->data['title'] }}</h6>
+                  <small class="mb-1 d-block text-body">{{ $notif->data['message'] }}</small>
+                  <small class="text-muted">{{ $notif->created_at->diffForHumans() }}</small>
+                </div>
+              </a>
+            </li>
+          @endforeach
+        @endif
+
+        {{-- Jika tidak ada notifikasi sama sekali --}}
+        @if($notifications->count() == 0)
+          <li class="list-group-item text-center py-4 text-muted">
+            Tidak ada notifikasi
+          </li>
+        @endif
+
       </ul>
     </li>
   </ul>

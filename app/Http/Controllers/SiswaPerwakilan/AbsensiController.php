@@ -12,48 +12,76 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class AbsensiController extends Controller
 {
-    // Halaman absensi default (punya kamu sebelumnya)
-    public function index()
-    {
-        $user = auth()->user();
-        $siswaPerwakilan = Siswa::where('user_id', $user->id)->first();
+    // Halaman absensi default (index)
+    public function index(Request $request)
+{
+    $user = auth()->user();
 
-        if (!$siswaPerwakilan) {
-            abort(403, 'Anda bukan perwakilan kelas');
-        }
+    // Ambil kelas dari siswa perwakilan yang login
+    $kelasId = optional($user->siswa->kelas)->id;
 
-        $kelas = $siswaPerwakilan->kelas;
-        $siswaKelas = Siswa::where('kelas_id', $kelas->id)->get();
-
-        $tanggalHariIni = Carbon::now()->toDateString();
-        $isWeekend = Carbon::now()->isWeekend();
-
-        $sudahAdaAbsensi = Absensi::where('kelas_id', $kelas->id)
-            ->whereDate('tanggal', $tanggalHariIni)
-            ->exists();
-
-        $absensiHariIni = Absensi::where('kelas_id', $kelas->id)
-            ->where('tanggal', $tanggalHariIni)
-            ->get();
-
-        return view('pages.siswa_perwakilan.absensi.index', compact(
-            'kelas', 'siswaKelas', 'absensiHariIni', 'sudahAdaAbsensi', 'isWeekend'
-        ));
+    // Kalau nggak ada kelas, tampilkan pesan
+    if (!$kelasId) {
+        return back()->with('error', 'Data kelas siswa perwakilan tidak ditemukan.');
     }
+
+    $periode = $request->get('periode', 'hari');
+    $tanggal = $request->get('tanggal', now()->toDateString());
+    $bulan = $request->get('bulan', now()->format('Y-m'));
+
+    // Ambil data sesuai periode
+    if ($periode === 'hari') {
+        $tanggalList = [$tanggal];
+    } else {
+        $tanggalList = \Carbon\CarbonPeriod::create(
+            \Carbon\Carbon::parse($bulan . '-01'),
+            \Carbon\Carbon::parse($bulan . '-01')->endOfMonth()
+        )->toArray();
+        $tanggalList = array_map(fn($d) => $d->format('Y-m-d'), $tanggalList);
+    }
+
+    // Ambil siswa & absensi berdasarkan kelas
+    $siswaList = \App\Models\Siswa::where('kelas_id', $kelasId)->get();
+    $absensi = \App\Models\Absensi::whereIn('siswa_id', $siswaList->pluck('id'))
+        ->whereIn('tanggal', $tanggalList)
+        ->get();
+
+    // Buat array rekap
+    $rekap = [];
+    $totalStatus = [];
+
+    foreach ($absensi as $a) {
+        $rekap[$a->siswa_id][$a->tanggal] = $a;
+        $status = strtolower($a->status);
+        $totalStatus[$a->siswa_id][$status] = ($totalStatus[$a->siswa_id][$status] ?? 0) + 1;
+    }
+
+    return view('pages.siswa_perwakilan.absensi.rekap', compact(
+        'siswaList', 'rekap', 'tanggalList', 'periode', 'tanggal', 'bulan', 'totalStatus', 'kelasId'
+    ));
+}
 
     // Rekap absensi (harian & bulanan)
     public function rekap(Request $request)
     {
         $user = auth()->user();
         $siswaPerwakilan = Siswa::where('user_id', $user->id)->first();
+
         if (!$siswaPerwakilan) {
             abort(403, 'Anda bukan perwakilan kelas');
         }
 
-        $kelasId = $request->kelas_id;
+        // Otomatis ambil kelas dari siswa perwakilan
+        $kelasId = $siswaPerwakilan->kelas_id;
+
+        // Jika user masih bisa memilih manual, tapi default-nya tetap kelas perwakilan
+        if ($request->filled('kelas_id')) {
+            $kelasId = $request->kelas_id;
+        }
+
         $periode = $request->periode;
         $bulan   = $request->bulan;
-        $tanggal = now()->toDateString(); // default hari ini
+        $tanggal = $request->tanggal ?? now()->toDateString();
 
         $kelasList   = Kelas::orderBy('nama_kelas')->get();
         $siswaList   = collect();
@@ -63,7 +91,6 @@ class AbsensiController extends Controller
 
         if ($kelasId) {
             $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
-
             $query = Absensi::where('kelas_id', $kelasId);
 
             if ($periode === 'hari') {
@@ -83,6 +110,7 @@ class AbsensiController extends Controller
                 $start = Carbon::createFromDate($y, $m, 1);
                 $end   = $start->copy()->endOfMonth();
                 $tanggalList = collect();
+
                 while ($start <= $end) {
                     $tanggalList->push($start->toDateString());
                     $start->addDay();
@@ -90,7 +118,7 @@ class AbsensiController extends Controller
             } else {
                 $tanggalList = $absensi->pluck('tanggal')->unique()->sort()->values();
                 if ($tanggalList->isEmpty()) {
-                    $tanggalList = collect([$tanggal]); // minimal tampil hari ini
+                    $tanggalList = collect([$tanggal]);
                 }
             }
 
@@ -109,15 +137,8 @@ class AbsensiController extends Controller
         }
 
         return view('pages.siswa_perwakilan.absensi.rekap', compact(
-            'kelasList',
-            'siswaList',
-            'tanggalList',
-            'rekap',
-            'kelasId',
-            'periode',
-            'tanggal',
-            'bulan',
-            'totalStatus'
+            'kelasList', 'siswaList', 'tanggalList', 'rekap',
+            'kelasId', 'periode', 'tanggal', 'bulan', 'totalStatus'
         ));
     }
 
@@ -130,6 +151,7 @@ class AbsensiController extends Controller
         if (!$siswaPerwakilan) {
             abort(403, 'Anda bukan perwakilan kelas');
         }
+
         if (Carbon::now()->isWeekend()) {
             return redirect()->route('siswa_perwakilan.absensi.index')
                 ->with('error', 'Absensi hanya bisa diisi Senin sampai Jumat');
@@ -137,6 +159,7 @@ class AbsensiController extends Controller
 
         $kelasId = $siswaPerwakilan->kelas_id;
         $tanggalHariIni = now()->toDateString();
+
         $sudahAda = Absensi::where('kelas_id', $kelasId)
             ->whereDate('tanggal', $tanggalHariIni)
             ->exists();
@@ -191,7 +214,7 @@ class AbsensiController extends Controller
         $absensiData = $request->absensi ?? [];
 
         foreach ($absensiData as $siswaId => $data) {
-            \App\Models\Absensi::updateOrCreate(
+            Absensi::updateOrCreate(
                 [
                     'siswa_id' => $siswaId,
                     'tanggal' => $tanggal,
@@ -199,6 +222,7 @@ class AbsensiController extends Controller
                 [
                     'status' => $data['status'] ?? null,
                     'keterangan' => $data['keterangan'] ?? null,
+                    'kelas_id' => $kelasId,
                 ]
             );
         }
@@ -212,16 +236,17 @@ class AbsensiController extends Controller
             ->with('success', 'Absensi telah diubah ✅');
     }
 
-     public function exportPdf(Request $request)
+    // Export PDF
+    public function exportPdf(Request $request)
     {
         $kelasId = $request->kelas_id;
         $periode = $request->periode;
         $bulan   = $request->bulan;
         $tanggal = now()->toDateString();
 
-        $kelas = \App\Models\Kelas::findOrFail($kelasId);
-        $siswaList = \App\Models\Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
-        $absensiQuery = \App\Models\Absensi::where('kelas_id', $kelasId);
+        $kelas = Kelas::findOrFail($kelasId);
+        $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
+        $absensiQuery = Absensi::where('kelas_id', $kelasId);
 
         if ($periode === 'hari') {
             $absensiQuery->whereDate('tanggal', $tanggal);
@@ -241,7 +266,8 @@ class AbsensiController extends Controller
             'bulan' => $bulan,
             'tanggal' => $tanggal,
         ];
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pages.siswa_perwakilan.absensi.pdf', $data)
+
+        $pdf = Pdf::loadView('pages.siswa_perwakilan.absensi.pdf', $data)
             ->setPaper('a4', 'landscape');
 
         return $pdf->download('Rekap-Absensi-' . $kelas->nama_kelas . '.pdf');

@@ -1,4 +1,4 @@
-@extends('layouts.app-guru')
+@extends('layouts.app-siswa')
 
 @section('title', 'Absensi Siswa')
 

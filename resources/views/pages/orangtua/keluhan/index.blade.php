@@ -47,20 +47,33 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->balasan ?? '-' }}</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                    <div class="gap-2 d-flex justify-content-betwen">
-                                    <a href="{{ route('orangtua.keluhan.show', $item->id) }}" class="btn btn-sm btn-secondary">
-                                        <span class="ti ti-eye"></span>
-                                    </a>
-                                    <a href="{{ route('orangtua.keluhan.edit', $item->id) }}" class="btn btn-sm btn-primary">
-                                        <span class="ti ti-pencil"></span>
-                                    </a>
-                                    <a href="javascript:;" class="btn btn-sm btn-danger"
-                                        onclick="actionDelete('{{ route('orangtua.keluhan.destroy', $item->id) }}')">
-                                        <span class="ti ti-trash"></span>
-                                    </a>
-                                    </div>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        {{-- Tombol Lihat selalu aktif --}}
+                                        <a href="{{ route('orangtua.keluhan.show', $item->id) }}" 
+                                           class="btn btn-sm btn-secondary">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+
+                                        {{-- Tombol Edit & Hapus --}}
+                                        @if($item->status == 'pending')
+                                            <a href="{{ route('orangtua.keluhan.edit', $item->id) }}" 
+                                               class="btn btn-sm btn-primary">
+                                                <i class="ti ti-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                onclick="actionDelete('{{ route('orangtua.keluhan.destroy', $item->id) }}')">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        @else
+                                            {{-- Disable tombol jika sudah proses/selesai --}}
+                                            <button type="button" class="btn btn-sm btn-primary disabled" disabled>
+                                                <i class="ti ti-pencil-off"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger disabled" disabled>
+                                                <i class="ti ti-trash-off"></i>
+                                            </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

@@ -12,6 +12,17 @@
                 <h2 class="fw-bold">{{ $pengumuman->judul }}</h2>
                 <p class="text-muted small">Diposting: {{ $pengumuman->created_at->format('d-m-Y H:i') }}</p>
                 <hr>
+                @if ($pengumuman->gambar)
+                    <div class="text-center mb-3">
+                        <img src="{{ asset('storage/' . $pengumuman->gambar) }}" 
+                             alt="Gambar Pengumuman" 
+                             class="img-fluid rounded shadow-sm" 
+                             style="max-width: 400px;">
+                    </div>
+                @else
+                    <p class="text-center text-muted fst-italic">Tidak ada gambar</p>
+                @endif
+
                 <p class="fs-5">{!! nl2br(e($pengumuman->isi)) !!}</p>
             </div>
             <div class="card-footer text-end">
