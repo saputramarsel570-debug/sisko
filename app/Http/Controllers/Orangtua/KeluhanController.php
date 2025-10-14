@@ -13,12 +13,25 @@ class KeluhanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $keluhan = KeluhanSaran::where('user_id', auth()->id())->get();
-        return view('pages.orangtua.keluhan.index', compact('keluhan'));
+    public function index(Request $request)
+{
+    $query = KeluhanSaran::where('user_id', auth()->id());
+
+    // ✅ Filter kategori (Keluhan / Saran)
+    if ($request->filled('kategori')) {
+        $query->where('kategori', $request->kategori);
     }
 
+    // ✅ Filter status (pending / proses / selesai)
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    // ✅ Urutkan dari yang terbaru
+    $keluhan = $query->orderByDesc('created_at')->get();
+
+    return view('pages.orangtua.keluhan.index', compact('keluhan'));
+}
     /**
      * Show the form for creating a new resource.
      */
@@ -59,7 +72,7 @@ class KeluhanController extends Controller
         }
 
         return redirect()->route('orangtua.keluhan.index')
-            ->with('success', 'Keluhan atau Saran berhasil dikirim dan telah diteruskan ke guru.');
+            ->with('success', 'Keluhan atau Saran berhasil dikirim');
     }
 
     /**
@@ -84,35 +97,37 @@ class KeluhanController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'kategori' => 'required|in:keluhan,saran',
-            'isi'      => 'required|string',
-            'gambar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+{
+    $request->validate([
+        'kategori' => 'required|in:keluhan,saran',
+        'isi'      => 'required|string',
+        'gambar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
+    $keluhan = KeluhanSaran::where('user_id', auth()->id())->findOrFail($id);
 
-        // Jika ada gambar baru
-        if ($request->hasFile('gambar')) {
-            // Hapus gambar lama
-            if ($keluhan->gambar && Storage::disk('public')->exists($keluhan->gambar)) {
-                Storage::disk('public')->delete($keluhan->gambar);
-            }
+    $gambarPath = $keluhan->gambar; // default: pakai gambar lama
 
-            // Simpan gambar baru
-            $keluhan->gambar = $request->file('gambar')->store('keluhan_saran', 'public');
+    // Jika ada gambar baru
+    if ($request->hasFile('gambar')) {
+        // Hapus gambar lama
+        if ($gambarPath && Storage::disk('public')->exists($gambarPath)) {
+            Storage::disk('public')->delete($gambarPath);
         }
 
-        $keluhan->update([
-            'kategori' => $request->kategori,
-            'isi'      => $request->isi,
-            'gambar'   => $keluhan->gambar,
-        ]);
-
-        return redirect()->route('orangtua.keluhan.index')
-            ->with('success', 'Keluhan/Saran berhasil diperbarui');
+        // Simpan gambar baru
+        $gambarPath = $request->file('gambar')->store('keluhan_saran', 'public');
     }
+
+    $keluhan->update([
+        'kategori' => $request->kategori,
+        'isi'      => $request->isi,
+        'gambar'   => $gambarPath,
+    ]);
+
+    return redirect()->route('orangtua.keluhan.index')
+        ->with('success', 'Keluhan/Saran berhasil diperbarui');
+}
 
     /**
      * Remove the specified resource from storage.

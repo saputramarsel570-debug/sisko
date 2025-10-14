@@ -40,8 +40,9 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->grou
 Route::get('/jadwal/export-pdf/{kelasId?}', [JadwalController::class, 'exportPdf'])
     ->name('jadwal.exportPdf');
 
-Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->name('siswa.')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
- });
+    Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+        Route::post('/profile/email', [ProfileController::class, 'updateEmail'])->name('profile.email');
+        Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
+    });

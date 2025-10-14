@@ -2,48 +2,48 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Rekap Jurnal - {{ $tanggal }}</title>
+    <title>Rekap Jurnal Bulanan</title>
     <style>
-        body { font-family: sans-serif; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #000; padding: 6px; text-align: left; vertical-align: top; }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #000; padding: 5px; text-align: left; vertical-align: top; }
         th { background-color: #f0f0f0; }
-        h3, p { margin: 0; }
+        h3, h4 { text-align: center; margin-bottom: 5px; }
+        .title { margin-bottom: 20px; text-align: center; }
     </style>
 </head>
 <body>
-    <h3>Rekap Jurnal Kelas {{ $kelasList->where('id', $kelasId)->first()->nama_kelas ?? '-' }}</h3>
-    <p>Tanggal: {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</p>
+    <h3>Rekap Jurnal Bulan {{ \Carbon\Carbon::parse($periode.'-01')->translatedFormat('F Y') }}</h3>
+    <p class="text-center"><strong>Kelas: {{ $kelas->nama_kelas ?? '-' }}</strong></p>
+    <hr>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Jam</th>
-                <th>Mata Pelajaran</th>
-                <th>Guru</th>
-                <th>Materi</th>
-                <th>Catatan</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($jadwalGabung as $jadwal)
-                @php
-                    $jurnal = $jurnalHariIni[$jadwal->jam_mulai.'-'.$jadwal->jam_selesai] ?? null;
-                    $jamTampil = $jadwal->jam_mulai . ' - ' . $jadwal->jam_selesai;
-                @endphp
+    @foreach($jadwalBulanan as $tanggal => $jadwalHarian)
+        <h4>{{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, d F Y') }}</h4>
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ $jamTampil }}</td>
-                    <td>{{ $jadwal->mataPelajaran->nama_mapel ?? '-' }}</td>
-                    <td>{{ $jadwal->guru->nama ?? '-' }}</td>
-                    <td>{{ $jurnal->materi ?? '-' }}</td>
-                    <td>{{ $jurnal->catatan ?? '-' }}</td>
+                    <th width="25%">Mata Pelajaran</th>
+                    <th width="20%">Guru</th>
+                    <th width="25%">Materi</th>
+                    <th width="30%">Catatan</th>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="5" style="text-align:center;">Tidak ada data</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach($jadwalHarian as $jadwal)
+                    @php
+                        $jurnal = isset($jurnalBulanan[$tanggal])
+                            ? $jurnalBulanan[$tanggal]->firstWhere('mata_pelajaran_id', $jadwal->mata_pelajaran_id)
+                            : null;
+                    @endphp
+                    <tr>
+                        <td>{{ $jadwal->mataPelajaran->nama_mapel ?? '-' }}</td>
+                        <td>{{ $jadwal->guru->nama ?? '-' }}</td>
+                        <td>{{ $jurnal->materi ?? '-' }}</td>
+                        <td>{{ $jurnal->catatan ?? '-' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endforeach
 </body>
 </html>

@@ -15,16 +15,18 @@ class RekapJurnalController extends Controller
     public function index(Request $request)
     {
         $kelasId = $request->get('kelas_id');
+        $mode = $request->get('mode', 'harian');
         $tanggal = $request->get('tanggal') ?? Carbon::today()->toDateString();
+        $periode = $request->get('periode') ?? date('Y-m');
 
-        // daftar kelas
         $kelasList = Kelas::orderBy('nama_kelas')->get();
-
         $jadwalGabung = collect();
         $jurnalHariIni = collect();
+        $jadwalBulanan = collect();
+        $jurnalBulanan = collect();
 
         if ($kelasId) {
-            // mapping hari
+            // Mapping hari Indonesia
             $hariMap = [
                 'Monday'    => 'Senin',
                 'Tuesday'   => 'Selasa',
@@ -33,50 +35,84 @@ class RekapJurnalController extends Controller
                 'Friday'    => 'Jumat',
             ];
 
-            $hariInggris = Carbon::parse($tanggal)->format('l');
-            $hari = $hariMap[$hariInggris] ?? null;
+            // === MODE HARIAN ===
+            if ($mode == 'harian') {
+                $hariInggris = Carbon::parse($tanggal)->format('l');
+                $hari = $hariMap[$hariInggris] ?? null;
 
-            if ($hari) {
-                // ambil jadwal hari itu
-                $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'guru'])
-                    ->where('kelas_id', $kelasId)
-                    ->where('hari', $hari)
-                    ->orderBy('jam_mulai')
-                    ->get();
+                if ($hari) {
+                    $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'guru'])
+                        ->where('kelas_id', $kelasId)
+                        ->where('hari', $hari)
+                        ->orderBy('jam_mulai')
+                        ->get();
 
-                // gabungkan jadwal berurutan sama mapel + guru
-                foreach ($jadwalHariIni as $jadwal) {
-                    if ($jadwalGabung->isEmpty()) {
-                        $jadwalGabung->push(clone $jadwal);
-                        continue;
+                    // gabungkan jadwal berurutan sama guru & mapel
+                    foreach ($jadwalHariIni as $jadwal) {
+                        if ($jadwalGabung->isEmpty()) {
+                            $jadwalGabung->push(clone $jadwal);
+                            continue;
+                        }
+
+                        $lastIndex = $jadwalGabung->keys()->last();
+                        $last = $jadwalGabung[$lastIndex];
+
+                        if (
+                            $last->guru_id == $jadwal->guru_id &&
+                            $last->mata_pelajaran_id == $jadwal->mata_pelajaran_id &&
+                            ($last->jam_selesai + 1) == $jadwal->jam_mulai
+                        ) {
+                            $last->jam_selesai = $jadwal->jam_selesai;
+                            $jadwalGabung[$lastIndex] = $last;
+                        } else {
+                            $jadwalGabung->push(clone $jadwal);
+                        }
                     }
 
-                    $lastIndex = $jadwalGabung->keys()->last();
-                    $last      = $jadwalGabung[$lastIndex];
-
-                    if (
-                        $last->guru_id == $jadwal->guru_id &&
-                        $last->mata_pelajaran_id == $jadwal->mata_pelajaran_id &&
-                        ($last->jam_selesai + 1) == $jadwal->jam_mulai
-                    ) {
-                        $last->jam_selesai = $jadwal->jam_selesai;
-                        $jadwalGabung[$lastIndex] = $last;
-                    } else {
-                        $jadwalGabung->push(clone $jadwal);
-                    }
+                    $jurnalHariIni = Jurnal::where('kelas_id', $kelasId)
+                        ->whereDate('tanggal', $tanggal)
+                        ->get()
+                        ->keyBy(function ($item) {
+                            return $item->jam_mulai . '-' . $item->jam_selesai;
+                        });
                 }
+            }
 
-                // ambil jurnal yang sudah diisi
-                $jurnalHariIni = Jurnal::where('kelas_id', $kelasId)
-                    ->whereDate('tanggal', $tanggal)
+            // === MODE BULANAN ===
+            if ($mode == 'bulanan') {
+                [$tahun, $bulan] = explode('-', $periode);
+
+                $tanggalAwal = Carbon::createFromDate($tahun, $bulan, 1);
+                $tanggalAkhir = $tanggalAwal->copy()->endOfMonth();
+
+                // Ambil semua jurnal bulan itu
+                $jurnalBulanan = Jurnal::with(['guru', 'mataPelajaran'])
+                    ->where('kelas_id', $kelasId)
+                    ->whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir])
+                    ->orderBy('tanggal')
                     ->get()
-                    ->keyBy(function ($item) {
-                        return $item->jam_mulai.'-'.$item->jam_selesai;
-                    });
+                    ->groupBy('tanggal');
+
+                // Ambil jadwal tetap per hari sesuai nama hari
+                $jadwalKelas = JadwalPelajaran::with(['mataPelajaran', 'guru'])
+                    ->where('kelas_id', $kelasId)
+                    ->orderBy('jam_mulai')
+                    ->get()
+                    ->groupBy('hari');
+
+                // Buat daftar tanggal dalam sebulan
+                $periodeTanggal = Carbon::parse($tanggalAwal);
+                while ($periodeTanggal->lte($tanggalAkhir)) {
+                    $hariInggris = $periodeTanggal->format('l');
+                    $hari = $hariMap[$hariInggris] ?? null;
+                    if ($hari && isset($jadwalKelas[$hari])) {
+                        $jadwalBulanan[$periodeTanggal->toDateString()] = $jadwalKelas[$hari];
+                    }
+                    $periodeTanggal->addDay();
+                }
             }
         }
 
-        // jam ranges
         $jamRanges = [
             1 => '07:00 - 07:45',
             2 => '07:45 - 08:30',
@@ -93,55 +129,69 @@ class RekapJurnalController extends Controller
         return view('pages.admin.jurnal.rekap', compact(
             'kelasList',
             'kelasId',
+            'mode',
             'tanggal',
+            'periode',
             'jadwalGabung',
             'jurnalHariIni',
+            'jadwalBulanan',
+            'jurnalBulanan',
             'jamRanges'
         ));
     }
+
     public function exportPdf(Request $request)
     {
         $kelasId = $request->kelas_id;
-        $tanggal = $request->tanggal ?? date('Y-m-d');
+        $periode = $request->periode ?? date('Y-m');
+        [$tahun, $bulan] = explode('-', $periode);
 
-        // ambil data yang sama seperti tampilan normal
-        $kelasList = Kelas::all();
-        $jadwalGabung = JadwalPelajaran::with(['mataPelajaran', 'guru'])
-            ->where('kelas_id', $kelasId)
-            ->get();
-
-        $jurnalHariIni = Jurnal::where('tanggal', $tanggal)
-                            ->where('kelas_id', $kelasId)
-                            ->get()
-                            ->keyBy(fn($item) => $item->jam_mulai.'-'.$item->jam_selesai);
-
-        // jam ranges (biar jam tampil sama kayak di index)
-        $jamRanges = [
-            1 => '07:00 - 07:45',
-            2 => '07:45 - 08:30',
-            3 => '08:30 - 09:15',
-            4 => '09:30 - 10:15',
-            5 => '10:15 - 11:00',
-            6 => '11:00 - 11:45',
-            7 => '12:30 - 13:15',
-            8 => '13:15 - 14:00',
-            9 => '14:00 - 14:45',
-            10 => '14:45 - 15:30',
+        $kelas = Kelas::find($kelasId);
+        $hariMap = [
+            'Monday'    => 'Senin',
+            'Tuesday'   => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday'  => 'Kamis',
+            'Friday'    => 'Jumat',
         ];
 
+        $tanggalAwal = Carbon::createFromDate($tahun, $bulan, 1);
+        $tanggalAkhir = $tanggalAwal->copy()->endOfMonth();
+
+        $jurnalBulanan = Jurnal::with(['guru', 'mataPelajaran'])
+            ->where('kelas_id', $kelasId)
+            ->whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir])
+            ->orderBy('tanggal')
+            ->get()
+            ->groupBy('tanggal');
+
+        $jadwalKelas = JadwalPelajaran::with(['mataPelajaran', 'guru'])
+            ->where('kelas_id', $kelasId)
+            ->orderBy('jam_mulai')
+            ->get()
+            ->groupBy('hari');
+
+        $jadwalBulanan = collect();
+        $periodeTanggal = Carbon::parse($tanggalAwal);
+        while ($periodeTanggal->lte($tanggalAkhir)) {
+            $hariInggris = $periodeTanggal->format('l');
+            $hari = $hariMap[$hariInggris] ?? null;
+            if ($hari && isset($jadwalKelas[$hari])) {
+                $jadwalBulanan[$periodeTanggal->toDateString()] = $jadwalKelas[$hari];
+            }
+            $periodeTanggal->addDay();
+        }
+
         $data = [
-            'kelasList' => $kelasList,
-            'kelasId' => $kelasId,
-            'tanggal' => $tanggal,
-            'jadwalGabung' => $jadwalGabung,
-            'jurnalHariIni' => $jurnalHariIni,
-            'jamRanges' => $jamRanges,
+            'kelas' => $kelas,
+            'periode' => $periode,
+            'jadwalBulanan' => $jadwalBulanan,
+            'jurnalBulanan' => $jurnalBulanan,
         ];
 
         $pdf = Pdf::loadView('pages.admin.jurnal.rekap_pdf', $data)
-                ->setPaper('a4', 'portrait');
+            ->setPaper('a4', 'portrait');
 
-        return $pdf->stream('Rekap_Jurnal_' . $tanggal . '.pdf');
+        return $pdf->stream('Rekap_Jurnal_Bulan_' . $periode . '.pdf');
     }
 }
-

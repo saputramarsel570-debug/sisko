@@ -92,7 +92,9 @@
                                 <span class="badge bg-danger">Alfa</span>
                             @endif
                         </td>
-                        <td>{{ $a->keterangan ?? '-' }}</td>
+                        <td>
+                            <textarea class="form-control form-control-sm" rows="1" readonly>{{ $a->keterangan }}</textarea>
+                        </td>
                     </tr>
                 @empty
                     <tr>

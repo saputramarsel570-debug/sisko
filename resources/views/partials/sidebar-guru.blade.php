@@ -54,8 +54,8 @@
               </li>
               <li class="menu-item {{ request()->routeIs('guru.pengaturan.*') ? 'active' : '' }}">
                 <a href="{{ route('guru.pengaturan.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-settings"></i>
-                    <div>Pengaturan Sekolah</div>
+                    <i class="menu-icon tf-icons ti ti-building"></i>
+                    <div>Profil Sekolah</div>
                 </a>
                 </li>
                 <li class="menu-header small text-uppercase">

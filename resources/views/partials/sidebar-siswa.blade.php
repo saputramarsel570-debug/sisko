@@ -54,8 +54,8 @@
               </li>
             <li class="menu-item {{ request()->routeIs('siswa.pengaturan.*') ? 'active' : '' }}">
               <a href="{{ route('siswa.pengaturan.index') }}" class="menu-link">
-                  <i class="menu-icon tf-icons ti ti-settings"></i>
-                  <div>Pengaturan Sekolah</div>
+                  <i class="menu-icon tf-icons ti ti-building"></i>
+                  <div>Profil Sekolah</div>
               </a>
               </li>
 

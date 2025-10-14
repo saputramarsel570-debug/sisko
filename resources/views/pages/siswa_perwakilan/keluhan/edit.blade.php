@@ -29,7 +29,26 @@
                         <label class="form-label fw-bold">Isi</label>
                         <textarea name="isi" rows="4" class="form-control" required>{{ $keluhan->isi }}</textarea>
                     </div>
-
+                    <div class="mb-3 p-3 border rounded-3 bg-light">
+                        <label class="form-label fw-bold">Gambar (opsional)</label>
+                        
+                        {{-- Preview gambar lama kalau ada --}}
+                        @if($keluhan->gambar)
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $keluhan->gambar) }}" 
+                                     alt="Gambar Keluhan" 
+                                     class="img-thumbnail" 
+                                     style="max-width: 200px; height: auto;">
+                            </div>
+                        @endif
+                    
+                        {{-- Input untuk upload gambar baru --}}
+                        <input type="file" name="gambar" class="form-control" accept="image/*">
+                    
+                        <small class="text-muted d-block mt-1">
+                            Biarkan kosong jika tidak ingin mengubah gambar.
+                        </small>
+                    </div>
                     <div class="d-flex justify-content-start gap-2 mt-3">
                         <a href="{{ route('siswa_perwakilan.keluhan.index') }}" class="btn btn-secondary">
                             <i class="ti ti-arrow-left"></i> Kembali

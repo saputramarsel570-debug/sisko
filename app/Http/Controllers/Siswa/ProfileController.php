@@ -15,6 +15,9 @@ class ProfileController extends Controller
         return view('pages.siswa.profile.index', compact('user'));
     }
 
+    /**
+     * Update password siswa
+     */
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -34,6 +37,25 @@ class ProfileController extends Controller
         return back()->with('success', 'Password berhasil diperbarui');
     }
 
+    /**
+     * Update email siswa
+     */
+    public function updateEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
+        ]);
+
+        $user = Auth::user();
+        $user->email = $request->email;
+        $user->save();
+
+        return back()->with('success', 'Email berhasil diperbarui');
+    }
+
+    /**
+     * Update foto profil siswa
+     */
     public function updatePhoto(Request $request)
     {
         $request->validate([
@@ -42,12 +64,13 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
+        // Hapus foto lama jika ada
         if ($user->profile_photo && file_exists(public_path('uploads/profile/' . $user->profile_photo))) {
-            unlink(public_path('uploads/profile' . $user->profile_photo));
+            unlink(public_path('uploads/profile/' . $user->profile_photo));
         }
 
-        $filename = time() . '-' . $request->profile_photo->extension();
-
+        // Simpan foto baru
+        $filename = time() . '.' . $request->profile_photo->extension();
         $request->profile_photo->move(public_path('uploads/profile'), $filename);
 
         $user->profile_photo = $filename;

@@ -14,21 +14,30 @@ class AbsensiController extends Controller
     {
         $user = Auth::user();
 
+        // Pastikan hanya role orangtua yang bisa akses
         if ($user->role !== 'orangtua') {
             abort(403, 'Akses ditolak');
         }
 
         $siswa = $user->orangTua->siswa;
 
-        $bulan = $request->input('bulan', Carbon::now()->month);
-        $tahun = $request->input('tahun', Carbon::now()->year);
+        // Ambil filter dari request
+        $bulan   = $request->input('bulan', Carbon::now()->month);
+        $tahun   = $request->input('tahun', Carbon::now()->year);
+        $tanggal = $request->input('tanggal'); // format YYYY-MM-DD dari input date
 
-        $absensi = Absensi::where('siswa_id', $siswa->id)
-            ->whereMonth('tanggal', $bulan)
+        // Query dasar
+        $query = Absensi::where('siswa_id', $siswa->id)
             ->whereYear('tanggal', $tahun)
-            ->orderBy('tanggal', 'asc')
-            ->get();
+            ->whereMonth('tanggal', $bulan);
 
-        return view('pages.orangtua.absensi.index', compact('siswa', 'absensi', 'bulan', 'tahun'));
+        // Jika tanggal difilter, tambahkan whereDate
+        if (!empty($tanggal)) {
+            $query->whereDate('tanggal', $tanggal);
+        }
+
+        $absensi = $query->orderBy('tanggal', 'asc')->get();
+
+        return view('pages.orangtua.absensi.index', compact('siswa', 'absensi', 'bulan', 'tahun', 'tanggal'));
     }
 }

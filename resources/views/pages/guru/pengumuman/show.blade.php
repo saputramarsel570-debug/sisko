@@ -38,12 +38,18 @@
                             {{ $pengumuman->created_at->format('d-m-Y H:i') }}
                         </div>
                     </div>
-                    @if ($pengumuman->gambar)
-                        <div class="mb-3 text-center">
-                            <img src="{{ asset('storage/'.$pengumuman->gambar) }}" alt="gambar pengumuman" class="img-fluid rounded shadow-sm">
-                        </div>
-                    @endif
                 </div>
+
+                {{-- 📸 Gambar (klik untuk lihat besar) --}}
+                @if ($pengumuman->gambar)
+                <div class="mb-3 text-center">
+                    <img src="{{ asset('storage/'.$pengumuman->gambar) }}" 
+                         alt="gambar pengumuman" 
+                         class="img-fluid rounded shadow-sm" 
+                         style="max-height: 300px; cursor: pointer; object-fit: cover;"
+                         onclick="showImageModal(this)">
+                </div>
+                @endif
 
                 <div class="text-end mt-4">
                     <a href="{{ route('guru.pengumuman.index') }}" class="btn btn-primary px-4 rounded-3 shadow-sm">
@@ -54,4 +60,29 @@
         </div>
     </div>
 </div>
+
+{{-- 🖼 Modal Gambar Besar --}}
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%; max-height: 90%;">
+        <div class="modal-content bg-transparent border-0 shadow-none" onclick="hideImageModal()">
+            <img id="modalImage" src="" alt="Gambar besar" class="mx-auto d-block rounded-3" 
+                 style="max-width: 100%; max-height: 90vh; object-fit: contain;">
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+function showImageModal(img) {
+    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    document.getElementById('modalImage').src = img.src;
+    modal.show();
+}
+function hideImageModal() {
+    const modalEl = document.getElementById('imageModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
+}
+</script>
+@endpush

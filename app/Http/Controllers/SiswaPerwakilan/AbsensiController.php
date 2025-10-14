@@ -238,38 +238,78 @@ class AbsensiController extends Controller
 
     // Export PDF
     public function exportPdf(Request $request)
-    {
-        $kelasId = $request->kelas_id;
-        $periode = $request->periode;
-        $bulan   = $request->bulan;
-        $tanggal = now()->toDateString();
+{
+    $kelasId = $request->kelas_id;
+    $periode = $request->periode;
+    $bulan   = $request->bulan;
+    $tanggal = now()->toDateString();
 
-        $kelas = Kelas::findOrFail($kelasId);
-        $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
-        $absensiQuery = Absensi::where('kelas_id', $kelasId);
+    $kelas = Kelas::findOrFail($kelasId);
+    $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
 
-        if ($periode === 'hari') {
-            $absensiQuery->whereDate('tanggal', $tanggal);
-        } elseif ($periode === 'bulan' && $bulan) {
-            $m = date('m', strtotime($bulan));
-            $y = date('Y', strtotime($bulan));
-            $absensiQuery->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
-        }
+    $absensiQuery = Absensi::where('kelas_id', $kelasId);
 
-        $absensi = $absensiQuery->orderBy('tanggal')->get();
-
-        $data = [
-            'kelas' => $kelas,
-            'siswaList' => $siswaList,
-            'absensi' => $absensi,
-            'periode' => $periode,
-            'bulan' => $bulan,
-            'tanggal' => $tanggal,
-        ];
-
-        $pdf = Pdf::loadView('pages.siswa_perwakilan.absensi.pdf', $data)
-            ->setPaper('a4', 'landscape');
-
-        return $pdf->download('Rekap-Absensi-' . $kelas->nama_kelas . '.pdf');
+    if ($periode === 'hari') {
+        $absensiQuery->whereDate('tanggal', $tanggal);
+    } elseif ($periode === 'bulan' && $bulan) {
+        $m = date('m', strtotime($bulan));
+        $y = date('Y', strtotime($bulan));
+        $absensiQuery->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
     }
+
+    $absensi = $absensiQuery->orderBy('tanggal')->get();
+
+    // 🔹 Generate tanggalList
+    if ($periode === 'bulan' && $bulan) {
+        $m = date('m', strtotime($bulan));
+        $y = date('Y', strtotime($bulan));
+
+        $start = \Carbon\Carbon::createFromDate($y, $m, 1);
+        $end   = $start->copy()->endOfMonth();
+        $tanggalList = collect();
+
+        while ($start <= $end) {
+            $tanggalList->push($start->toDateString());
+            $start->addDay();
+        }
+    } else {
+        $tanggalList = $absensi->pluck('tanggal')->unique()->sort()->values();
+        if ($tanggalList->isEmpty()) {
+            $tanggalList = collect([$tanggal]);
+        }
+    }
+
+    // 🔹 Bentuk rekap & total
+    $rekap = [];
+    $totalStatus = [];
+
+    foreach ($absensi as $a) {
+        $rekap[$a->siswa_id][(string)$a->tanggal] = $a;
+    }
+
+    foreach ($siswaList as $s) {
+        $totalStatus[$s->id] = [
+            'hadir' => $absensi->where('siswa_id', $s->id)->where('status', 'hadir')->count(),
+            'sakit' => $absensi->where('siswa_id', $s->id)->where('status', 'sakit')->count(),
+            'izin'  => $absensi->where('siswa_id', $s->id)->where('status', 'izin')->count(),
+            'alfa'  => $absensi->where('siswa_id', $s->id)->where('status', 'alfa')->count(),
+        ];
+    }
+
+    $data = [
+        'kelas' => $kelas,
+        'siswaList' => $siswaList,
+        'rekap' => $rekap,
+        'tanggalList' => $tanggalList,
+        'totalStatus' => $totalStatus,
+        'periode' => $periode,
+        'bulan' => $bulan,
+        'tanggal' => $tanggal,
+    ];
+
+    $pdf = Pdf::loadView('pages.siswa_perwakilan.absensi.pdf', $data)
+        ->setPaper('a4', 'landscape');
+
+    return $pdf->download('Rekap-Absensi-' . $kelas->nama_kelas . '.pdf');
+}
 }

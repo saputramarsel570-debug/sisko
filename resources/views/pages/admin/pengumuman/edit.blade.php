@@ -11,7 +11,9 @@
             </div>
 
             <div class="card-body bg-white rounded-bottom-4">
-                <form action="{{ route('admin.pengumuman.update', $pengumuman->id) }}" method="POST">
+                <form action="{{ route('admin.pengumuman.update', $pengumuman->id) }}" 
+                      method="POST" 
+                      enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -36,6 +38,24 @@
                             <option value="orangtua" {{ old('target', $pengumuman->target) == 'orangtua' ? 'selected' : '' }}>Orang Tua</option>
                             <option value="semua" {{ old('target', $pengumuman->target) == 'semua' ? 'selected' : '' }}>Semua</option>
                         </select>
+                    </div>
+
+                    {{-- 🔹 Tambahan: Upload dan preview gambar --}}
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-primary">Gambar Pengumuman (opsional)</label>
+                        
+                        {{-- Preview gambar lama --}}
+                        @if($pengumuman->gambar)
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $pengumuman->gambar) }}" 
+                                     alt="Gambar Pengumuman" 
+                                     class="img-thumbnail" 
+                                     style="max-width: 250px; height: auto;">
+                            </div>
+                        @endif
+
+                        <input type="file" name="gambar" class="form-control border-primary-subtle shadow-sm" accept="image/*">
+                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar.</small>
                     </div>
 
                     <div class="d-flex justify-content-end">

@@ -5,17 +5,30 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KeluhanSaran;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
-use App\Notifications\KeluhanSaranNotification;
 
 class KeluhanSaranController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $keluhan = KeluhanSaran::all();
+        $query = KeluhanSaran::query()->with('user')->latest();
+
+        // 🔹 Filter berdasarkan kategori (Keluhan / Saran)
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        // 🔹 Filter berdasarkan status (pending / proses / selesai)
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $keluhan = $query->get();
+
         return view('pages.admin.keluhan_saran.index', compact('keluhan'));
     }
 
@@ -53,14 +66,26 @@ class KeluhanSaranController extends Controller
             'balasan' => $request->balasan,
         ]);
 
-        if ($request->filled('balasan')) {
-            $user = $keluhan->user;
-            if ($user) {
-                $user->notify(new \App\Notifications\BalasanKeluhanNotification($keluhan));
-            }
+        // 🔹 Kirim notifikasi ke user kalau dibalas
+        if ($request->filled('balasan') && $keluhan->user) {
+            $keluhan->user->notify(new \App\Notifications\BalasanKeluhanNotification($keluhan));
         }
 
         return redirect()->route('admin.keluhan_saran.index')
-            ->with('success', 'Keluhan/Saran berhasil diperbarui');
+        ->with('success', 'Keluhan/Saran berhasil diperbarui');
+    }
+    
+    public function destroy(string $id)
+    {
+        $keluhan = KeluhanSaran::findOrFail($id);
+
+        if ($keluhan->gambar && Storage::disk('public')->exists($keluhan->gambar)) {
+            Storage::disk('public')->delete($keluhan->gambar);
+        }
+
+        $keluhan->delete();
+
+        return redirect()->route('admin.keluhan_saran.index')
+            ->with('success', 'Keluhan berhasil dihapus');
     }
 }

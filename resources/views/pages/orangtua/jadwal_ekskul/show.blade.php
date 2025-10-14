@@ -60,7 +60,11 @@
                     <div class="text-center mt-2">
                         <img src="{{ asset('storage/' . $jadwal_ekskul->ekstrakurikuler->foto) }}"
                              alt="Foto {{ $jadwal_ekskul->ekstrakurikuler->nama }}"
-                             class="img-fluid rounded shadow-sm border" style="max-height: 250px;">
+                             class="img-fluid rounded shadow-sm border"
+                             style="max-height: 250px; cursor: zoom-in;"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal"
+                             data-src="{{ asset('storage/' . $jadwal_ekskul->ekstrakurikuler->foto) }}">
                     </div>
                 </div>
                 @endif
@@ -76,4 +80,39 @@
 
     </div>
 </div>
+
+{{-- Modal Gambar --}}
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-transparent border-0 shadow-none">
+      <div class="modal-body p-0 d-flex justify-content-center align-items-center">
+        <img id="previewImage" src="" alt="Preview" 
+             class="w-100 rounded-4 shadow-lg"
+             style="max-height: 85vh; object-fit: contain;">
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+    // Modal Preview Gambar
+    const imageModal = document.getElementById('imageModal');
+    imageModal.addEventListener('show.bs.modal', event => {
+        const triggerImg = event.relatedTarget;
+        const newSrc = triggerImg.getAttribute('data-src');
+        const modalImg = document.getElementById('previewImage');
+        modalImg.src = newSrc;
+    });
+
+    // Tutup modal jika klik area luar gambar
+    document.addEventListener('click', function(e) {
+        const modalBody = document.querySelector('#imageModal .modal-body');
+        if (e.target === modalBody) {
+            const modalInstance = bootstrap.Modal.getInstance(document.getElementById('imageModal'));
+            modalInstance.hide();
+        }
+    });
+</script>
+@endpush

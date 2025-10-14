@@ -44,7 +44,7 @@ class PengumumanController extends Controller
         // Kirim notifikasi
         $targetUsers = collect();
         if ($validated['target'] === 'siswa') {
-            $targetUsers = User::whereIn('role', ['siswa', 'siswa_perwakilan'])->get();
+            $targetUsers = User::whereIn('role', ['siswa', 'siswa_perwakilan', 'orangtua'])->get();
         } elseif ($validated['target'] === 'orangtua') {
             $targetUsers = User::where('role', 'orangtua')->get();
         } else {
@@ -77,33 +77,30 @@ class PengumumanController extends Controller
     }
 
     public function update(Request $request, string $id)
-    {
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'required|string',
-            'target' => 'required|in:siswa,orangtua,semua',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'judul' => 'required|string|max:255',
+        'isi' => 'required|string',
+        'target' => 'required|in:siswa,orangtua,semua',
+        'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        $pengumuman = Pengumuman::findOrFail($id);
+    $pengumuman = Pengumuman::findOrFail($id);
+    $validated['dibuat_oleh'] = auth()->id();
 
-        // Hapus gambar lama jika upload baru
-        if ($request->hasFile('gambar')) {
-            if ($pengumuman->gambar && Storage::disk('public')->exists($pengumuman->gambar)) {
-                Storage::disk('public')->delete($pengumuman->gambar);
-            }
-
-            $path = $request->file('gambar')->store('pengumuman', 'public');
-            $validated['gambar'] = $path;
+    // Simpan gambar baru jika ada
+    if ($request->hasFile('gambar')) {
+        if ($pengumuman->gambar && Storage::disk('public')->exists($pengumuman->gambar)) {
+            Storage::disk('public')->delete($pengumuman->gambar);
         }
-
-        $validated['dibuat_oleh'] = auth()->id();
-
-        $pengumuman->update($validated);
-
-        return redirect()->route('guru.pengumuman.index')
-            ->with('success', 'Pengumuman berhasil diperbarui');
+        $validated['gambar'] = $request->file('gambar')->store('pengumuman', 'public');
     }
+
+    $pengumuman->update($validated);
+
+    return redirect()->route('guru.pengumuman.index')
+        ->with('success', 'Pengumuman berhasil diperbarui');
+}
 
     public function destroy(string $id)
     {

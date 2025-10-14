@@ -16,7 +16,7 @@
         <div class="card shadow-lg border-0 rounded-4">
             <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center">
                 <h4 class="mb-0 fw-bold">
-                    <i class="ti ti-settings me-2"></i> Pengaturan Sekolah
+                    <i class="ti ti-building me-2"></i> Profil Sekolah
                 </h4>
             </div>
 

@@ -15,7 +15,7 @@
         <div class="card shadow-lg border-0 rounded-4">
             <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center">
                 <h4 class="mb-0 fw-bold">
-                    <i class="ti ti-settings me-2"></i> Pengaturan Sekolah
+                    <i class="ti ti-building me-2"></i> Profil Sekolah
                 </h4>
                 <a href="{{ route('admin.pengaturan.edit', $pengaturan->id) }}" class="btn btn-warning btn-sm">
                     <i class="ti ti-edit"></i> Edit
@@ -26,7 +26,9 @@
                 <div class="row align-items-center mb-4">
                     <div class="col-md-3 text-center">
                         @if($pengaturan->logo)
-                            <img src="{{ asset('storage/'.$pengaturan->logo) }}" class="rounded border mb-2 mt-3" height="100" alt="Logo Sekolah">
+                            <img src="{{ asset('storage/'.$pengaturan->logo) }}" 
+                                 class="rounded border mb-2 mt-3 img-clickable" 
+                                 height="100" alt="Logo Sekolah">
                         @else
                             <div class="bg-light text-muted d-flex align-items-center justify-content-center rounded mb-2" style="width:100px; height:100px;">
                                 <i class="ti ti-building fs-2"></i>
@@ -79,7 +81,9 @@
                         <div class="border rounded p-3">
                             <h6 class="fw-bold mb-2"><i class="ti ti-file-text"></i> Kop Surat</h6>
                             @if($pengaturan->kop_surat)
-                                <img src="{{ asset('storage/'.$pengaturan->kop_surat) }}" class="rounded border" height="100" alt="Kop Surat">
+                                <img src="{{ asset('storage/'.$pengaturan->kop_surat) }}" 
+                                     class="rounded border img-clickable" 
+                                     height="100" alt="Kop Surat">
                             @else
                                 <span class="text-muted">Belum diunggah</span>
                             @endif
@@ -89,7 +93,9 @@
                         <div class="border rounded p-3">
                             <h6 class="fw-bold mb-2"><i class="ti ti-signature"></i> Tanda Tangan Kepala Sekolah</h6>
                             @if($pengaturan->ttd_kepsek)
-                                <img src="{{ asset('storage/'.$pengaturan->ttd_kepsek) }}" class="rounded border" height="100" alt="TTD Kepala Sekolah">
+                                <img src="{{ asset('storage/'.$pengaturan->ttd_kepsek) }}" 
+                                     class="rounded border img-clickable" 
+                                     height="100" alt="TTD Kepala Sekolah">
                             @else
                                 <span class="text-muted">Belum diunggah</span>
                             @endif
@@ -100,10 +106,20 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Gambar -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-transparent border-0 shadow-none">
+      <img id="previewImage" src="" class="img-fluid rounded" alt="Preview">
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
 <script>
+    // Auto fade alert
     setTimeout(function () {
         let alert = document.getElementById('success');
         if (alert) {
@@ -112,5 +128,15 @@
             setTimeout(() => alert.remove(), 500);
         }
     }, 3000);
+
+    // Klik gambar → tampilkan modal
+    document.querySelectorAll('.img-clickable').forEach(img => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', () => {
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            document.getElementById('previewImage').src = img.src;
+            modal.show();
+        });
+    });
 </script>
 @endpush
