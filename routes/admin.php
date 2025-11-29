@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\JadwalEkskulController;
 use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\Admin\RekapJurnalController;
 use App\Models\KeluhanSaran;
+use App\Http\Controllers\NotificationsController;
+
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function ()
 {
@@ -62,7 +64,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::get('/absensi/export', [AbsensiController::class, 'export'])->name('absensi.export');
 
     Route::resource('/mapel', MataPelajaranController::class);
-
+    Route::get('/pengumuman/arsip', [App\Http\Controllers\Admin\PengumumanController::class, 'arsip'])
+        ->name('pengumuman.arsip');
     Route::resource('/pengumuman', PengumumanController::class);
 
     Route::resource('/keluhan_saran', KeluhanSaranController::class);
@@ -79,6 +82,7 @@ Route::prefix('admin/jadwal')->middleware(['auth', 'role:admin'])->name('admin.j
     Route::get('/{kelas}/edit', [JadwalPelajaranController::class, 'edit'])->name('edit');
     Route::post('/{kelas}', [JadwalPelajaranController::class, 'updateSchedule'])->name('updateSchedule');
 });
+Route::get('/notifications/{id}/read', [NotificationsController::class, 'read'])->name('notifications.read');
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
     Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');
@@ -99,9 +103,9 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
-   Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-   Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-   Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-   Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/email', [ProfileController::class, 'updateEmail'])->name('profile.email');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
 });

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h3 class="fw-bold mb-4">👋 Dashboard Siswa</h3>
+    <h3 class="fw-bold mb-4">Dashboard Siswa</h3>
 
     <div class="card shadow-lg border-0 rounded-3">
         <div class="card-header bg-gradient bg-primary text-white">

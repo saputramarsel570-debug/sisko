@@ -61,6 +61,12 @@
                 <li class="menu-header small text-uppercase">
                   <span class="menu-header-text">AKADEMIK</span>
                   </li>
+                  <li class="menu-item {{ request()->routeIs('guru.jadwal.*') ? 'active' : '' }}">
+                    <a href="{{ route('guru.jadwal.index') }}" class="menu-link">
+                      <i class="menu-icon tf-icons ti ti-calendar-event"></i>
+                        Jadwal Pelajaran
+                    </a>
+                 </li>
                   <li class="menu-item {{ request()->routeIs('guru.absensi.*') ? 'active' : '' }}">
                     <a href="{{ route('guru.absensi.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-clipboard-check"></i>
@@ -73,6 +79,18 @@
                       Jurnal Guru
                   </a>
               </li>
+              <li class="menu-item {{ request()->routeIs('guru.absensirek.*') ? 'active' : '' }}">
+                <a href="{{ route('guru.absensirek.rekap') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-clipboard-list"></i>
+                    <div>Rekap Absensi</div>
+                </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('guru.jurnals.*') ? 'active' : '' }}">
+                  <a href="{{ route('guru.jurnals.rekap') }}" class="menu-link">
+                      <i class="menu-icon tf-icons ti ti-notebook"></i>
+                      <div>Rekap Jurnal</div>
+                  </a>
+                  </li>
               <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">INFORMASI & KOMUNIKASI</span>
                 </li>

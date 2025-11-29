@@ -13,12 +13,20 @@
       </div>
     @endif
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold mb-0"><i class="ti ti-megaphone"></i> Pengumuman Guru</h3>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h3 class="fw-bold mb-0">
+            <i class="ti ti-megaphone"></i> Pengumuman Admin
+        </h3>
+    
+        <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
+            <a href="{{ route('admin.pengumuman.arsip') }}" class="btn btn-outline-dark rounded-pill shadow-sm">
+                <i class="ti ti-archive"></i> Lihat Arsip
+            </a>
             <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-primary rounded-pill shadow-sm">
                 <i class="ti ti-plus"></i> Tambah Pengumuman
             </a>
         </div>
+    </div>
 
         <div class="row">
             @forelse ($pengumuman as $item)

@@ -50,6 +50,15 @@
                             <option value="semua" {{ old('target') == 'semua' ? 'selected' : '' }}>Semua</option>
                         </select>
                     </div>
+                    <div class="mb-4">
+                        <label for="tanggal_berakhir" class="form-label fw-semibold text-primary">
+                            Tanggal Berakhir Pengumuman
+                        </label>
+                        <input type="date" name="tanggal_berakhir" id="tanggal_berakhir" 
+                               class="form-control border-primary-subtle shadow-sm"
+                               value="{{ old('tanggal_berakhir') }}">
+                        <small class="text-muted">Biarkan kosong jika pengumuman berlaku tanpa batas waktu.</small>
+                    </div>
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('guru.pengumuman.index') }}" class="btn btn-secondary me-2">Batal</a>
                         <button type="submit" class="btn btn-primary">Simpan</button>

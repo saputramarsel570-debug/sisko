@@ -17,17 +17,22 @@ class KeluhanController extends Controller
 {
     $query = KeluhanSaran::where('user_id', auth()->id());
 
-    // ✅ Filter kategori (Keluhan / Saran)
+    // Filter kategori
     if ($request->filled('kategori')) {
         $query->where('kategori', $request->kategori);
     }
 
-    // ✅ Filter status (pending / proses / selesai)
+    // Filter status
     if ($request->filled('status')) {
         $query->where('status', $request->status);
     }
 
-    // ✅ Urutkan dari yang terbaru
+    // 🔍 Filter pencarian berdasarkan isi
+    if ($request->filled('search')) {
+        $query->where('isi', 'LIKE', '%' . $request->search . '%');
+    }
+
+    // Urutkan dari yang terbaru
     $keluhan = $query->orderByDesc('created_at')->get();
 
     return view('pages.siswa.keluhan.index', compact('keluhan'));

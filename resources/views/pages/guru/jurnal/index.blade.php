@@ -6,20 +6,29 @@
 <div class="row">
     <div class="col-md-12">
 
-        <!-- Header & Pilih Kelas -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="fw-bold"><i class="ti ti-notebook"></i> Jurnal Mengajar</h3>
-            <form method="GET" action="{{ route('guru.jurnal.index') }}">
-                <div class="input-group">
-                    <select name="kelas_id" class="form-select" onchange="this.form.submit()">
-                        <option value="">-- Pilih Kelas --</option>
-                        @foreach(\App\Models\Kelas::all() as $k)
-                            <option value="{{ $k->id }}" {{ $kelasId == $k->id ? 'selected' : '' }}>
-                                {{ $k->nama_kelas }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+        <!-- Header & Pilih Kelas + Tanggal -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold mb-3 mb-md-0">
+                <i class="ti ti-notebook"></i> Jurnal Mengajar
+            </h3>
+
+            <form method="GET" action="{{ route('guru.jurnal.index') }}" class="d-flex flex-wrap gap-2">
+                <!-- Pilih Kelas -->
+                <select name="kelas_id" class="form-select" required>
+                    <option value="">-- Pilih Kelas --</option>
+                    @foreach(\App\Models\Kelas::all() as $k)
+                        <option value="{{ $k->id }}" {{ $kelasId == $k->id ? 'selected' : '' }}>
+                            {{ $k->nama_kelas }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <!-- Pilih Tanggal -->
+                <input type="date" name="tanggal" class="form-control" value="{{ $tanggal ?? now()->toDateString() }}">
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="ti ti-search"></i> Tampilkan
+                </button>
             </form>
         </div>
 
@@ -27,13 +36,15 @@
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    Jurnal Hari Ini ({{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, d M Y') }})
+                    Jurnal Tanggal: {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, d M Y') }}
                 </h5>
             </div>
 
             <form action="{{ route('guru.jurnal.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="kelas_id" value="{{ $kelasId }}">
+                <input type="hidden" name="tanggal" value="{{ $tanggal }}"> <!-- ✅ Tambahkan ini -->
+
                 <div class="card-body p-0">
                     <table class="table table-bordered mb-0 align-middle">
                         <thead class="table-light">
@@ -48,18 +59,17 @@
                         <tbody>
                             @forelse($jadwalGabung as $jadwal)
                                 @php
-                                    // key lengkap: jamMulai-jamSelesai-mapelId-guruId
                                     $key = $jadwal->jam_mulai . '-' . $jadwal->jam_selesai . '-' . $jadwal->mata_pelajaran_id . '-' . $jadwal->guru_id;
                                     $jurnal = $jurnalHariIni[$jadwal->jam_mulai.'-'.$jadwal->jam_selesai] ?? null;
                                     $isGuruSendiri = $jadwal->guru_id == $guru->id;
 
-                                    // Jam gabungan
+                                    // Format jam tampil
                                     $mulaiParts = explode(' - ', $jamRanges[$jadwal->jam_mulai] ?? $jadwal->jam_mulai);
                                     $selesaiParts = explode(' - ', $jamRanges[$jadwal->jam_selesai] ?? $jadwal->jam_selesai);
                                     $jamTampil = ($mulaiParts[0] ?? $jadwal->jam_mulai) . ' - ' . ($selesaiParts[1] ?? $jadwal->jam_selesai);
                                 @endphp
                                 <tr>
-                                    <td>{{ $jamTampil }}</td>
+                                    <td><span class="badge bg-primary">{{ $jamTampil }}</span></td>
                                     <td>{{ $jadwal->mataPelajaran->nama_mapel ?? '-' }}</td>
                                     <td>{{ $jadwal->guru->nama }}</td>
                                     <td>
@@ -85,7 +95,10 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">Tidak ada jadwal pelajaran hari ini</td>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="ti ti-alert-circle"></i><br>
+                                        Tidak ada jadwal pelajaran pada tanggal ini.
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>

@@ -34,6 +34,14 @@
                 <p class="text-muted small mb-4">
                     <i class="ti ti-calendar me-1"></i> 
                     Diposting pada: {{ $pengumuman->created_at->format('d F Y, H:i') }}
+                    <br>
+                    @if ($pengumuman->tanggal_berakhir)
+                        <i class="ti ti-clock me-1"></i> 
+                        Berlaku sampai: {{ \Carbon\Carbon::parse($pengumuman->tanggal_berakhir)->translatedFormat('d F Y') }}
+                    @else
+                        <i class="ti ti-infinity me-1"></i> 
+                        Berlaku tanpa batas waktu
+                    @endif
                 </p>
                 
                 <p class="fs-5 lh-lg text-justify">

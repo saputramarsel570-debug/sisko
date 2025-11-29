@@ -22,57 +22,87 @@
     </div>
 
     {{-- 🔹 Filter --}}
-    <div class="card shadow-sm border-0 mb-4 rounded-4">
+    <div class="card shadow-sm border-0 mb-3 rounded-4">
       <div class="card-body d-flex flex-wrap align-items-center gap-3">
-    
-        {{-- 🔹 Kategori --}}
         @php
-            $kategori = request('kategori');
-            $status = request('status');
+          $kategori = request('kategori');
+          $status = request('status');
         @endphp
-    
+
+        {{-- 🔹 Kategori --}}
         <div class="d-flex align-items-center gap-2 flex-wrap">
           <span class="fw-semibold text-secondary">
             <i class="ti ti-category me-1"></i> Kategori:
           </span>
-    
-          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => 'Keluhan', 'status' => $status])) }}"
+
+          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => 'Keluhan', 'status' => $status, 'search' => request('search')])) }}"
              class="btn btn-danger {{ $kategori == 'Keluhan' ? 'disabled' : '' }}">
             <i class="ti ti-alert-circle"></i> Keluhan
           </a>
-    
-          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => 'Saran', 'status' => $status])) }}"
+
+          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => 'Saran', 'status' => $status, 'search' => request('search')])) }}"
              class="btn btn-success {{ $kategori == 'Saran' ? 'disabled' : '' }}">
             <i class="ti ti-bulb"></i> Saran
           </a>
         </div>
-    
+
         {{-- 🔹 Status --}}
         <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
           <span class="fw-semibold text-secondary">
             <i class="ti ti-list-check me-1"></i> Status:
           </span>
-    
-          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'pending'])) }}"
+
+          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'pending', 'search' => request('search')])) }}"
              class="btn btn-warning {{ $status == 'pending' ? 'disabled' : '' }}">
             <i class="ti ti-clock"></i> Pending
           </a>
-    
-          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'proses'])) }}"
+
+          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'proses', 'search' => request('search')])) }}"
              class="btn btn-info {{ $status == 'proses' ? 'disabled' : '' }}">
             <i class="ti ti-loader-2"></i> Proses
           </a>
-    
-          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'selesai'])) }}"
+
+          <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'selesai', 'search' => request('search')])) }}"
              class="btn btn-success {{ $status == 'selesai' ? 'disabled' : '' }}">
             <i class="ti ti-check"></i> Selesai
           </a>
-    
+
           <a href="{{ route('guru.keluhan.index') }}"
-             class="btn btn-secondary {{ !$kategori && !$status ? 'disabled' : '' }}">
+             class="btn btn-secondary {{ !$kategori && !$status && !request('search') ? 'disabled' : '' }}">
             <i class="ti ti-refresh"></i> Semua
           </a>
         </div>
+      </div>
+    </div>
+
+    {{-- 🔍 Pencarian Nama --}}
+    <div class="card shadow-sm border-0 mb-4 rounded-4">
+      <div class="card-body">
+        <form action="{{ route('guru.keluhan.index') }}" method="GET" class="d-flex align-items-center flex-wrap gap-2">
+          {{-- Pertahankan filter kategori & status --}}
+          @if(request('kategori'))
+            <input type="hidden" name="kategori" value="{{ request('kategori') }}">
+          @endif
+          @if(request('status'))
+            <input type="hidden" name="status" value="{{ request('status') }}">
+          @endif
+
+          <div class="flex-grow-1">
+            <input type="text" name="search" value="{{ request('search') }}" 
+                   class="form-control rounded-pill shadow-sm" placeholder="Cari berdasarkan nama siswa/orangtua...">
+          </div>
+
+          <button type="submit" class="btn btn-primary rounded-pill shadow-sm">
+            <i class="ti ti-search"></i> Cari
+          </button>
+
+          @if(request('search'))
+            <a href="{{ route('guru.keluhan.index', array_filter(['kategori' => request('kategori'), 'status' => request('status')])) }}"
+               class="btn btn-secondary rounded-pill shadow-sm">
+              <i class="ti ti-x"></i> Reset
+            </a>
+          @endif
+        </form>
       </div>
     </div>
 
@@ -96,8 +126,7 @@
 
         <div class="col-md-4">
           <div class="card shadow-sm border-0 h-100 rounded-4 overflow-hidden hover-card">
-
-            {{-- 🔹 Gambar / Placeholder --}}
+            {{-- Gambar / Placeholder --}}
             @if ($item->gambar)
               <img src="{{ asset('storage/' . $item->gambar) }}"
                    alt="Gambar {{ $item->kategori }}"
@@ -117,10 +146,8 @@
                 <i class="ti ti-user"></i> {{ $item->user->name ?? '-' }} <br>
                 <i class="ti ti-calendar"></i> {{ $item->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }}
               </p>
-
               <p class="text-muted small mb-3">{!! nl2br(e(Str::limit($item->isi, 200))) !!}</p>
 
-              {{-- 🔹 Status --}}
               <span class="badge 
                 @if($item->status == 'pending') bg-warning text-dark
                 @elseif($item->status == 'proses') bg-info text-dark
@@ -129,7 +156,6 @@
               </span>
             </div>
 
-            {{-- 🔹 Footer Aksi --}}
             <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
               <div class="d-flex gap-2 flex-wrap">
                 <a href="{{ route('guru.keluhan.show', $item->id) }}" class="btn btn-primary">
@@ -138,8 +164,7 @@
                 <a href="{{ route('guru.keluhan.edit', $item->id) }}" class="btn btn-warning">
                   <i class="ti ti-pencil"></i> Edit
                 </a>
-                <a href="javascript:;" onclick="actionDelete('{{ route('guru.keluhan.destroy', $item->id) }}')"
-                   class="btn btn-danger">
+                <a href="javascript:;" onclick="actionDelete('{{ route('guru.keluhan.destroy', $item->id) }}')" class="btn btn-danger">
                   <i class="ti ti-trash"></i> Hapus
                 </a>
               </div>
@@ -161,7 +186,6 @@
   </div>
 </div>
 
-{{-- Delete form --}}
 <form id="form-delete" action="" method="POST" class="d-none">
   @csrf
   @method('DELETE')
@@ -202,7 +226,7 @@ function actionDelete(url) {
     cancelButtonColor: "#d33"
   }).then((result) => {
     if (result.isConfirmed) {
-      document.getElementById('form-delete').setAttribute('action', url);
+      document.getElementById('form-delete').action = url;
       document.getElementById('form-delete').submit();
     }
   });

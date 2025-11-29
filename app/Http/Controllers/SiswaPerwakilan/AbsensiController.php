@@ -144,50 +144,82 @@ class AbsensiController extends Controller
 
     // Simpan absensi pertama kali
     public function store(Request $request)
-    {
-        $user = auth()->user();
-        $siswaPerwakilan = Siswa::where('user_id', $user->id)->first();
+{
+    return response()->json($request->all());
 
-        if (!$siswaPerwakilan) {
-            abort(403, 'Anda bukan perwakilan kelas');
-        }
+    $user = auth()->user();
+    $siswaPerwakilan = Siswa::where('user_id', $user->id)->first();
 
-        if (Carbon::now()->isWeekend()) {
-            return redirect()->route('siswa_perwakilan.absensi.index')
-                ->with('error', 'Absensi hanya bisa diisi Senin sampai Jumat');
-        }
+    if (!$siswaPerwakilan) {
+        abort(403, 'Anda bukan perwakilan kelas');
+    }
 
-        $kelasId = $siswaPerwakilan->kelas_id;
-        $tanggalHariIni = now()->toDateString();
+    if (Carbon::now()->isWeekend()) {
+        return redirect()->route('siswa_perwakilan.absensi.index')
+            ->with('error', 'Absensi hanya bisa diisi Senin sampai Jumat');
+    }
 
-        $sudahAda = Absensi::where('kelas_id', $kelasId)
-            ->whereDate('tanggal', $tanggalHariIni)
-            ->exists();
+    $kelasId = $siswaPerwakilan->kelas_id;
+    $tanggalHariIni = now()->toDateString();
 
-        if ($sudahAda) {
-            return redirect()->route('siswa_perwakilan.absensi.index')
-                ->with('error', 'Anda sudah mengisi absensi hari ini');
-        }
+    $sudahAda = Absensi::where('kelas_id', $kelasId)
+        ->whereDate('tanggal', $tanggalHariIni)
+        ->exists();
 
-        $request->validate([
-            'absensi' => 'required|array',
-            'absensi.*.status' => 'required|in:hadir,izin,sakit,alfa',
-            'absensi.*.keterangan' => 'nullable|string',
+    if ($sudahAda) {
+        return redirect()->route('siswa_perwakilan.absensi.index')
+            ->with('error', 'Anda sudah mengisi absensi hari ini');
+    }
+
+    $absensiInput = $request->input('absensi', []);
+
+    if (empty($absensiInput) || !is_array($absensiInput)) {
+        return redirect()->back()
+            ->withErrors(['absensi' => 'Data absensi tidak ditemukan.'])
+            ->withInput();
+    }
+
+    // -------------------------------------------------
+    // Build Validator manual supaya required_if nested array jalan
+    // -------------------------------------------------
+    $validator = \Validator::make($request->all(), [], []);
+
+    foreach ($absensiInput as $siswaId => $data) {
+        // Status wajib
+        $validator->addRules([
+            "absensi.$siswaId.status" => 'required|in:hadir,izin,sakit,alfa'
         ]);
 
-        foreach ($request->absensi as $siswa_id => $data) {
-            Absensi::create([
-                'tanggal' => $tanggalHariIni,
-                'kelas_id' => $kelasId,
-                'siswa_id' => $siswa_id,
-                'status' => $data['status'],
-                'keterangan' => $data['keterangan'] ?? null,
-            ]);
-        }
-
-        return redirect()->route('siswa_perwakilan.absensi.index')
-            ->with('success', 'Absensi berhasil disimpan');
+        // Keterangan wajib jika status = izin
+        $validator->sometimes(
+            "absensi.$siswaId.keterangan",
+            'required|string',
+            function ($input) use ($siswaId) {
+                return isset($input['absensi'][$siswaId]['status']) &&
+                       $input['absensi'][$siswaId]['status'] === 'izin';
+            }
+        );
     }
+
+    // Jalankan validasi (akan redirect back + withErrors otomatis)
+    $validator->validate();
+
+    // -------------------------------------------------
+    // Simpan Absensi
+    // -------------------------------------------------
+    foreach ($absensiInput as $siswaId => $data) {
+        Absensi::create([
+            'tanggal' => $tanggalHariIni,
+            'kelas_id' => $kelasId,
+            'siswa_id' => $siswaId,
+            'status' => $data['status'],
+            'keterangan' => $data['keterangan'] ?? null,
+        ]);
+    }
+
+    return redirect()->route('siswa_perwakilan.absensi.index')
+        ->with('success', 'Absensi berhasil disimpan');
+}
 
     // Update satuan
     public function update(Request $request, Absensi $absensi)
@@ -208,33 +240,39 @@ class AbsensiController extends Controller
 
     // Update banyak langsung di tabel harian
     public function updateBulk(Request $request)
-    {
-        $kelasId = $request->kelas_id;
-        $tanggal = $request->tanggal;
-        $absensiData = $request->absensi ?? [];
+{
+    $kelasId = $request->kelas_id;
+    $tanggal = $request->tanggal;
+    $absensiData = $request->absensi ?? [];
 
-        foreach ($absensiData as $siswaId => $data) {
-            Absensi::updateOrCreate(
-                [
-                    'siswa_id' => $siswaId,
-                    'tanggal' => $tanggal,
-                ],
-                [
-                    'status' => $data['status'] ?? null,
-                    'keterangan' => $data['keterangan'] ?? null,
-                    'kelas_id' => $kelasId,
-                ]
-            );
+    foreach ($absensiData as $siswaId => $data) {
+
+        // 🟩 Jika status TIDAK ADA → lewati saja (tidak insert / update)
+        if (empty($data['status'])) {
+            continue;
         }
 
-        return redirect()
-            ->route('siswa_perwakilan.absensi.rekap', [
-                'kelas_id' => $kelasId,
-                'periode' => 'hari',
+        Absensi::updateOrCreate(
+            [
+                'siswa_id' => $siswaId,
                 'tanggal' => $tanggal,
-            ])
-            ->with('success', 'Absensi telah diubah ✅');
+            ],
+            [
+                'kelas_id' => $kelasId,
+                'status' => $data['status'], // pasti tidak null
+                'keterangan' => $data['keterangan'] ?? null,
+            ]
+        );
     }
+
+    return redirect()
+        ->route('siswa_perwakilan.absensi.rekap', [
+            'kelas_id' => $kelasId,
+            'periode' => 'hari',
+            'tanggal' => $tanggal,
+        ])
+        ->with('success', 'Absensi telah diubah');
+}
 
     // Export PDF
     public function exportPdf(Request $request)

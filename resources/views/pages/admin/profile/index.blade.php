@@ -3,114 +3,114 @@
 @section('title', 'Profil Admin')
 
 @section('content')
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
+<div class="container">
+    <h3 class="mb-4 text-center">Profil Admin</h3>
 
-            {{-- Ini Alert Sukses --}}
-            @if (session('success'))
-                <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
-                    <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
-                    {{ session('success') }}
-                </div>
-            @endif
+    {{-- Notifikasi --}}
+    @if (session('success'))
+        <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+            <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+            {{ session('success') }}
+        </div>
+    @endif
 
-            {{-- Ini Alert Error --}}
-            @if ($errors->any())
-                <div class="alert alert-danger shadow-sm rounded-3 mb-4">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $e)
-                            <li>{{ $e }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $e)
+                    <li>{{ $e }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            {{-- Ini Untuk Card Profile Dan Ganti Password --}}
-            <div class="row g-4 align-items-stretch">
+    <div class="row justify-content-center g-4">
+        {{-- Data Identitas --}}
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="mb-3 fw-semibold"><i class="ti ti-user"></i> Data Identitas</h5>
 
-                <!-- Ini Untuk Card Profile Nya -->
-                <div class="col-md-6">
-                    <div class="card shadow-lg border-0 rounded-4 h-100 overflow-hidden">
-                        <div class="bg-gradient-to-r from-blue-600 to-sky-500 text-white p-3 rounded-top-4 d-flex align-items-center justify-content-between">
-                            <h4 class="mb-0 fw-bold"><i class="ti ti-user me-1"></i> Data Profil</h4>
-                        </div>
-                        <div class="card-body text-center p-4">
-                            <div class="position-relative d-inline-block mb-4">
-                                <img src="{{ $user->profile_photo ? asset('uploads/profile/' . $user->profile_photo) : asset('/img/avatars/1.png') }}"
-                                     alt="Foto Profil"
-                                     class="rounded-circle shadow-lg border-4 border-white"
-                                     style="width: 140px; height: 140px; object-fit: cover; transition: transform 0.3s;">
-                                <label for="profile_photo" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 shadow cursor-pointer" style="cursor: pointer;">
-                                    <i class="ti ti-camera"></i>
-                                </label>
-                            </div>
+                    <div class="text-center mb-3">
+                        <img 
+                            src="{{ $user->profile_photo ? asset('uploads/profile/' . $user->profile_photo) : 'https://via.placeholder.com/120' }}" 
+                            alt="Foto Profil" 
+                            class="rounded-circle border mb-2" 
+                            style="width: 120px; height: 120px; object-fit: cover; cursor: pointer;"
+                            onclick="showImageModal(this.src)"
+                        />
 
-                            <form action="{{ route('admin.profile.photo') }}" method="POST" enctype="multipart/form-data" class="mt-2">
-                                @csrf
-                                <input type="file" name="profile_photo" id="profile_photo" class="d-none" accept="image/*" onchange="this.form.submit()">
-                            </form>
-
-                            <table class="table table-borderless mt-3 text-start">
-                                <tr>
-                                    <th width="40%" class="text-muted">Nama</th>
-                                    <td class="fw-semibold">{{ $user->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="text-muted">Email</th>
-                                    <td class="fw-semibold">{{ $user->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="text-muted">Role</th>
-                                    <td class="fw-semibold text-capitalize">{{ $user->role }}</td>
-                                </tr>
-                            </table>
-                        </div>
+                        <form action="{{ route('admin.profile.photo') }}" method="POST" enctype="multipart/form-data" class="d-flex justify-content-center mt-2">
+                            @csrf
+                            <input type="file" name="profile_photo" id="profile_photo" class="form-control form-control-sm w-75" accept="image/*" required>
+                            <button type="submit" class="btn btn-sm btn-primary ms-2">Ganti</button>
+                        </form>
                     </div>
-                </div>
 
-                <!-- Ini Untuk Card Ganti Password Nya -->
-                <div class="col-md-6">
-                    <div class="card shadow-lg border-0 rounded-4 h-100 overflow-hidden">
-                        <div class="bg-gradient-to-r from-yellow-400 to-amber-500 text-dark p-3 rounded-top-4">
-                            <h4 class="mb-0 fw-bold"><i class="ti ti-lock me-1"></i> Ganti Password</h4>
-                        </div>
-                        <div class="card-body p-4">
-                            <form action="{{ route('admin.profile.password') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="current_password" class="form-label fw-semibold">Password Lama</label>
-                                    <input type="password" class="form-control" id="current_password" name="current_password" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="new_password" class="form-label fw-semibold">Password Baru</label>
-                                    <input type="password" class="form-control" id="new_password" name="new_password" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="new_password_confirmation" class="form-label fw-semibold">Konfirmasi Password Baru</label>
-                                    <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-warning text-dark fw-bold px-4 shadow-sm">
-                                        <i class="ti ti-refresh me-1"></i> Ganti Password
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    <p><strong>Nama :</strong> {{ $user->name }}</p>
+                    <p><strong>Email :</strong> {{ $user->email }}</p>
+                    <p><strong>Role :</strong> {{ ucfirst($user->role) }}</p>
                 </div>
+            </div>
+        </div>
 
+        {{-- Form Ganti Password & Email --}}
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3 fw-semibold"><i class="ti ti-mail"></i> Ganti Email</h5>
+                    <form action="{{ route('admin.profile.email') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Baru</label>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ $user->email }}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Perbarui Email</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="mb-3 fw-semibold"><i class="ti ti-lock"></i> Ganti Password</h5>
+
+                    <form action="{{ route('admin.profile.password') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">Password Lama</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">Password Baru</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                            <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Ganti Password</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+{{-- Modal Preview Foto --}}
+<div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-transparent border-0 text-center">
+      <img id="photoPreview" src="" class="rounded shadow-lg" style="max-width: 100%; height: auto;">
+    </div>
+  </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-    // Ini untuk auto hide yang untuk alert success
+    // Auto-hide alert sukses
     setTimeout(() => {
-        const alert = document.getElementById('success');
+        let alert = document.getElementById('success');
         if (alert) {
             alert.style.transition = "opacity 0.5s ease";
             alert.style.opacity = 0;
@@ -118,11 +118,11 @@
         }
     }, 3000);
 
-    // Ini Untuk Efek Hovernya
-    const profileImg = document.querySelector('img[alt="Foto Profil"]');
-    if (profileImg) {
-        profileImg.addEventListener('mouseenter', () => profileImg.style.transform = 'scale(1.05)');
-        profileImg.addEventListener('mouseleave', () => profileImg.style.transform = 'scale(1)');
+    // Modal preview foto
+    function showImageModal(src) {
+        const modal = new bootstrap.Modal(document.getElementById('photoModal'));
+        document.getElementById('photoPreview').src = src;
+        modal.show();
     }
 </script>
 @endpush

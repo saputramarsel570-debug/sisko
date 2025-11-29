@@ -14,23 +14,30 @@ class KeluhanController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $query = KeluhanSaran::query()->with('user')->latest();
+{
+    $query = KeluhanSaran::query()->with('user')->latest();
 
-        // 🔹 Filter berdasarkan kategori (Keluhan / Saran)
-        if ($request->filled('kategori')) {
-            $query->where('kategori', $request->kategori);
-        }
-
-        // 🔹 Filter berdasarkan status (pending / proses / selesai)
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $keluhan = $query->get();
-
-        return view('pages.guru.keluhan.index', compact('keluhan'));
+    // Filter kategori
+    if ($request->filled('kategori')) {
+        $query->where('kategori', $request->kategori);
     }
+
+    // Filter status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    // 🔍 Filter pencarian nama siswa/orangtua
+    if ($request->filled('search')) {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search . '%');
+        });
+    }
+
+    $keluhan = $query->get();
+
+    return view('pages.guru.keluhan.index', compact('keluhan'));
+}
 
     /**
      * Display the specified resource.

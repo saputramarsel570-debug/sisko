@@ -39,10 +39,19 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="col-md-6">
+                    <h6 class="text-primary fw-semibold mb-1">Tanggal Berakhir</h6>
+                    <div class="p-3 bg-white rounded shadow-sm border">
+                        @if ($pengumuman->tanggal_berakhir)
+                            {{ \Carbon\Carbon::parse($pengumuman->tanggal_berakhir)->translatedFormat('d F Y') }}
+                        @else
+                            <span class="text-muted">Tidak ada batas waktu</span>
+                        @endif
+                    </div>
+                </div>
                 {{-- 📸 Gambar (klik untuk lihat besar) --}}
                 @if ($pengumuman->gambar)
-                <div class="mb-3 text-center">
+                <div class="mb-3 text-center mt-3">
                     <img src="{{ asset('storage/'.$pengumuman->gambar) }}" 
                          alt="gambar pengumuman" 
                          class="img-fluid rounded shadow-sm" 

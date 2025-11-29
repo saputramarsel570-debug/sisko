@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Http\Controllers\Guru;
+
+use App\Http\Controllers\Controller;
+use App\Models\JadwalPelajaran;
+use App\Models\Kelas;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\Siswa\JadwalPelajaranExport;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+
+class JadwalController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function exportPdf($kelasId = null)
+    {
+        $hariList = ['Senin','Selasa','Rabu','Kamis','Jumat'];
+        $jadwalByHari = [];
+
+        foreach ($hariList as $hari) {
+            $jadwalByHari[$hari] = [];
+        }
+
+        $kelas = null;
+
+        if ($kelasId) {
+            $kelas = Kelas::find($kelasId);
+
+            $jadwal = JadwalPelajaran::with(['mataPelajaran', 'guru'])
+                ->where('kelas_id', $kelasId)
+                ->get();
+
+            foreach ($jadwal as $j) {
+                for ($i = $j->jam_mulai; $i <= $j->jam_selesai; $i++) {
+                    $jadwalByHari[$j->hari][$i] = $j;
+                }
+            }
+        }
+
+        $pdf = Pdf::loadView('exports.pdf', compact('jadwalByHari', 'kelas'))
+                ->setPaper('A4', 'landscape');
+        
+        return $pdf->download('jadwal-pelajaran.pdf');
+    }
+    public function index(Request $request)
+    {
+        $kelasList = Kelas::all();
+        $kelasId   = $request->get('kelas_id');
+
+        $hariList = ['Senin','Selasa','Rabu','Kamis','Jumat'];
+        $jadwalByHari = [];
+
+        foreach ($hariList as $hari) {
+            $jadwalByHari[$hari] = [];
+        }
+
+        if ($kelasId) {
+            $jadwal = JadwalPelajaran::with(['mataPelajaran', 'guru'])
+                        ->where('kelas_id', $kelasId)
+                        ->get();
+
+            foreach ($jadwal as $j) {
+                for ($i = $j->jam_mulai; $i <= $j->jam_selesai; $i++) {
+                    $jadwalByHari[$j->hari][$i] = $j;
+                }
+            }
+        }
+
+        return view('pages.guru.jadwal.index', compact('kelasList', 'kelasId', 'jadwalByHari'));
+    }
+}

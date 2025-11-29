@@ -23,6 +23,8 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function ()
 {
     Route::resource('/jadwal', JadwalController::class, ['as' => 'siswa']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa']);
+    Route::get('/siswa/pengumuman/arsip', [App\Http\Controllers\Siswa\PengumumanController::class, 'arsip'])
+        ->name('siswa.pengumuman.arsip');
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'siswa']);
     Route::resource('/absensi', AbsensiController::class, ['as' => 'siswa']);
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'siswa']);

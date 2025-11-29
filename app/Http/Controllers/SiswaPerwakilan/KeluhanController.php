@@ -14,24 +14,29 @@ class KeluhanController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $query = KeluhanSaran::where('user_id', auth()->id());
-
-    // ✅ Filter kategori (Keluhan / Saran)
-    if ($request->filled('kategori')) {
-        $query->where('kategori', $request->kategori);
+    {
+        $query = KeluhanSaran::where('user_id', auth()->id());
+    
+        // Filter kategori
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+    
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+    
+        // 🔍 Filter pencarian berdasarkan isi
+        if ($request->filled('search')) {
+            $query->where('isi', 'LIKE', '%' . $request->search . '%');
+        }
+    
+        // Urutkan dari yang terbaru
+        $keluhan = $query->orderByDesc('created_at')->get();
+    
+        return view('pages.siswa_perwakilan.keluhan.index', compact('keluhan'));
     }
-
-    // ✅ Filter status (pending / proses / selesai)
-    if ($request->filled('status')) {
-        $query->where('status', $request->status);
-    }
-
-    // ✅ Urutkan dari yang terbaru
-    $keluhan = $query->orderByDesc('created_at')->get();
-
-    return view('pages.siswa_perwakilan.keluhan.index', compact('keluhan'));
-}
     /**
      * Show the form for creating a new resource.
      */

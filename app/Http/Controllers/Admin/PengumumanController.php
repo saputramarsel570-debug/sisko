@@ -12,10 +12,17 @@ use App\Notifications\PengumumanBaruNotification;
 class PengumumanController extends Controller
 {
     public function index()
-    {
-        $pengumuman = Pengumuman::with('user')->latest()->get();
-        return view('pages.admin.pengumuman.index', compact('pengumuman'));
-    }
+{
+    $pengumuman = Pengumuman::with('user')
+        ->where(function ($query) {
+            $query->whereNull('tanggal_berakhir')
+                  ->orWhereDate('tanggal_berakhir', '>=', now());
+        })
+        ->latest()
+        ->get();
+
+    return view('pages.admin.pengumuman.index', compact('pengumuman'));
+}
 
     public function create()
     {
@@ -29,6 +36,7 @@ class PengumumanController extends Controller
             'isi'    => 'required|string',
             'target' => 'required|in:siswa,orangtua,semua',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tanggal_berakhir' => 'nullable|date|after_or_equal:today',
         ]);
 
         $validated['dibuat_oleh'] = auth()->id();
@@ -83,6 +91,7 @@ class PengumumanController extends Controller
         'isi' => 'required|string',
         'target' => 'required|in:siswa,orangtua,semua',
         'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'tanggal_berakhir' => 'nullable|date|after_or_equal:today',
     ]);
 
     $pengumuman = Pengumuman::findOrFail($id);
@@ -114,5 +123,15 @@ class PengumumanController extends Controller
 
         return redirect()->route('admin.pengumuman.index')
             ->with('success', 'Pengumuman berhasil dihapus');
+    }
+    public function arsip()
+    {
+        $pengumuman = Pengumuman::with('user')
+            ->whereNotNull('tanggal_berakhir')
+            ->whereDate('tanggal_berakhir', '<', now())
+            ->latest()
+            ->get();
+    
+        return view('pages.admin.pengumuman.arsip', compact('pengumuman'));
     }
 }

@@ -25,6 +25,8 @@ Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])
     Route::resource('/jadwal', JadwalController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/absensi', AbsensiController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'siswa_perwakilan']);
+    Route::get('/siswa_perwakilan/pengumuman/arsip', [App\Http\Controllers\SiswaPerwakilan\PengumumanController::class, 'arsip'])
+        ->name('siswa_perwakilan.pengumuman.arsip');
     Route::resource('/keluhan', KeluhanController::class, ['as' => 'siswa_perwakilan']);
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'siswa_perwakilan']);
 
@@ -49,8 +51,9 @@ Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])
     Route::get('/dashboard', [App\Http\Controllers\SiswaPerwakilan\DashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::prefix('siswa_perwakilan')->middleware(['auth', 'role:siswa_perwakilan'])->name('siswa_perwakilan.')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::middleware(['auth', 'role:siswa_perwakilan'])->prefix('siswa_perwakilan')->name('siswa_perwakilan.')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/email', [ProfileController::class, 'updateEmail'])->name('profile.email');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
 });

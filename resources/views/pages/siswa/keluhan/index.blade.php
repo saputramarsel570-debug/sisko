@@ -39,12 +39,12 @@
               $status = request('status');
           @endphp
 
-          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => 'Keluhan', 'status' => $status])) }}"
+          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => 'Keluhan', 'status' => $status, 'search' => request('search')])) }}"
              class="btn btn-danger {{ $kategori == 'Keluhan' ? 'disabled' : '' }}">
             <i class="ti ti-alert-circle"></i> Keluhan
           </a>
 
-          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => 'Saran', 'status' => $status])) }}"
+          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => 'Saran', 'status' => $status, 'search' => request('search')])) }}"
              class="btn btn-success {{ $kategori == 'Saran' ? 'disabled' : '' }}">
             <i class="ti ti-bulb"></i> Saran
           </a>
@@ -56,17 +56,17 @@
             <i class="ti ti-list-check me-1"></i> Status:
           </span>
 
-          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'pending'])) }}"
+          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'pending', 'search' => request('search')])) }}"
              class="btn btn-warning  {{ $status == 'pending' ? 'disabled' : '' }}">
             <i class="ti ti-clock"></i> Pending
           </a>
 
-          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'proses'])) }}"
+          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'proses', 'search' => request('search')])) }}"
              class="btn btn-info  {{ $status == 'proses' ? 'disabled' : '' }}">
             <i class="ti ti-loader-2"></i> Proses
           </a>
 
-          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'selesai'])) }}"
+          <a href="{{ route('siswa.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'selesai', 'search' => request('search')])) }}"
              class="btn btn-success {{ $status == 'selesai' ? 'disabled' : '' }}">
             <i class="ti ti-check"></i> Selesai
           </a>
@@ -76,6 +76,28 @@
             <i class="ti ti-refresh"></i> Semua
           </a>
         </div>
+      </div>
+    </div>
+
+    {{-- 🔍 Search Isi --}}
+    <div class="card shadow-sm border-0 mb-4 rounded-4">
+      <div class="card-body">
+        <form method="GET" action="{{ route('siswa.keluhan.index') }}" class="d-flex gap-2">
+          <input type="text" name="search" value="{{ request('search') }}"
+                 class="form-control" placeholder="Cari berdasarkan isi...">
+
+          {{-- Pertahankan filter kategori & status --}}
+          <input type="hidden" name="kategori" value="{{ request('kategori') }}">
+          <input type="hidden" name="status" value="{{ request('status') }}">
+
+          <button class="btn btn-primary">
+            <i class="ti ti-search"></i> Cari
+          </button>
+          <a href="{{ route('siswa.keluhan.index') }}"
+             class="btn btn-secondary">
+            <i class="ti ti-refresh"></i> Semua
+          </a>
+        </form>
       </div>
     </div>
 

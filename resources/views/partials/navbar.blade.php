@@ -48,7 +48,7 @@
                 <!-- / Style Switcher-->
 
                 <!-- Notification -->
-                @php
+               @php
   $notifications = auth()->user()->notifications()->latest()->take(20)->get();
   $unread = $notifications->whereNull('read_at');
   $read = $notifications->whereNotNull('read_at');
@@ -119,7 +119,6 @@
             Tidak ada notifikasi
           </li>
         @endif
-
       </ul>
     </li>
   </ul>
@@ -140,7 +139,7 @@
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a class="dropdown-item mt-0" href="{{ route('admin.profile') }}">
+                      <a class="dropdown-item mt-0" href="{{ route('admin.profile.index') }}">
                         <div class="d-flex align-items-center">
                           <div class="flex-shrink-0 me-2">
                             <div class="avatar avatar-online">
@@ -158,7 +157,7 @@
                       <div class="dropdown-divider my-1 mx-n2"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="{{ route('admin.profile') }}">
+                      <a class="dropdown-item" href="{{ route('admin.profile.index') }}">
                         <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
                       </a>
                     </li>

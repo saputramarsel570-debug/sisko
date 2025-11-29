@@ -50,7 +50,7 @@
           </a>
       </li>
       <li class="menu-header small text-uppercase">
-        <span class="menu-header-text">Data Master</span>
+        <span class="menu-header-text">AKADEMIK</span>
         </li>
         <li class="menu-item {{ request()->routeIs('siswa_perwakilan.absensi.*') ? 'active' : '' }}">
           <a href="{{ route('siswa_perwakilan.absensi.index') }}" class="menu-link">
@@ -58,15 +58,6 @@
               Kelola Absensi Siswa
           </a>
        </li>
-       <li class="menu-item {{ request()->routeIs('siswa_perwakilan.pengaturan.*') ? 'active' : '' }}">
-        <a href="{{ route('siswa_perwakilan.pengaturan.index') }}" class="menu-link">
-            <i class="menu-icon tf-icons ti ti-building"></i>
-            <div>Profil Sekolah</div>
-        </a>
-        </li>
-      <li class="menu-header small text-uppercase">
-        <span class="menu-header-text">AKADEMIK</span>
-        </li>
       <li class="menu-item {{ request()->routeIs('siswa_perwakilan.jadwal.*') ? 'active' : '' }}">
         <a href="{{ route('siswa_perwakilan.jadwal.index') }}" class="menu-link">
           <i class="menu-icon tf-icons ti ti-calendar-event"></i>
@@ -79,6 +70,7 @@
           <span>Jadwal Ekskul</span>
       </a>
     </li>
+
      <li class="menu-header small text-uppercase">
       <span class="menu-header-text">INFORMASI & KOMUNIKASI</span>
       </li>
@@ -94,5 +86,14 @@
         Keluhan & Saran
     </a>
    </li>
+     <li class="menu-header small text-uppercase">
+        <span class="menu-header-text">Data Master</span>
+        </li>
+       <li class="menu-item {{ request()->routeIs('siswa_perwakilan.pengaturan.*') ? 'active' : '' }}">
+        <a href="{{ route('siswa_perwakilan.pengaturan.index') }}" class="menu-link">
+            <i class="menu-icon tf-icons ti ti-building"></i>
+            <div>Profil Sekolah</div>
+        </a>
+        </li>
     </ul>
   </aside>

@@ -137,7 +137,7 @@
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a class="dropdown-item mt-0" href="{{ route('guru.profile') }}">
+                      <a class="dropdown-item mt-0" href="{{ route('guru.profile.index') }}">
                         <div class="d-flex align-items-center">
                           <div class="flex-shrink-0 me-2">
                             <div class="avatar avatar-online">
@@ -155,7 +155,7 @@
                       <div class="dropdown-divider my-1 mx-n2"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="{{ route('guru.profile') }}">
+                      <a class="dropdown-item" href="{{ route('guru.profile.index') }}">
                         <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
                       </a>
                     </li>

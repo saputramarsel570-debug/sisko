@@ -5,7 +5,9 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-
+        <a href="{{ route('siswa.pengumuman.arsip') }}" class="btn btn-outline-secondary btn-sm mb-3">
+            <i class="ti ti-archive"></i> Lihat Arsip
+        </a>
         <h3 class="page-title mb-4">📢 Pengumuman Sekolah</h3>
 
         {{-- 🔹 Pengumuman Unggulan (Featured) --}}

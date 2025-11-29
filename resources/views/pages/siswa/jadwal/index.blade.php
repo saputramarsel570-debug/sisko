@@ -51,7 +51,7 @@
                     <table class="table table-bordered table-striped table-hover align-middle text-center">
                         <thead class="text-center align-middle table-light">
                             <tr>
-                                <th class="text-center align-middle" style="width: 120px;">Hari</th>
+                                <th class="text-center align-middle" style="width: 120px;">Hari/Jam</th>
                                 @for($jam = 1; $jam <= 10; $jam++)
                                     <th>
                                         Jam {{ $jam }} <br>

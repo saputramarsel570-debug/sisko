@@ -16,19 +16,26 @@ class KeluhanSaranController extends Controller
     public function index(Request $request)
     {
         $query = KeluhanSaran::query()->with('user')->latest();
-
-        // 🔹 Filter berdasarkan kategori (Keluhan / Saran)
+    
+        // Filter kategori
         if ($request->filled('kategori')) {
             $query->where('kategori', $request->kategori);
         }
-
-        // 🔹 Filter berdasarkan status (pending / proses / selesai)
+    
+        // Filter status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
-
+    
+        // 🔍 Filter pencarian nama siswa/orangtua
+        if ($request->filled('search')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
+    
         $keluhan = $query->get();
-
+    
         return view('pages.admin.keluhan_saran.index', compact('keluhan'));
     }
 

@@ -17,6 +17,7 @@ class Pengumuman extends Model
         'dibuat_oleh',
         'target',
         'gambar',
+        'tanggal_berakhir',
     ];
 
     public function user()
