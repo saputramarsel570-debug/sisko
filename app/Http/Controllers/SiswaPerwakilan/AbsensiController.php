@@ -9,345 +9,220 @@ use App\Models\Siswa;
 use App\Models\Kelas;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Validator;
 
 class AbsensiController extends Controller
 {
-    // Halaman absensi default (index)
     public function index(Request $request)
-{
-    $user = auth()->user();
-
-    // Ambil kelas dari siswa perwakilan yang login
-    $kelasId = optional($user->siswa->kelas)->id;
-
-    // Kalau nggak ada kelas, tampilkan pesan
-    if (!$kelasId) {
-        return back()->with('error', 'Data kelas siswa perwakilan tidak ditemukan.');
+    {
+        return $this->rekap($request);
     }
 
-    $periode = $request->get('periode', 'hari');
-    $tanggal = $request->get('tanggal', now()->toDateString());
-    $bulan = $request->get('bulan', now()->format('Y-m'));
-
-    // Ambil data sesuai periode
-    if ($periode === 'hari') {
-        $tanggalList = [$tanggal];
-    } else {
-        $tanggalList = \Carbon\CarbonPeriod::create(
-            \Carbon\Carbon::parse($bulan . '-01'),
-            \Carbon\Carbon::parse($bulan . '-01')->endOfMonth()
-        )->toArray();
-        $tanggalList = array_map(fn($d) => $d->format('Y-m-d'), $tanggalList);
-    }
-
-    // Ambil siswa & absensi berdasarkan kelas
-    $siswaList = \App\Models\Siswa::where('kelas_id', $kelasId)->get();
-    $absensi = \App\Models\Absensi::whereIn('siswa_id', $siswaList->pluck('id'))
-        ->whereIn('tanggal', $tanggalList)
-        ->get();
-
-    // Buat array rekap
-    $rekap = [];
-    $totalStatus = [];
-
-    foreach ($absensi as $a) {
-        $rekap[$a->siswa_id][$a->tanggal] = $a;
-        $status = strtolower($a->status);
-        $totalStatus[$a->siswa_id][$status] = ($totalStatus[$a->siswa_id][$status] ?? 0) + 1;
-    }
-
-    return view('pages.siswa_perwakilan.absensi.rekap', compact(
-        'siswaList', 'rekap', 'tanggalList', 'periode', 'tanggal', 'bulan', 'totalStatus', 'kelasId'
-    ));
-}
-
-    // Rekap absensi (harian & bulanan)
     public function rekap(Request $request)
     {
         $user = auth()->user();
-        $siswaPerwakilan = Siswa::where('user_id', $user->id)->first();
+        $kelasId = optional($user->siswa->kelas)->id;
 
-        if (!$siswaPerwakilan) {
-            abort(403, 'Anda bukan perwakilan kelas');
+        if (!$kelasId) {
+            return back()->with('error', 'Data kelas siswa perwakilan tidak ditemukan.');
         }
 
-        // Otomatis ambil kelas dari siswa perwakilan
-        $kelasId = $siswaPerwakilan->kelas_id;
+        // periode: hari/bulan
+        $periode = $request->get('periode', 'hari');
+        $tanggal = $request->get('tanggal', now()->toDateString());
+        $bulan   = $request->get('bulan', now()->format('Y-m'));
 
-        // Jika user masih bisa memilih manual, tapi default-nya tetap kelas perwakilan
-        if ($request->filled('kelas_id')) {
-            $kelasId = $request->kelas_id;
+        // ===============================
+        //  SAFE TANGGALLIST (NO CARBON PERIOD)
+        // ===============================
+        if ($periode === 'hari') {
+            $tanggalList = [$tanggal];
+        } else {
+            $start = Carbon::parse("$bulan-01");
+            $end   = $start->copy()->endOfMonth();
+
+            $tanggalList = [];
+            while ($start->lte($end)) {
+                $tanggalList[] = $start->format('Y-m-d');
+                $start->addDay();
+            }
         }
 
-        $periode = $request->periode;
-        $bulan   = $request->bulan;
-        $tanggal = $request->tanggal ?? now()->toDateString();
+        // ===============================
+        //  AMAN UNTUK BULANAN
+        // ===============================
+        $siswaList = Siswa::where('kelas_id', $kelasId)
+            ->orderBy('nama')
+            ->get();
 
-        $kelasList   = Kelas::orderBy('nama_kelas')->get();
-        $siswaList   = collect();
-        $tanggalList = collect();
-        $rekap       = [];
+        $absensi = Absensi::whereIn('siswa_id', $siswaList->pluck('id'))
+            ->whereBetween('tanggal', [reset($tanggalList), end($tanggalList)])
+            ->get();
+
+        $rekap = [];
         $totalStatus = [];
 
-        if ($kelasId) {
-            $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
-            $query = Absensi::where('kelas_id', $kelasId);
+        foreach ($absensi as $a) {
+            $rekap[$a->siswa_id][$a->tanggal] = $a;
 
-            if ($periode === 'hari') {
-                $query->whereDate('tanggal', $tanggal);
-            } elseif ($periode === 'bulan' && $bulan) {
-                $m = date('m', strtotime($bulan));
-                $y = date('Y', strtotime($bulan));
-                $query->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
-            }
-
-            $absensi = $query->orderBy('tanggal')->get();
-
-            if ($periode === 'bulan' && $bulan) {
-                $m = date('m', strtotime($bulan));
-                $y = date('Y', strtotime($bulan));
-
-                $start = Carbon::createFromDate($y, $m, 1);
-                $end   = $start->copy()->endOfMonth();
-                $tanggalList = collect();
-
-                while ($start <= $end) {
-                    $tanggalList->push($start->toDateString());
-                    $start->addDay();
-                }
-            } else {
-                $tanggalList = $absensi->pluck('tanggal')->unique()->sort()->values();
-                if ($tanggalList->isEmpty()) {
-                    $tanggalList = collect([$tanggal]);
-                }
-            }
-
-            foreach ($absensi as $a) {
-                $rekap[$a->siswa_id][(string)$a->tanggal] = $a;
-            }
-
-            foreach ($siswaList as $s) {
-                $totalStatus[$s->id] = [
-                    'hadir' => $absensi->where('siswa_id', $s->id)->where('status', 'hadir')->count(),
-                    'sakit' => $absensi->where('siswa_id', $s->id)->where('status', 'sakit')->count(),
-                    'izin'  => $absensi->where('siswa_id', $s->id)->where('status', 'izin')->count(),
-                    'alfa'  => $absensi->where('siswa_id', $s->id)->where('status', 'alfa')->count(),
-                ];
-            }
+            $status = strtolower($a->status);
+            $totalStatus[$a->siswa_id][$status] =
+                ($totalStatus[$a->siswa_id][$status] ?? 0) + 1;
         }
 
         return view('pages.siswa_perwakilan.absensi.rekap', compact(
-            'kelasList', 'siswaList', 'tanggalList', 'rekap',
-            'kelasId', 'periode', 'tanggal', 'bulan', 'totalStatus'
+            'siswaList',
+            'rekap',
+            'tanggalList',
+            'periode',
+            'tanggal',
+            'bulan',
+            'totalStatus',
+            'kelasId'
         ));
     }
 
-    // Simpan absensi pertama kali
-    public function store(Request $request)
-{
-    return response()->json($request->all());
-
-    $user = auth()->user();
-    $siswaPerwakilan = Siswa::where('user_id', $user->id)->first();
-
-    if (!$siswaPerwakilan) {
-        abort(403, 'Anda bukan perwakilan kelas');
-    }
-
-    if (Carbon::now()->isWeekend()) {
-        return redirect()->route('siswa_perwakilan.absensi.index')
-            ->with('error', 'Absensi hanya bisa diisi Senin sampai Jumat');
-    }
-
-    $kelasId = $siswaPerwakilan->kelas_id;
-    $tanggalHariIni = now()->toDateString();
-
-    $sudahAda = Absensi::where('kelas_id', $kelasId)
-        ->whereDate('tanggal', $tanggalHariIni)
-        ->exists();
-
-    if ($sudahAda) {
-        return redirect()->route('siswa_perwakilan.absensi.index')
-            ->with('error', 'Anda sudah mengisi absensi hari ini');
-    }
-
-    $absensiInput = $request->input('absensi', []);
-
-    if (empty($absensiInput) || !is_array($absensiInput)) {
-        return redirect()->back()
-            ->withErrors(['absensi' => 'Data absensi tidak ditemukan.'])
-            ->withInput();
-    }
-
-    // -------------------------------------------------
-    // Build Validator manual supaya required_if nested array jalan
-    // -------------------------------------------------
-    $validator = \Validator::make($request->all(), [], []);
-
-    foreach ($absensiInput as $siswaId => $data) {
-        // Status wajib
-        $validator->addRules([
-            "absensi.$siswaId.status" => 'required|in:hadir,izin,sakit,alfa'
-        ]);
-
-        // Keterangan wajib jika status = izin
-        $validator->sometimes(
-            "absensi.$siswaId.keterangan",
-            'required|string',
-            function ($input) use ($siswaId) {
-                return isset($input['absensi'][$siswaId]['status']) &&
-                       $input['absensi'][$siswaId]['status'] === 'izin';
-            }
-        );
-    }
-
-    // Jalankan validasi (akan redirect back + withErrors otomatis)
-    $validator->validate();
-
-    // -------------------------------------------------
-    // Simpan Absensi
-    // -------------------------------------------------
-    foreach ($absensiInput as $siswaId => $data) {
-        Absensi::create([
-            'tanggal' => $tanggalHariIni,
-            'kelas_id' => $kelasId,
-            'siswa_id' => $siswaId,
-            'status' => $data['status'],
-            'keterangan' => $data['keterangan'] ?? null,
-        ]);
-    }
-
-    return redirect()->route('siswa_perwakilan.absensi.index')
-        ->with('success', 'Absensi berhasil disimpan');
-}
-
-    // Update satuan
-    public function update(Request $request, Absensi $absensi)
-    {
-        $request->validate([
-            'status' => 'required|in:hadir,izin,sakit,alfa',
-            'keterangan' => 'nullable|string',
-        ]);
-
-        $absensi->update([
-            'status' => $request->status,
-            'keterangan' => $request->keterangan,
-        ]);
-
-        return redirect()->route('siswa_perwakilan.absensi.index')
-            ->with('success', 'Absensi berhasil diperbarui');
-    }
-
-    // Update banyak langsung di tabel harian
     public function updateBulk(Request $request)
-{
-    $kelasId = $request->kelas_id;
-    $tanggal = $request->tanggal;
-    $absensiData = $request->absensi ?? [];
+    {
+        $kelasId = $request->kelas_id;
+        $tanggal = $request->tanggal;
+        $absensiData = $request->absensi ?? [];
 
-    foreach ($absensiData as $siswaId => $data) {
+        // Ambil nama siswa untuk label validasi
+        $siswaList = Siswa::whereIn('id', array_keys($absensiData))
+            ->pluck('nama', 'id');
 
-        // 🟩 Jika status TIDAK ADA → lewati saja (tidak insert / update)
-        if (empty($data['status'])) {
-            continue;
-        }
-
-        Absensi::updateOrCreate(
-            [
-                'siswa_id' => $siswaId,
-                'tanggal' => $tanggal,
-            ],
-            [
-                'kelas_id' => $kelasId,
-                'status' => $data['status'], // pasti tidak null
-                'keterangan' => $data['keterangan'] ?? null,
-            ]
-        );
-    }
-
-    return redirect()
-        ->route('siswa_perwakilan.absensi.rekap', [
-            'kelas_id' => $kelasId,
-            'periode' => 'hari',
-            'tanggal' => $tanggal,
-        ])
-        ->with('success', 'Absensi telah diubah');
-}
-
-    // Export PDF
-    public function exportPdf(Request $request)
-{
-    $kelasId = $request->kelas_id;
-    $periode = $request->periode;
-    $bulan   = $request->bulan;
-    $tanggal = now()->toDateString();
-
-    $kelas = Kelas::findOrFail($kelasId);
-    $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
-
-    $absensiQuery = Absensi::where('kelas_id', $kelasId);
-
-    if ($periode === 'hari') {
-        $absensiQuery->whereDate('tanggal', $tanggal);
-    } elseif ($periode === 'bulan' && $bulan) {
-        $m = date('m', strtotime($bulan));
-        $y = date('Y', strtotime($bulan));
-        $absensiQuery->whereMonth('tanggal', $m)->whereYear('tanggal', $y);
-    }
-
-    $absensi = $absensiQuery->orderBy('tanggal')->get();
-
-    // 🔹 Generate tanggalList
-    if ($periode === 'bulan' && $bulan) {
-        $m = date('m', strtotime($bulan));
-        $y = date('Y', strtotime($bulan));
-
-        $start = \Carbon\Carbon::createFromDate($y, $m, 1);
-        $end   = $start->copy()->endOfMonth();
-        $tanggalList = collect();
-
-        while ($start <= $end) {
-            $tanggalList->push($start->toDateString());
-            $start->addDay();
-        }
-    } else {
-        $tanggalList = $absensi->pluck('tanggal')->unique()->sort()->values();
-        if ($tanggalList->isEmpty()) {
-            $tanggalList = collect([$tanggal]);
-        }
-    }
-
-    // 🔹 Bentuk rekap & total
-    $rekap = [];
-    $totalStatus = [];
-
-    foreach ($absensi as $a) {
-        $rekap[$a->siswa_id][(string)$a->tanggal] = $a;
-    }
-
-    foreach ($siswaList as $s) {
-        $totalStatus[$s->id] = [
-            'hadir' => $absensi->where('siswa_id', $s->id)->where('status', 'hadir')->count(),
-            'sakit' => $absensi->where('siswa_id', $s->id)->where('status', 'sakit')->count(),
-            'izin'  => $absensi->where('siswa_id', $s->id)->where('status', 'izin')->count(),
-            'alfa'  => $absensi->where('siswa_id', $s->id)->where('status', 'alfa')->count(),
+        $rules = [];
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'in'       => ':attribute harus salah satu dari: hadir, izin, sakit, alfa.',
+            'string'   => ':attribute harus berupa teks.',
         ];
+
+        $attributes = [];
+
+        foreach ($absensiData as $id => $data) {
+            $nama = $siswaList[$id] ?? "Siswa";
+
+            $rules["absensi.$id.status"] = "required|in:hadir,izin,sakit,alfa";
+
+            if (in_array($data['status'] ?? null, ['izin', 'sakit'])) {
+                $rules["absensi.$id.keterangan"] = "required|string";
+            }
+
+            $attributes["absensi.$id.status"] = "Status untuk $nama";
+            $attributes["absensi.$id.keterangan"] = "Keterangan untuk $nama";
+        }
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        $validator->setAttributeNames($attributes);
+        $validator->validate();
+
+        foreach ($absensiData as $id => $data) {
+            Absensi::updateOrCreate(
+                [
+                    'siswa_id' => $id,
+                    'tanggal'  => $tanggal
+                ],
+                [
+                    'kelas_id'   => $kelasId,
+                    'status'     => $data['status'],
+                    'keterangan' => $data['keterangan'] ?? null,
+                ]
+            );
+        }
+
+        return redirect()
+            ->route('siswa_perwakilan.absensi.rekap', [
+                'kelas_id' => $kelasId,
+                'periode'  => 'hari',
+                'tanggal'  => $tanggal,
+            ])
+            ->with('success', 'Absensi berhasil diperbarui.');
     }
 
-    $data = [
-        'kelas' => $kelas,
-        'siswaList' => $siswaList,
-        'rekap' => $rekap,
-        'tanggalList' => $tanggalList,
-        'totalStatus' => $totalStatus,
-        'periode' => $periode,
-        'bulan' => $bulan,
-        'tanggal' => $tanggal,
-    ];
+    public function hadirSemua(Request $request)
+    {
+        $kelasId = $request->kelas_id;
+        $tanggal = $request->tanggal;
 
-    $pdf = Pdf::loadView('pages.siswa_perwakilan.absensi.pdf', $data)
-        ->setPaper('a4', 'landscape');
+        $siswaList = Siswa::where('kelas_id', $kelasId)->pluck('id');
 
-    return $pdf->download('Rekap-Absensi-' . $kelas->nama_kelas . '.pdf');
-}
+        foreach ($siswaList as $sid) {
+            Absensi::updateOrCreate(
+                ['siswa_id' => $sid, 'tanggal' => $tanggal],
+                ['kelas_id' => $kelasId, 'status' => 'hadir', 'keterangan' => null]
+            );
+        }
+
+        return back()->with('success', 'Status seluruh siswa ditandai sebagai HADIR.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $kelasId = $request->kelas_id;
+        $periode = $request->periode;
+        $bulan   = $request->bulan;
+        $tanggal = now()->toDateString();
+
+        $kelas = Kelas::findOrFail($kelasId);
+        $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
+
+        $query = Absensi::where('kelas_id', $kelasId);
+
+        if ($periode === 'hari') {
+            $query->whereDate('tanggal', $tanggal);
+        } else {
+            $start = Carbon::parse("$bulan-01");
+            $end = $start->copy()->endOfMonth();
+
+            $query->whereBetween('tanggal', [$start->toDateString(), $end->toDateString()]);
+        }
+
+        $absensi = $query->get();
+
+        // tanggalList aman
+        if ($periode === 'bulan') {
+            $start = Carbon::parse("$bulan-01");
+            $end   = $start->copy()->endOfMonth();
+
+            $tanggalList = [];
+            while ($start->lte($end)) {
+                $tanggalList[] = $start->format('Y-m-d');
+                $start->addDay();
+            }
+        } else {
+            $tanggalList = [$tanggal];
+        }
+
+        // rekap
+        $rekap = [];
+        foreach ($absensi as $a) {
+            $rekap[$a->siswa_id][$a->tanggal] = $a;
+        }
+
+        // total status
+        $totalStatus = [];
+        foreach ($siswaList as $s) {
+            $totalStatus[$s->id] = [
+                'hadir' => $absensi->where('siswa_id', $s->id)->where('status', 'hadir')->count(),
+                'sakit' => $absensi->where('siswa_id', $s->id)->where('status', 'sakit')->count(),
+                'izin'  => $absensi->where('siswa_id', $s->id)->where('status', 'izin')->count(),
+                'alfa'  => $absensi->where('siswa_id', $s->id)->where('status', 'alfa')->count(),
+            ];
+        }
+
+        $pdf = Pdf::loadView('pages.siswa_perwakilan.absensi.pdf', compact(
+            'kelas',
+            'siswaList',
+            'rekap',
+            'tanggalList',
+            'totalStatus',
+            'periode',
+            'bulan',
+            'tanggal',
+        ))->setPaper('a4', 'landscape');
+
+        return $pdf->download('Rekap-Absensi-' . $kelas->nama_kelas . '.pdf');
+    }
 }

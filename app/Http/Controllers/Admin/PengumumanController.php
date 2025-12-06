@@ -32,21 +32,28 @@ class PengumumanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul'  => 'required|string|max:255',
-            'isi'    => 'required|string',
+            'judul' => 'required|string|max:255',
+            'isi' => 'required|string',
             'target' => 'required|in:siswa,orangtua,semua',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'tanggal_berakhir' => 'nullable|date|after_or_equal:today',
+        ], [
+            'judul.max' => 'Judul pengumuman tidak boleh lebih dari 255 karakter.',
+        
+            'gambar.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'gambar.max' => 'Ukuran gambar maksimal 2MB.',
+        
+            'tanggal_berakhir.date' => 'Tanggal berakhir harus berupa tanggal yang valid.',
+            'tanggal_berakhir.after_or_equal' => 'Tanggal berakhir tidak boleh sebelum hari ini.',
         ]);
-
+    
         $validated['dibuat_oleh'] = auth()->id();
-
-        // Simpan gambar ke storage/public/pengumuman
+    
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('pengumuman', 'public');
-            $validated['gambar'] = $path;
+            $validated['gambar'] = $request->file('gambar')->store('pengumuman', 'public');
         }
-
+    
         $pengumuman = Pengumuman::create($validated);
 
         // Kirim notifikasi
@@ -84,32 +91,44 @@ class PengumumanController extends Controller
         return view('pages.admin.pengumuman.edit', compact('pengumuman'));
     }
 
-    public function update(Request $request, string $id)
-{
-    $validated = $request->validate([
-        'judul' => 'required|string|max:255',
-        'isi' => 'required|string',
-        'target' => 'required|in:siswa,orangtua,semua',
-        'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'tanggal_berakhir' => 'nullable|date|after_or_equal:today',
-    ]);
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'isi' => 'required|string',
+            'target' => 'required|in:siswa,orangtua,semua',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'tanggal_berakhir' => 'nullable|date|after_or_equal:today',
+        ], [
+            // Judul
+            'judul.max' => 'Judul pengumuman tidak boleh lebih dari 255 karakter.',
+        
+            // Gambar
+            'gambar.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'gambar.max' => 'Ukuran gambar maksimal 2MB.',
+        
+            // Tanggal berakhir
+            'tanggal_berakhir.date' => 'Tanggal berakhir harus berupa tanggal yang valid.',
+            'tanggal_berakhir.after_or_equal' => 'Tanggal berakhir tidak boleh sebelum hari ini.',
+        ]);
 
-    $pengumuman = Pengumuman::findOrFail($id);
-    $validated['dibuat_oleh'] = auth()->id();
+        $pengumuman = Pengumuman::findOrFail($id);
 
-    // Simpan gambar baru jika ada
-    if ($request->hasFile('gambar')) {
-        if ($pengumuman->gambar && Storage::disk('public')->exists($pengumuman->gambar)) {
-            Storage::disk('public')->delete($pengumuman->gambar);
+        // Gambar baru
+        if ($request->hasFile('gambar')) {
+            if ($pengumuman->gambar && Storage::disk('public')->exists($pengumuman->gambar)) {
+                Storage::disk('public')->delete($pengumuman->gambar);
+            }
+
+            $validated['gambar'] = $request->file('gambar')->store('pengumuman', 'public');
         }
-        $validated['gambar'] = $request->file('gambar')->store('pengumuman', 'public');
+
+        $pengumuman->update($validated);
+
+        return redirect()->route('admin.pengumuman.index')
+            ->with('success', 'Pengumuman berhasil diperbarui');
     }
-
-    $pengumuman->update($validated);
-
-    return redirect()->route('admin.pengumuman.index')
-        ->with('success', 'Pengumuman berhasil diperbarui');
-}
 
     public function destroy(string $id)
     {

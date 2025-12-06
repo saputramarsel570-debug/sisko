@@ -48,7 +48,7 @@ class JadwalEkskulController extends Controller
 
         JadwalEkskul::create([
             'ekstrakurikuler_id' => $request->ekstrakurikuler_id,
-            'hari' => $request->hari, // otomatis tersimpan sebagai JSON karena cast
+            'hari' => $request->hari, 
         ]);
 
         return redirect()->route('admin.jadwal_ekskul.index')

@@ -111,47 +111,46 @@ class JadwalPelajaranController extends Controller
     }
 
     public function updateSchedule(Request $request, $kelasId)
-{
-    $request->validate([
-        'jadwal' => 'required|array',
-    ]);
+    {
+        $request->validate([
+            'jadwal' => 'required|array',
+        ]);
 
-    $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+        // 🔥 HAPUS SEMUA DATA LAMA DULU
+        JadwalPelajaran::where('kelas_id', $kelasId)->delete();
 
-    foreach ($hariList as $hari) {
-        if (!isset($request->jadwal[$hari])) continue;
+        $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
 
-        foreach ($request->jadwal[$hari] as $jam => $data) {
-            $guruId  = $data['guru_id'] ?? null;
-            $mapelId = $data['mapel_id'] ?? null;
+        foreach ($hariList as $hari) {
+            if (!isset($request->jadwal[$hari])) continue;
 
-            // 🔹 Kalau mapel kosong, ambil dari data guru
-            if ($guruId && !$mapelId) {
-                $guru = \App\Models\Guru::find($guruId);
-                if ($guru) {
-                    $mapelId = $guru->mata_pelajaran_id;
+            foreach ($request->jadwal[$hari] as $jam => $data) {
+                $guruId  = $data['guru_id'] ?? null;
+                $mapelId = $data['mapel_id'] ?? null;
+
+                if ($guruId && !$mapelId) {
+                    $guru = \App\Models\Guru::find($guruId);
+                    if ($guru) {
+                        $mapelId = $guru->mata_pelajaran_id;
+                    }
                 }
-            }
 
-            // 🔹 Simpan kalau minimal ada guru dan mapel
-            if ($guruId && $mapelId) {
-                JadwalPelajaran::updateOrCreate(
-                    [
-                        'kelas_id'    => $kelasId,
-                        'hari'        => $hari,
-                        'jam_mulai'   => $jam,
-                        'jam_selesai' => $jam,
-                    ],
-                    [
+                // 🔹 Simpan jika lengkap
+                if ($guruId && $mapelId) {
+                    JadwalPelajaran::create([
+                        'kelas_id'          => $kelasId,
+                        'hari'              => $hari,
+                        'jam_mulai'         => $jam,
+                        'jam_selesai'       => $jam,
                         'guru_id'           => $guruId,
                         'mata_pelajaran_id' => $mapelId,
-                    ]
-                );
+                    ]);
+                }
             }
         }
-    }
 
-    return redirect()->route('admin.jadwal.index', ['kelas_id' => $kelasId])
-                     ->with('success', 'Jadwal pelajaran berhasil diperbarui');
-}
+        return redirect()
+            ->route('admin.jadwal.index', ['kelas_id' => $kelasId])
+            ->with('success', 'Jadwal pelajaran berhasil diperbarui');
+    }
 }

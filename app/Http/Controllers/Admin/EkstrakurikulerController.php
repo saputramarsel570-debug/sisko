@@ -38,14 +38,38 @@ class EkstrakurikulerController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string',
-            'nama_pembina' => 'required|string|max:100',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        $validated = $request->validate([
+            'nama' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+            'deskripsi' => [
+                'nullable',
+                'string',
+            ],
+            'nama_pembina' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+            'foto' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+        ], [
+            // Pesan Error Custom
+            'nama.max' => 'Nama ekstrakurikuler maksimal 100 karakter.',
+            'nama_pembina.max' => 'Nama pembina maksimal 100 karakter.',
+
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus berformat JPG, JPEG, PNG, atau WebP.',
+            'foto.max' => 'Ukuran maksimal foto adalah 2MB.',
         ]);
 
-        $data = $request->only(['nama', 'deskripsi', 'nama_pembina']);
+        $data = $validated;
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('ekskul', 'public');
@@ -78,20 +102,44 @@ class EkstrakurikulerController extends Controller
      */
     public function update(Request $request, Ekstrakurikuler $ekskul)
     {
-        $request->validate([
-            'nama' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string',
-            'nama_pembina' => 'required|string|max:100',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        $validated = $request->validate([
+            'nama' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+            'deskripsi' => [
+                'nullable',
+                'string',
+            ],
+            'nama_pembina' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+            'foto' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+        ], [
+            // Pesan Error Custom
+            'nama.max' => 'Nama ekstrakurikuler maksimal 100 karakter.',
+            'nama_pembina.max' => 'Nama pembina maksimal 100 karakter.',
+
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus berformat JPG, JPEG, PNG, atau WebP.',
+            'foto.max' => 'Ukuran maksimal foto adalah 2MB.',
         ]);
 
-        $data = $request->only(['nama', 'deskripsi', 'nama_pembina']);
+        $data = $validated;
 
         if ($request->hasFile('foto')) {
-            // hapus foto lama kalau ada
             if ($ekskul->foto && Storage::disk('public')->exists($ekskul->foto)) {
                 Storage::disk('public')->delete($ekskul->foto);
             }
+
             $data['foto'] = $request->file('foto')->store('ekskul', 'public');
         }
 

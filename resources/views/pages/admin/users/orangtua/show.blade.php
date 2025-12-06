@@ -41,20 +41,31 @@
                         <td>{{ $orangtua->siswa->kelas->nama_kelas ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th>Dibuat Pada</th>
-                        <td>{{ $orangtua->created_at->format('d M Y H:i') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Diperbarui Pada</th>
-                        <td>{{ $orangtua->updated_at->format('d M Y H:i') }}</td>
-                    </tr>
-                    <tr>
                         <th>Username</th>
                         <td>{{ $orangtua->user->username ?? '-' }}</td>
                     </tr>
                     <tr>
                         <th>Email</th>
                         <td>{{ $orangtua->user->email ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Dibuat Pada</th>
+                        <td>
+                            {{ $orangtua->created_at 
+                                ? $orangtua->created_at->copy()->timezone('Asia/Jakarta')->format('d M Y H:i') 
+                                : '-' 
+                            }}
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th>Diperbarui Pada</th>
+                        <td>
+                            {{ $orangtua->updated_at 
+                                ? $orangtua->updated_at->copy()->timezone('Asia/Jakarta')->format('d M Y H:i') 
+                                : '-' 
+                            }}
+                        </td>
                     </tr>
                 </table>
             </div>

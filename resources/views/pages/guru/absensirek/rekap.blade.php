@@ -49,17 +49,6 @@
                 </h6>
 
                 <div class="d-flex flex-wrap align-items-center gap-2">
-                    <!-- Tombol Export Excel -->
-                    <a href="{{ route('guru.absensirek.export', [
-                        'kelas_id' => $kelasId,
-                        'periode' => $periode,
-                        'tanggal' => $tanggal,
-                        'bulan' => $bulan
-                    ]) }}" 
-                    class="btn btn-success btn-sm shadow-sm d-flex align-items-center gap-1">
-                        <i class="ti ti-file-spreadsheet"></i> 
-                        <span>Excel</span>
-                    </a>
 
                     <!-- Tombol Export PDF (muncul hanya saat bulanan) -->
                     @if(($periode ?? '') === 'bulan')

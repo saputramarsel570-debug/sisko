@@ -57,6 +57,22 @@
         <p><strong>Dicetak pada:</strong> {{ now()->translatedFormat('d F Y, H:i') }}</p>
     </div>
 
+    @php
+        // JAM RANGES DIPAKAI UNTUK PDF
+        $jamRanges = [
+            1 => '07:00 - 07:45',
+            2 => '07:45 - 08:30',
+            3 => '08:30 - 09:15',
+            4 => '09:30 - 10:15',
+            5 => '10:15 - 11:00',
+            6 => '11:00 - 11:45',
+            7 => '12:30 - 13:15',
+            8 => '13:15 - 14:00',
+            9 => '14:00 - 14:45',
+            10 => '14:45 - 15:30',
+        ];
+    @endphp
+
     @forelse($jurnalBulanan as $tanggal => $dataJurnal)
         <table>
             <tr>
@@ -70,16 +86,44 @@
                 <th>Mata Pelajaran</th>
                 <th>Jam</th>
                 <th>Materi</th>
-                <th>Keterangan</th>
+                <th>Catatan</th>
             </tr>
+
             @foreach ($dataJurnal as $i => $j)
                 <tr>
                     <td>{{ $i + 1 }}</td>
+
                     <td>{{ $j->kelas->nama_kelas ?? '-' }}</td>
+
                     <td>{{ $j->mataPelajaran->nama_mapel ?? '-' }}</td>
-                    <td>{{ $j->jam_mulai }} - {{ $j->jam_selesai }}</td>
+
+                    {{-- JAM FIX (PAKAI jamRanges) --}}
+                    <td>
+                        @if ($j->jam_mulai && $j->jam_selesai)
+                            @php
+                                $mulai = $jamRanges[$j->jam_mulai] ?? null;
+                                $selesai = $jamRanges[$j->jam_selesai] ?? null;
+                    
+                                // Ambil jam awal dari range mulai
+                                if ($mulai) {
+                                    $mulaiJam = explode(' - ', $mulai)[0];
+                                }
+                    
+                                // Ambil jam akhir dari range selesai
+                                if ($selesai) {
+                                    $selesaiJam = explode(' - ', $selesai)[1];
+                                }
+                            @endphp
+                    
+                            {{ $mulaiJam ?? '-' }} - {{ $selesaiJam ?? '-' }}
+                    
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td>{{ $j->materi ?? '-' }}</td>
-                    <td>{{ $j->keterangan ?? '-' }}</td>
+
+                    <td>{{ $j->catatan ?? '-' }}</td>
                 </tr>
             @endforeach
         </table>

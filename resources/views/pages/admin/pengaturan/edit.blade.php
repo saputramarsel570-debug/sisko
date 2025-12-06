@@ -83,26 +83,55 @@
 
                         <div class="col-md-4">
                             <label class="form-label"><i class="ti ti-photo"></i> Logo Sekolah</label>
-                            <input type="file" name="logo" class="form-control">
+                            <input type="file" 
+                                   name="logo" 
+                                   class="form-control @error('logo') is-invalid @enderror">
+                        
+                            @error('logo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        
                             @if($pengaturan->logo)
                                 <small class="text-muted d-block mt-1">Logo saat ini:</small>
-                                <img src="{{ asset('storage/'.$pengaturan->logo) }}" class="mt-1 rounded border" height="60">
+                                <img src="{{ asset('storage/'.$pengaturan->logo) }}" 
+                                     class="mt-1 rounded border" 
+                                     height="60">
                             @endif
                         </div>
+                        
                         <div class="col-md-4">
                             <label class="form-label"><i class="ti ti-file-text"></i> Kop Surat</label>
-                            <input type="file" name="kop_surat" class="form-control">
+                            <input type="file" 
+                                   name="kop_surat" 
+                                   class="form-control @error('kop_surat') is-invalid @enderror">
+                        
+                            @error('kop_surat')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        
                             @if($pengaturan->kop_surat)
                                 <small class="text-muted d-block mt-1">Kop saat ini:</small>
-                                <img src="{{ asset('storage/'.$pengaturan->kop_surat) }}" class="mt-1 rounded border" height="60">
+                                <img src="{{ asset('storage/'.$pengaturan->kop_surat) }}" 
+                                     class="mt-1 rounded border" 
+                                     height="60">
                             @endif
                         </div>
+                        
                         <div class="col-md-4">
                             <label class="form-label"><i class="ti ti-signature"></i> TTD Kepala Sekolah</label>
-                            <input type="file" name="ttd_kepsek" class="form-control">
+                            <input type="file" 
+                                   name="ttd_kepsek" 
+                                   class="form-control @error('ttd_kepsek') is-invalid @enderror">
+                        
+                            @error('ttd_kepsek')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        
                             @if($pengaturan->ttd_kepsek)
                                 <small class="text-muted d-block mt-1">TTD saat ini:</small>
-                                <img src="{{ asset('storage/'.$pengaturan->ttd_kepsek) }}" class="mt-1 rounded border" height="60">
+                                <img src="{{ asset('storage/'.$pengaturan->ttd_kepsek) }}" 
+                                     class="mt-1 rounded border" 
+                                     height="60">
                             @endif
                         </div>
                     </div>

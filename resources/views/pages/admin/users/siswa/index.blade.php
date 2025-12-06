@@ -6,6 +6,8 @@
 <div class="row">
     <div class="col-md-12">
 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         {{-- Notifikasi sukses --}}
         @if (session('success'))
             <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
@@ -13,6 +15,53 @@
                 {{ session('success') }}
             </div>
         @endif
+
+        {{-- Import: sukses + error --}}
+@if (session('import_success') && session('import_errors'))
+<script>
+    let html = "<p><b>{{ session('import_success') }} data berhasil diimport.</b></p>";
+    html += "<p><b>Beberapa data gagal:</b></p>";
+    html += "<ul style='text-align:left'>";
+    @foreach(session('import_errors') as $failure)
+        html += "<li><b>Baris {{ $failure->row() }}</b> : {{ implode(', ', $failure->errors()) }}</li>";
+    @endforeach
+    html += "</ul>";
+
+    Swal.fire({
+        icon: 'warning',
+        title: 'Import Selesai Dengan Catatan',
+        html: html,
+    });
+</script>
+@endif
+
+{{-- Semua sukses --}}
+@if (session('import_success') && !session('import_errors'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Import Berhasil',
+        text: 'Berhasil menambahkan {{ session("import_success") }} data.',
+    });
+</script>
+@endif
+
+{{-- Semua gagal --}}
+@if (!session('import_success') && session('import_errors'))
+<script>
+    let html = "<ul style='text-align:left'>";
+    @foreach(session('import_errors') as $failure)
+        html += "<li><b>Baris {{ $failure->row() }}</b> : {{ implode(', ', $failure->errors()) }}</li>";
+    @endforeach
+    html += "</ul>";
+
+    Swal.fire({
+        icon: 'error',
+        title: 'Import Gagal!',
+        html: html,
+    });
+</script>
+@endif
 
         <div class="card shadow-lg border-0 rounded-4">
             <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white rounded-top-4">
@@ -23,6 +72,9 @@
                     </a>
                     <a href="{{ route('admin.siswa.export') }}" class="btn btn-success btn-sm me-2">
                         <i class="ti ti-download"></i> Export
+                    </a>
+                    <a href="{{ route('admin.siswaortu.template') }}" class="btn btn-info btn-sm me-2">
+                        <i class="ti ti-download"></i> Download Template Excel
                     </a>
                     <button class="btn btn-info btn-sm" data-bs-toggle="collapse" data-bs-target="#importForm">
                         <i class="ti ti-upload"></i> Import

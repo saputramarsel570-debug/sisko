@@ -16,11 +16,11 @@ class JurnalController extends Controller
     {
         $guru = Auth::user()->guru;
     
-        // Ambil tanggal dari request, default hari ini
+        // Ambil tanggal
         $tanggal = $request->get('tanggal') ?? now()->toDateString();
         $hariInggris = Carbon::parse($tanggal)->format('l');
     
-        // Pemetaan nama hari
+        // Map hari
         $hariMap = [
             'Monday'    => 'Senin',
             'Tuesday'   => 'Selasa',
@@ -32,13 +32,13 @@ class JurnalController extends Controller
         ];
         $hariIni = $hariMap[$hariInggris] ?? null;
     
-        // Ambil kelas dari request, atau default kelas pertama guru
+        // Ambil kelas
         $kelasId = $request->get('kelas_id')
             ?? JadwalPelajaran::where('guru_id', $guru->id)->pluck('kelas_id')->first();
     
         $kelas = Kelas::find($kelasId);
     
-        // Daftar jam ke → waktu
+        // Jam real
         $jamRanges = [
             1 => '07:00 - 07:45',
             2 => '07:45 - 08:30',
@@ -52,14 +52,14 @@ class JurnalController extends Controller
             10 => '14:45 - 15:30',
         ];
     
-        // Ambil jadwal berdasarkan hari yang sesuai dengan tanggal terpilih
+        // Ambil jadwal
         $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'guru'])
             ->where('kelas_id', $kelasId)
             ->where('hari', $hariIni)
             ->orderBy('jam_mulai')
             ->get();
     
-        // Gabungkan jadwal berurutan dengan guru dan mapel yang sama
+        // Gabungkan jadwal berurutan
         $jadwalGabung = collect();
         foreach ($jadwalHariIni as $jadwal) {
             if ($jadwalGabung->isEmpty()) {
@@ -82,61 +82,71 @@ class JurnalController extends Controller
             }
         }
     
-        // Ambil jurnal untuk tanggal & guru login (agar hanya data guru sendiri)
-        $jurnalHariIni = Jurnal::where('kelas_id', $kelasId)
+        // Ambil jurnal per-jam
+        $jurnalRaw = Jurnal::where('kelas_id', $kelasId)
             ->where('guru_id', $guru->id)
             ->whereDate('tanggal', $tanggal)
-            ->get()
-            ->keyBy(function ($item) {
-                return $item->jam_mulai . '-' . $item->jam_selesai;
-            });
+            ->get();
+
+        // 🔥 Gabungkan jurnal sesuai format key Blade:
+        // key = jamMulai-jamSelesai-mapelId-guruId
+        $jurnalMerged = collect();
+
+        foreach ($jurnalRaw as $item) {
+            // Cari jadwalGabung yang cocok
+            foreach ($jadwalGabung as $j) {
+                if (
+                    $item->jam_mulai >= $j->jam_mulai &&
+                    $item->jam_mulai <= $j->jam_selesai &&
+                    $item->mata_pelajaran_id == $j->mata_pelajaran_id &&
+                    $item->guru_id == $j->guru_id
+                ) {
+                    $key = $j->jam_mulai . '-' . $j->jam_selesai . '-' . $j->mata_pelajaran_id . '-' . $j->guru_id;
+
+                    if (!$jurnalMerged->has($key)) {
+                        $jurnalMerged->put($key, $item); 
+                    }
+                }
+            }
+        }
     
         return view('pages.guru.jurnal.index', compact(
             'kelas',
             'kelasId',
             'jadwalGabung',
-            'jurnalHariIni',
+            'jurnalMerged',
             'guru',
             'tanggal',
             'jamRanges'
         ));
     }
+
     public function store(Request $request)
-{
-    $guru = Auth::user()->guru;
+    {
+        $guru = Auth::user()->guru;
 
-    // ✅ Ambil tanggal dari request (bukan default hari ini)
-    $tanggal = $request->input('tanggal', now()->toDateString());
+        $tanggal = $request->input('tanggal', now()->toDateString());
+        $data = $request->input('jurnal', []);
 
-    $data = $request->input('jurnal', []);
+        foreach ($data as $key => $value) {
 
-    foreach ($data as $key => $value) {
-        // key format: jamMulai-jamSelesai-mapelId-guruId
-        [$jamMulai, $jamSelesai, $mapelId, $guruId] = explode('-', $key);
+            // Key format: jamMulai-jamSelesai-mapelId-guruId
+            [$jamMulai, $jamSelesai, $mapelId, $guruId] = explode('-', $key);
 
-        $jamMulai   = (int) trim($jamMulai);
-        $jamSelesai = (int) trim($jamSelesai);
-        $mapelId    = (int) trim($mapelId);
-        $guruId     = (int) trim($guruId);
+            $jamMulai   = (int) trim($jamMulai);
+            $jamSelesai = (int) trim($jamSelesai);
+            $mapelId    = (int) trim($mapelId);
+            $guruId     = (int) trim($guruId);
 
-        // Ambil jadwal yang cocok
-        $jadwal = JadwalPelajaran::where('guru_id', $guruId)
-            ->where('kelas_id', $request->kelas_id)
-            ->where('mata_pelajaran_id', $mapelId)
-            ->where('jam_mulai', '<=', $jamMulai)
-            ->where('jam_selesai', '>=', $jamSelesai)
-            ->first();
-
-        if ($jadwal) {
-            // Simpan jurnal per jam
+            // Simpan jurnal per-jam sesuai jam gabungan
             for ($jam = $jamMulai; $jam <= $jamSelesai; $jam++) {
                 Jurnal::updateOrCreate(
                     [
-                        'tanggal' => $tanggal, // ✅ Simpan tanggal dari halaman yang dipilih
+                        'tanggal' => $tanggal,
                         'jam_mulai' => $jam,
                         'jam_selesai' => $jam,
                         'guru_id' => $guruId,
-                        'kelas_id' => $jadwal->kelas_id,
+                        'kelas_id' => $request->kelas_id,
                         'mata_pelajaran_id' => $mapelId,
                     ],
                     [
@@ -146,11 +156,10 @@ class JurnalController extends Controller
                 );
             }
         }
-    }
 
-    return redirect()->route('guru.jurnal.index', [
-        'kelas_id' => $request->kelas_id,
-        'tanggal'  => $tanggal, // ✅ biar balik ke tanggal yang baru diedit
-    ])->with('success', 'Jurnal berhasil disimpan.');
-}
+        return redirect()->route('guru.jurnal.index', [
+            'kelas_id' => $request->kelas_id,
+            'tanggal'  => $tanggal,
+        ])->with('success', 'Jurnal berhasil disimpan.');
+    }
 }

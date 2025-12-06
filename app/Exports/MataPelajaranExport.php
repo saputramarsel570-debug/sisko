@@ -23,8 +23,12 @@ class MataPelajaranExport implements FromCollection, WithHeadings, WithMapping
             $mapel->id,
             $mapel->kode_mapel,
             $mapel->nama_mapel,
-            $mapel->created_at ? $mapel->created_at->format('Y-m-d H:i') : '-',
-            $mapel->updated_at ? $mapel->updated_at->format('Y-m-d H:i') : '-',
+            $mapel->created_at
+            ? $mapel->created_at->copy()->timezone('Asia/Jakarta')->format('Y-m-d H:i')
+            : '-',
+            $mapel->updated_at
+            ? $mapel->updated_at->copy()->timezone('Asia/Jakarta')->format('Y-m-d H:i')
+            : '-',
         ];
     }
 

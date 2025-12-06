@@ -50,11 +50,11 @@
 
                     <tr>
                         <th>Dibuat Pada</th>
-                        <td>{{ $ekskul->created_at->format('d M Y H:i') }}</td>
+                        <td>{{ $ekskul->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}</td>
                     </tr>
                     <tr>
                         <th>Diperbarui Pada</th>
-                        <td>{{ $ekskul->updated_at->format('d M Y H:i') }}</td>
+                        <td>{{ $ekskul->updated_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}</td>
                     </tr>
                 </table>
             </div>

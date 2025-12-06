@@ -26,7 +26,13 @@
 
     {{-- ✅ Tombol Filter --}}
     <div class="card shadow-sm border-0 mb-4 rounded-4">
-      <div class="card-body d-flex flex-wrap align-items-center gap-3">
+      <div class="card-body filter-bar">
+
+        @php
+            $kategori = request('kategori');
+            $status = request('status');
+            $balasan = request('balasan');
+        @endphp
 
         {{-- 🔹 Kategori --}}
         <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -34,20 +40,37 @@
             <i class="ti ti-category me-1"></i> Kategori:
           </span>
 
-          @php
-              $kategori = request('kategori');
-              $status = request('status');
-          @endphp
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => 'Keluhan', 'status' => $status, 'balasan' => $balasan, 'search' => request('search')])) }}"
+               class="btn btn-danger {{ $kategori == 'Keluhan' ? 'disabled' : '' }}">
+              <i class="ti ti-alert-circle"></i> Keluhan
+            </a>
 
-          <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => 'Keluhan', 'status' => $status, 'search' => request('search')])) }}"
-             class="btn btn-danger {{ $kategori == 'Keluhan' ? 'disabled' : '' }}">
-            <i class="ti ti-alert-circle"></i> Keluhan
-          </a>
+            <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => 'Saran', 'status' => $status, 'balasan' => $balasan, 'search' => request('search')])) }}"
+               class="btn btn-success {{ $kategori == 'Saran' ? 'disabled' : '' }}">
+              <i class="ti ti-bulb"></i> Saran
+            </a>
+          </div>
+        </div>
 
-          <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => 'Saran', 'status' => $status, 'search' => request('search')])) }}"
-             class="btn btn-success {{ $kategori == 'Saran' ? 'disabled' : '' }}">
-            <i class="ti ti-bulb"></i> Saran
-          </a>
+        {{-- 🔹 Balasan --}}
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="fw-semibold text-secondary">
+            <i class="ti ti-category me-1"></i> Balasan:
+          </span>
+
+
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => $kategori, 'status' => $status, 'balasan' => 'sudah', 'search' => request('search')])) }}"
+               class="btn btn-info {{ $balasan == 'sudah' ? 'disabled' : '' }}">
+              <i class="ti ti-check"></i> Sudah Dibalas
+            </a>
+
+            <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => $kategori, 'status' => $status, 'balasan' => 'belum', 'search' => request('search')])) }}"
+               class="btn btn-warning {{ $balasan == 'belum' ? 'disabled' : '' }}">
+              <i class="ti ti-clock"></i> Belum Dibalas
+            </a>
+          </div>
         </div>
 
         {{-- 🔹 Status --}}
@@ -56,26 +79,24 @@
             <i class="ti ti-list-check me-1"></i> Status:
           </span>
 
-          <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'pending', 'search' => request('search')])) }}"
-             class="btn btn-warning  {{ $status == 'pending' ? 'disabled' : '' }}">
-            <i class="ti ti-clock"></i> Pending
-          </a>
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'pending', 'balasan' => $balasan, 'search' => request('search')])) }}"
+               class="btn btn-warning {{ $status == 'pending' ? 'disabled' : '' }}">
+              <i class="ti ti-clock"></i> Pending
+            </a>
 
-          <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'proses', 'search' => request('search')])) }}"
-             class="btn btn-info  {{ $status == 'proses' ? 'disabled' : '' }}">
-            <i class="ti ti-loader-2"></i> Proses
-          </a>
+            <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'proses', 'balasan' => $balasan, 'search' => request('search')])) }}"
+               class="btn btn-info {{ $status == 'proses' ? 'disabled' : '' }}">
+              <i class="ti ti-loader-2"></i> Proses
+            </a>
 
-          <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'selesai', 'search' => request('search')])) }}"
-             class="btn btn-success {{ $status == 'selesai' ? 'disabled' : '' }}">
-            <i class="ti ti-check"></i> Selesai
-          </a>
-
-          <a href="{{ route('orangtua.keluhan.index') }}"
-             class="btn btn-secondary {{ !$kategori && !$status ? 'disabled' : '' }}">
-            <i class="ti ti-refresh"></i> Semua
-          </a>
+            <a href="{{ route('orangtua.keluhan.index', array_filter(['kategori' => $kategori, 'status' => 'selesai', 'balasan' => $balasan, 'search' => request('search')])) }}"
+               class="btn btn-success {{ $status == 'selesai' ? 'disabled' : '' }}">
+              <i class="ti ti-check"></i> Selesai
+            </a>
+          </div>
         </div>
+
       </div>
     </div>
 
@@ -86,9 +107,9 @@
           <input type="text" name="search" value="{{ request('search') }}"
                  class="form-control" placeholder="Cari berdasarkan isi...">
 
-          {{-- Pertahankan filter kategori & status --}}
           <input type="hidden" name="kategori" value="{{ request('kategori') }}">
           <input type="hidden" name="status" value="{{ request('status') }}">
+          <input type="hidden" name="balasan" value="{{ request('balasan') }}">
 
           <button class="btn btn-primary">
             <i class="ti ti-search"></i> Cari
@@ -110,7 +131,7 @@
 
         <div class="col-md-4">
           <div class="card shadow-sm border-0 h-100 rounded-4 overflow-hidden hover-card">
-            
+
             {{-- Gambar --}}
             @if ($item->gambar)
               <img src="{{ asset('storage/' . $item->gambar) }}"
@@ -131,7 +152,8 @@
                 {{ $item->kategori }}
               </span>
               <p class="small text-muted mb-2">
-                <i class="ti ti-calendar"></i> {{ $item->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }}
+                <i class="ti ti-calendar"></i> 
+                {{ $item->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }}
               </p>
               <p class="text-muted small mb-3">{!! nl2br(e(Str::limit($item->isi, 200))) !!}</p>
 
@@ -201,6 +223,39 @@
   .btn.disabled {
     opacity: 0.6;
     pointer-events: none;
+  }
+
+  /* ✅ Filter Bar Rapi Sejajar di Semua Zoom */
+  .filter-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .filter-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .filter-section.text-center {
+    align-items: center;
+  }
+
+  .filter-section.text-end {
+    align-items: flex-end;
+  }
+
+  @media (max-width: 992px) {
+    .filter-bar {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .filter-section {
+      align-items: center !important;
+    }
   }
 </style>
 @endpush

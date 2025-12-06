@@ -25,18 +25,43 @@ class PengaturanSekolahController extends Controller
     {
         $request->validate([
             'nama_sekolah' => 'required|string|max:255',
-            'npsn' => 'nullable|string|max:50',
+            'npsn' => 'nullable|digits:8',
             'jenjang' => 'nullable|string|max:50',
-            'alamat' => 'nullable|string',
-            'telepon' => 'nullable|string|max:20',
+            'alamat' => 'nullable|string|max:255',
+            'telepon' => ['nullable', 'regex:/^[0-9+\-\s]+$/', 'max:20'],
             'email' => 'nullable|email',
             'kepala_sekolah' => 'nullable|string|max:255',
-            'nip_kepala_sekolah' => 'nullable|string|max:50',
-            'tahun_ajaran' => 'nullable|string|max:20',
+            'nip_kepala_sekolah' => 'nullable|digits_between:8,18',
+            'tahun_ajaran' => ['nullable', 'regex:/^[0-9]{4}\/[0-9]{4}$/'],
             'semester' => 'nullable|string|max:20',
-            'logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
-            'kop_surat' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
-            'ttd_kepsek' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+            'kop_surat' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+            'ttd_kepsek' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+
+        ], [
+            'nama_sekolah.max' => 'Nama sekolah maksimal 255 karakter.',
+            'npsn.digits' => 'NPSN harus terdiri dari 8 digit angka.',
+            'jenjang.max' => 'Jenjang maksimal 50 karakter.',
+            'alamat.max' => 'Alamat maksimal 255 karakter.',
+            'telepon.regex' => 'Nomor telepon hanya boleh berisi angka, spasi, + atau -.',
+            'telepon.max' => 'Nomor telepon maksimal 20 karakter.',
+            'email.email' => 'Format email tidak valid.',
+            'kepala_sekolah.max' => 'Nama kepala sekolah maksimal 255 karakter.',
+            'nip_kepala_sekolah.digits_between' => 'NIP harus berupa angka antara 8 sampai 18 digit.',
+            'tahun_ajaran.regex' => 'Tahun ajaran harus berformat contoh: 2024/2025.',
+            'semester.max' => 'Semester maksimal 20 karakter.',
+
+            'logo.image' => 'Logo harus berupa file gambar.',
+            'logo.mimes' => 'Logo harus berformat PNG, JPG, JPEG, atau WEBP.',
+            'logo.max' => 'Ukuran logo maksimal 2MB.',
+
+            'kop_surat.image' => 'Kop surat harus berupa file gambar.',
+            'kop_surat.mimes' => 'Kop surat harus berformat PNG, JPG, JPEG, atau WEBP.',
+            'kop_surat.max' => 'Ukuran kop surat maksimal 2MB.',
+
+            'ttd_kepsek.image' => 'TTD Kepala Sekolah harus berupa file gambar.',
+            'ttd_kepsek.mimes' => 'TTD Kepala Sekolah harus berformat PNG, JPG, JPEG, atau WEBP.',
+            'ttd_kepsek.max' => 'Ukuran TTD maksimal 2MB.',
         ]);
 
         $pengaturan = PengaturanSekolah::findOrFail($id);
@@ -57,6 +82,7 @@ class PengaturanSekolahController extends Controller
 
         $pengaturan->update($data);
 
-        return redirect()->route('admin.pengaturan.index')->with('success', 'Pengaturan sekolah berhasil diperbarui');
+        return redirect()->route('admin.pengaturan.index')
+                        ->with('success', 'Pengaturan sekolah berhasil diperbarui');
     }
 }

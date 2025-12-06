@@ -35,7 +35,7 @@
                     <div class="col-md-6">
                         <h6 class="text-primary fw-semibold mb-1">Tanggal</h6>
                         <div class="p-3 bg-white rounded shadow-sm border">
-                            {{ $pengumuman->created_at->format('d-m-Y H:i') }}
+                            {{ $pengumuman->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}
                         </div>
                     </div>
                 </div>

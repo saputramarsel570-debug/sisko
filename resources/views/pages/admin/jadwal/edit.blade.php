@@ -94,13 +94,13 @@
 
 {{-- Script otomatis isi mapel --}}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.guru-select').forEach(select => {
             select.addEventListener('change', function() {
                 const hari = this.dataset.hari;
                 const jam = this.dataset.jam;
                 const mapelId = this.selectedOptions[0].getAttribute('data-mapel');
-                document.getElementById(mapel-${hari}-${jam}).value = mapelId || '';
+                document.getElementById(`mapel-${hari}-${jam}`).value = mapelId || '';
             });
         });
     });

@@ -89,7 +89,7 @@
 
           <div class="flex-grow-1">
             <input type="text" name="search" value="{{ request('search') }}" 
-                   class="form-control rounded-pill shadow-sm" placeholder="Cari berdasarkan nama siswa/orangtua...">
+                   class="form-control rounded-pill shadow-sm" placeholder="Cari berdasarkan nama user/isi keluhan...">
           </div>
 
           <button type="submit" class="btn btn-primary rounded-pill shadow-sm">

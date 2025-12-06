@@ -59,16 +59,64 @@ class OrangtuaController extends Controller
         $request->validate([
             'siswa_id' => 'required|exists:siswa,id',
             'nama' => 'required|string|max:255',
-            'no_hp' => 'required|string|max:20',
-            'username' => 'required|string|max:255|unique:users,username',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
+        
+            'no_hp' => [
+                'required',
+                'digits_between:8,20',
+                'regex:/^[0-9]+$/'
+            ],
+        
+            'username' => [
+                'required',
+                'min:4',
+                'max:50',
+                'unique:users,username',
+                'regex:/^[a-z0-9_]+$/'
+            ],
+        
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email',
+            ],
+        
+            'password' => [
+                'required',
+                'min:6',
+                'confirmed',
+                'regex:/^\S+$/'
+            ],
+        
+        ], [
+            'siswa_id.required' => 'Siswa wajib dipilih.',
+            'siswa_id.exists' => 'Siswa tidak valid.',
+        
+            'nama.required' => 'Nama orang tua wajib diisi.',
+        
+            'no_hp.required' => 'Nomor HP wajib diisi.',
+            'no_hp.digits_between' => 'Nomor HP harus 8–20 digit.',
+            'no_hp.regex' => 'Nomor HP hanya boleh angka.',
+        
+            'username.required' => 'Username orang tua wajib diisi.',
+            'username.min' => 'Username minimal 4 karakter.',
+            'username.max' => 'Username maksimal 50 karakter.',
+            'username.unique' => 'Username sudah digunakan.',
+            'username.regex' => 'Username hanya boleh huruf kecil, angka, dan underscore.',
+        
+            'email.required' => 'Email orang tua wajib diisi.',
+            'email.email' => 'Format email orang tua tidak valid.',
+            'email.unique' => 'Email orang tua sudah digunakan.',
+        
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.regex' => 'Password tidak boleh mengandung spasi.',
         ]);
 
         $user = User::create([
-            'username' => $request->username,
+            'username' => strtolower($request->username),
             'name' => $request->nama,
-            'email' => $request->email,
+            'email' => strtolower($request->email),
             'password' => Hash::make($request->password),
             'role' => 'orangtua',
         ]);
@@ -109,16 +157,68 @@ class OrangtuaController extends Controller
         $request->validate([
             'siswa_id' => 'required|exists:siswa,id',
             'nama' => 'required|string|max:255',
-            'no_hp' => 'required|string|max:20',
-            'email' => 'required|email|unique:users,email,' . $orangtua->user_id,
-            'password' => 'nullable|confirmed|min:6',
+        
+            'no_hp' => [
+                'required',
+                'digits_between:8,20',
+                'regex:/^[0-9]+$/'
+            ],
+        
+            'username' => [
+                'required',
+                'min:4',
+                'max:50',
+                'unique:users,username,' . $orangtua->user_id,
+                'regex:/^[a-z0-9_]+$/'
+            ],
+        
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email,' . $orangtua->user_id,
+            ],
+        
+            'password' => [
+                'nullable',
+                'min:6',
+                'confirmed',
+                'regex:/^\S+$/'
+            ],
+        
+        ], [
+            'siswa_id.required' => 'Siswa wajib dipilih.',
+            'siswa_id.exists' => 'Siswa tidak valid.',
+        
+            'nama.required' => 'Nama orang tua wajib diisi.',
+        
+            'no_hp.required' => 'Nomor HP wajib diisi.',
+            'no_hp.digits_between' => 'Nomor HP harus 8–20 digit.',
+            'no_hp.regex' => 'Nomor HP hanya boleh angka.',
+        
+            'username.required' => 'Username orang tua wajib diisi.',
+            'username.min' => 'Username minimal 4 karakter.',
+            'username.max' => 'Username maksimal 50 karakter.',
+            'username.unique' => 'Username sudah digunakan.',
+            'username.regex' => 'Username hanya boleh huruf kecil, angka, dan underscore.',
+        
+            'email.required' => 'Email orang tua wajib diisi.',
+            'email.email' => 'Format email orang tua tidak valid.',
+            'email.unique' => 'Email orang tua sudah digunakan.',
+        
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.regex' => 'Password tidak boleh mengandung spasi.',
         ]);
 
         $user = $orangtua->user;
+
         $user->update([
+            'username' => strtolower($request->username),
             'name' => $request->nama,
-            'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
+            'email' => strtolower($request->email),
+            'password' => $request->filled('password')
+                            ? Hash::make($request->password)
+                            : $user->password,
         ]);
 
         $orangtua->update([

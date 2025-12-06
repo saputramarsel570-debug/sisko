@@ -29,8 +29,13 @@ class KeluhanController extends Controller
 
     // 🔍 Filter pencarian nama siswa/orangtua
     if ($request->filled('search')) {
-        $query->whereHas('user', function ($q) use ($request) {
-            $q->where('name', 'like', '%' . $request->search . '%');
+        $search = $request->search;
+    
+        $query->where(function ($q) use ($search) {
+            $q->whereHas('user', function ($user) use ($search) {
+                $user->where('name', 'like', "%{$search}%");
+            })
+            ->orWhere('isi', 'like', "%{$search}%");
         });
     }
 

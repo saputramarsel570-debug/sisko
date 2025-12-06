@@ -26,8 +26,12 @@ class GuruExport implements FromCollection, WithHeadings, WithMapping
             $guru->nip ?? '-',
             $guru->nama ?? '-',
             $guru->mataPelajaran->nama_mapel ?? '-',
-            $guru->created_at ? $guru->created_at->format('d-m-Y H:i') : '-',
-            $guru->updated_at ? $guru->updated_at->format('d-m-Y H:i') : '-',
+            $guru->created_at
+            ? $guru->created_at->copy()->timezone('Asia/Jakarta')->format('Y-m-d H:i')
+            : '-',
+            $guru->updated_at
+            ? $guru->updated_at->copy()->timezone('Asia/Jakarta')->format('Y-m-d H:i')
+            : '-',
         ];
     }
 

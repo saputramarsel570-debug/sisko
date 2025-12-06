@@ -32,7 +32,7 @@ class PengumumanBaruNotification extends Notification
             $route = route('siswa_perwakilan.pengumuman.show', $this->pengumumanId);
         } elseif ($notifiable->role === 'siswa') {
             $route = route('siswa.pengumuman.show', $this->pengumumanId);
-        } elseif ($notifiable->role === 'siswa') {
+        } elseif ($notifiable->role === 'orangtua') {
             $route = route('orangtua.pengumuman.show', $this->pengumumanId);
         } else {
             $route = '#';

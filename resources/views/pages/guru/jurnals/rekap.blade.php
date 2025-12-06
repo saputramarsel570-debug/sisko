@@ -65,7 +65,51 @@
                         <tbody>
                             @forelse($jurnalHariIni as $jurnal)
                                 <tr>
-                                    <td><span class="badge bg-primary">{{ $jurnal->jam_mulai }} - {{ $jurnal->jam_selesai }}</span></td>
+                                    <td>
+                                        @php
+                                            $start = $jurnal->jam_mulai ?? null;
+                                            $end = $jurnal->jam_selesai ?? null;
+                                    
+                                            // fungsi bantu untuk ambil range dari jamRanges
+                                            $getRangePart = function($key, $partIndex) use ($jamRanges) {
+                                                if ($key === null) return null;
+                                    
+                                                if (isset($jamRanges[(int)$key])) {
+                                                    $range = $jamRanges[(int)$key]; // contoh: "14:00 - 14:45"
+                                                    $parts = explode(' - ', $range);
+                                                    return $parts[$partIndex] ?? null;
+                                                }
+                                                return null;
+                                            };
+                                    
+                                            // ambil waktu mulai/akhir
+                                            $startTime = $getRangePart($start, 0); // "14:00"
+                                            $endTime = $getRangePart($end, 1);     // "15:30"
+                                    
+                                            // fallback jika jamRanges tidak tersedia
+                                            if (!$startTime && $start) {
+                                                try {
+                                                    $startTime = \Carbon\Carbon::parse($start)->format('H:i');
+                                                } catch (\Throwable $e) {}
+                                            }
+                                            if (!$endTime && $end) {
+                                                try {
+                                                    $endTime = \Carbon\Carbon::parse($end)->format('H:i');
+                                                } catch (\Throwable $e) {}
+                                            }
+                                    
+                                            // hasil akhir
+                                            if ($startTime && $endTime && $startTime !== $endTime) {
+                                                $jamOutput = $startTime . ' - ' . $endTime;
+                                            } elseif ($startTime) {
+                                                $jamOutput = $startTime;
+                                            } else {
+                                                $jamOutput = '-';
+                                            }
+                                        @endphp
+                                    
+                                        <span class="badge bg-primary">{{ $jamOutput }}</span>
+                                    </td>
                                     <td>{{ $jurnal->kelas->nama_kelas ?? '-' }}</td>
                                     <td>{{ $jurnal->mataPelajaran->nama_mapel ?? '-' }}</td>
                                     <td class="text-start">{{ $jurnal->materi ?? '-' }}</td>
@@ -114,7 +158,64 @@
                                                 <td>{{ $i + 1 }}</td>
                                                 <td>{{ $jurnal->kelas->nama_kelas ?? '-' }}</td>
                                                 <td>{{ $jurnal->mataPelajaran->nama_mapel ?? '-' }}</td>
-                                                <td>{{ $jurnal->jam_mulai }} - {{ $jurnal->jam_selesai }}</td>
+                                                <td>
+                                                    @php
+                                                        $start = $jurnal->jam_mulai ?? null;
+                                                        $end = $jurnal->jam_selesai ?? null;
+                                                
+                                                        // fungsi bantu untuk ambil bagian waktu dari jamRanges jika tersedia
+                                                        $getRangePart = function($key, $partIndex) use ($jamRanges) {
+                                                            if ($key === null) return null;
+                                                            // kalau jamRanges memiliki entry untuk key
+                                                            if (isset($jamRanges[(int)$key])) {
+                                                                $range = $jamRanges[(int)$key]; // contohnya "07:00 - 07:45"
+                                                                $parts = explode(' - ', $range);
+                                                                return $parts[$partIndex] ?? null;
+                                                            }
+                                                            return null;
+                                                        };
+                                                
+                                                        // coba ambil waktu mulai/akhir dari jamRanges
+                                                        $startTime = $getRangePart($start, 0); // "07:00" atau null
+                                                        $endTime = $getRangePart($end, 1);     // "07:45" atau null
+                                                
+                                                        // jika jamRanges tidak tersedia, coba format langsung dari value (mis. "08:45:00")
+                                                        if (!$startTime && $start) {
+                                                            try {
+                                                                $startTime = \Carbon\Carbon::parse($start)->format('H:i');
+                                                            } catch (\Throwable $e) {
+                                                                $startTime = null;
+                                                            }
+                                                        }
+                                                        if (!$endTime && $end) {
+                                                            try {
+                                                                $endTime = \Carbon\Carbon::parse($end)->format('H:i');
+                                                            } catch (\Throwable $e) {
+                                                                $endTime = null;
+                                                            }
+                                                        }
+                                                
+                                                        // siapkan string output
+                                                        if ($startTime && $endTime && $startTime !== $endTime) {
+                                                            $jamOutput = $startTime . ' - ' . $endTime;
+                                                        } elseif ($startTime) {
+                                                            // hanya punya startTime (tampilkan start)
+                                                            $jamOutput = $startTime;
+                                                        } elseif ($start !== null && $end !== null && $start != $end) {
+                                                            // fallback: tampilkan angka jam ke, mis. "9 - 10"
+                                                            $jamOutput = $start . ' - ' . $end;
+                                                        } else {
+                                                            // fallback simple
+                                                            $jamOutput = $start ?? ($end ?? '-');
+                                                        }
+                                                    @endphp
+                                                
+                                                    @if($jamOutput && $jamOutput !== '-')
+                                                        <span class="badge bg-primary">{{ $jamOutput }}</span>
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td class="text-start">{{ $jurnal->materi ?? '-' }}</td>
                                                 <td class="text-start fst-italic">{{ $jurnal->catatan ?? '-' }}</td>
                                             </tr>

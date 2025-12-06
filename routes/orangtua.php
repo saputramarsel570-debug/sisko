@@ -22,7 +22,7 @@ Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->group(function
     Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->name('orangtua.')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Orangtua\DashboardController::class, 'index'])->name('dashboard');
     });
-
+    
     Route::resource('/absensi', AbsensiController::class, ['as' => 'orangtua']);
     Route::resource('/pengumuman', PengumumanController::class, ['as' => 'orangtua']);
     Route::get('/orangtua/pengumuman/arsip', [App\Http\Controllers\Orangtua\PengumumanController::class, 'arsip'])
@@ -31,7 +31,7 @@ Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->group(function
     Route::resource('/jadwal_ekskul', JadwalEkskulController::class, ['as' => 'orangtua']);
 });
 
- Route::get('/notifications/{id}/read', [NotificationsController::class, 'read'])->name('notifications.read');
+Route::get('/notifications/{id}/read', [NotificationsController::class, 'read'])->name('notifications.read');
 
  Route::prefix('orangtua')->middleware(['auth', 'role:orangtua'])->name('orangtua.')->group(function () {
     Route::get('/pengaturan', [PengaturanSekolahController::class, 'index'])->name('pengaturan.index');

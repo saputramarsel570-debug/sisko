@@ -24,7 +24,6 @@ class EkstrakurikulerExport implements FromCollection, WithHeadings, WithMapping
             'Nama Ekskul',
             'Deskripsi',
             'Nama Pembina',
-            'Foto',
             'Tanggal Dibuat',
             'Terakhir Update',
         ];
@@ -40,7 +39,6 @@ class EkstrakurikulerExport implements FromCollection, WithHeadings, WithMapping
             $ekskul->nama,
             $ekskul->deskripsi,
             $ekskul->nama_pembina,
-            $ekskul->foto,
             $ekskul->created_at ? $ekskul->created_at->format('Y-m-d') : '-',
             $ekskul->updated_at ? $ekskul->updated_at->format('Y-m-d') : '-',
         ];

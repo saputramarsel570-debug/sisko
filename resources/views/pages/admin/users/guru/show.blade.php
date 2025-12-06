@@ -33,20 +33,31 @@
                         <td>{{ $guru->mataPelajaran->nama_mapel ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th>Dibuat Pada</th>
-                        <td>{{ $guru->created_at->format('d M Y H:i') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Diperbarui Pada</th>
-                        <td>{{ $guru->updated_at->format('d M Y H:i') }}</td>
-                    </tr>
-                    <tr>
                         <th>Username</th>
                         <td>{{ $guru->user->username }}</td>
                     </tr>
                     <tr>
                         <th>Email</th>
                         <td>{{ $guru->user->email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Dibuat Pada</th>
+                        <td>
+                            {{ $guru->created_at 
+                                ? $guru->created_at->copy()->timezone('Asia/Jakarta')->format('d M Y H:i') 
+                                : '-' 
+                            }}
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th>Diperbarui Pada</th>
+                        <td>
+                            {{ $guru->updated_at 
+                                ? $guru->updated_at->copy()->timezone('Asia/Jakarta')->format('d M Y H:i') 
+                                : '-' 
+                            }}
+                        </td>
                     </tr>
                 </table>
             </div>

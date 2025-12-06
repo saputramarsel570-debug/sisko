@@ -17,10 +17,7 @@
                 <h4 class="mb-0 fw-bold"><i class="ti ti-users"></i> Kelola User</h4>
                 <div>
                     <a href="{{ route('admin.users.create') }}" class="btn btn-light btn-sm me-2">
-                        <i class="ti ti-plus"></i> Tambah
-                    </a>
-                    <a href="{{ route('admin.users.export') }}" class="btn btn-success btn-sm">
-                        <i class="ti ti-download"></i> Export
+                        <i class="ti ti-plus"></i> Tambah Admin
                     </a>
                 </div>
             </div>

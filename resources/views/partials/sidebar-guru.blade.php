@@ -49,15 +49,6 @@
                     Dashboard
                 </a>
             </li>
-            <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">DATA MASTER</span>
-              </li>
-              <li class="menu-item {{ request()->routeIs('guru.pengaturan.*') ? 'active' : '' }}">
-                <a href="{{ route('guru.pengaturan.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-building"></i>
-                    <div>Profil Sekolah</div>
-                </a>
-                </li>
                 <li class="menu-header small text-uppercase">
                   <span class="menu-header-text">AKADEMIK</span>
                   </li>
@@ -106,5 +97,14 @@
                     Keluhan & Saran
                 </a>
               </li>
+              <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">DATA MASTER</span>
+                </li>
+                <li class="menu-item {{ request()->routeIs('guru.pengaturan.*') ? 'active' : '' }}">
+                  <a href="{{ route('guru.pengaturan.index') }}" class="menu-link">
+                      <i class="menu-icon tf-icons ti ti-building"></i>
+                      <div>Profil Sekolah</div>
+                  </a>
+                  </li>
           </ul>
         </aside>

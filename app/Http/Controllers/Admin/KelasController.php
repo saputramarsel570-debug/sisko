@@ -9,9 +9,15 @@ use Illuminate\Http\Request;
 use App\Imports\KelasImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KelasExport;
+use App\Exports\KelasTemplateExport;
 
 class KelasController extends Controller
 {
+    public function template()
+    {
+        return Excel::download(new KelasTemplateExport, 'kelas_template.xlsx');
+    }
+
     public function export()
     {
         return Excel::download(new KelasExport, 'kelas.xlsx');
@@ -23,9 +29,27 @@ class KelasController extends Controller
             'file' => 'required|mimes:xlsx,csv,xls',
         ]);
 
-        Excel::import(new KelasImport, $request->file('file'));
+        $import = new KelasImport;
+        Excel::import($import, $request->file('file'));
 
-        return redirect()->route('admin.kelas.index')->with('success', 'Data kelas berhasil diimport');
+        $successCount = $import->inserted;
+        $failures = $import->failures();
+
+        if ($successCount == 0 && $failures->isNotEmpty()) {
+            return back()->with([
+                'import_errors' => $failures,
+                'import_failed_message' => 'Tidak ada data yang berhasil diimport.'
+            ]);
+        }
+
+        if ($successCount > 0 && $failures->isNotEmpty()) {
+            return back()->with([
+                'import_success' => $successCount,
+                'import_errors' => $failures,
+            ]);
+        }
+
+        return back()->with('import_success', $successCount);
     }
 
     /**
@@ -52,8 +76,19 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_kelas' => 'required|string|max:255|unique:kelas,nama_kelas',
+            'nama_kelas' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-z0-9\s\.\-]+$/',
+                'unique:kelas,nama_kelas',
+            ],
             'wali_kelas_id' => 'nullable|exists:guru,id',
+        ], [
+            'nama_kelas.max' => 'Nama kelas maksimal 255 karakter.',
+            'nama_kelas.regex' => 'Nama kelas hanya boleh huruf, angka, spasi, titik, dan tanda minus.',
+            'nama_kelas.unique' => 'Nama kelas sudah digunakan.',
+            'wali_kelas_id.exists' => 'Guru yang dipilih tidak valid.',
         ]);
 
         Kelas::create($request->only(['nama_kelas', 'wali_kelas_id']));
@@ -87,8 +122,19 @@ class KelasController extends Controller
     public function update(Request $request, Kelas $kelas)
     {
         $request->validate([
-            'nama_kelas' => 'required|string|max:255|unique:kelas,nama_kelas,' . $kelas->id,
+            'nama_kelas' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-z0-9\s\.\-]+$/',
+                'unique:kelas,nama_kelas,' . $kelas->id,
+            ],
             'wali_kelas_id' => 'nullable|exists:guru,id',
+        ], [
+            'nama_kelas.max' => 'Nama kelas maksimal 255 karakter.',
+            'nama_kelas.regex' => 'Nama kelas hanya boleh huruf, angka, spasi, titik, dan tanda minus.',
+            'nama_kelas.unique' => 'Nama kelas sudah digunakan.',
+            'wali_kelas_id.exists' => 'Guru yang dipilih tidak valid.',
         ]);
 
         $kelas->update($request->only(['nama_kelas', 'wali_kelas_id']));

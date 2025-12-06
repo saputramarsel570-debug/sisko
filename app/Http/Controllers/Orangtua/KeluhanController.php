@@ -27,6 +27,12 @@ class KeluhanController extends Controller
         $query->where('status', $request->status);
     }
 
+    if ($request->balasan == 'sudah') {
+        $query->whereNotNull('balasan');
+    } elseif ($request->balasan == 'belum') {
+        $query->whereNull('balasan');
+    }
+
     // 🔍 Filter pencarian berdasarkan isi
     if ($request->filled('search')) {
         $query->where('isi', 'LIKE', '%' . $request->search . '%');

@@ -46,83 +46,83 @@
                 <!-- / Style Switcher-->
 
                 <!-- Notification -->
-@php
-  $notifications = auth()->user()->notifications()->latest()->take(20)->get();
-  $unread = $notifications->whereNull('read_at');
-  $read = $notifications->whereNotNull('read_at');
-  $unreadCount = auth()->user()->unreadNotifications->count();
-@endphp
-
-<li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
-  <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
-     href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
-    <span class="position-relative">
-      <i class="ti ti-bell ti-md"></i>
-      @if($unreadCount > 0)
-        <span class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span>
-      @endif
-    </span>
-  </a>
-
-  <ul class="dropdown-menu dropdown-menu-end p-0 shadow-lg" style="width: 360px; max-height: 420px; overflow-y: auto;">
-    <li class="dropdown-menu-header border-bottom">
-      <div class="dropdown-header d-flex align-items-center py-3 px-3">
-        <h6 class="mb-0 me-auto">Notifikasi</h6>
-        <span class="badge bg-label-primary me-2">{{ $unreadCount }} Baru</span>
-      </div>
-    </li>
-
-    <li class="dropdown-notifications-list">
-      <ul class="list-group list-group-flush">
-
-        {{-- Bagian Belum Dibaca --}}
-        @if($unread->count() > 0)
-          <li class="list-group-item bg-secondary text-white fw-bold py-2 px-3">
-            Belum Dibaca
-          </li>
-          @foreach($unread as $notif)
-            <li class="list-group-item list-group-item-action bg-primary-subtle px-3 py-2">
-              <a href="{{ route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1 fw-bold text-dark">{{ $notif->data['title'] ?? 'Notifikasi Baru' }}</h6>
-                  <small class="mb-1 d-block text-body">{{ $notif->data['message'] ?? 'Tidak ada detail.' }}</small>
-                  <small class="text-muted">{{ $notif->created_at->diffForHumans() }}</small>
-                </div>
-              </a>
-            </li>
-          @endforeach
-        @endif
-
-        {{-- Bagian Sudah Dibaca --}}
-        @if($read->count() > 0)
-          <li class="list-group-item bg-secondary text-white fw-bold py-2 px-3">
-            Sudah Dibaca
-          </li>
-          @foreach($read as $notif)
-            <li class="list-group-item list-group-item-action bg-light text-muted px-3 py-2">
-              <a href="{{ route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1 fw-normal text-dark">{{ $notif->data['title'] ?? 'Notifikasi' }}</h6>
-                  <small class="mb-1 d-block text-body">{{ $notif->data['message'] ?? 'Tidak ada detail.' }}</small>
-                  <small class="text-muted">{{ $notif->created_at->diffForHumans() }}</small>
-                </div>
-              </a>
-            </li>
-          @endforeach
-        @endif
-
-        {{-- Jika tidak ada notifikasi sama sekali --}}
-        @if($notifications->count() == 0)
-          <li class="list-group-item text-center py-4 text-muted small">
-            Tidak ada notifikasi
-          </li>
-        @endif
-
-      </ul>
-    </li>
-  </ul>
-</li>
-<!-- /Notification -->
+                @php
+                  $notifications = auth()->user()->notifications()->latest()->take(20)->get();
+                  $unread = $notifications->whereNull('read_at');
+                  $read = $notifications->whereNotNull('read_at');
+                  $unreadCount = auth()->user()->unreadNotifications->count();
+                @endphp
+                
+                <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
+                  <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                     href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="position-relative">
+                      <i class="ti ti-bell ti-md"></i>
+                      @if($unreadCount > 0)
+                        <span class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span>
+                      @endif
+                    </span>
+                  </a>
+                
+                  <ul class="dropdown-menu dropdown-menu-end p-0 shadow-lg" style="width: 360px; max-height: 420px; overflow-y: auto;">
+                    <li class="dropdown-menu-header border-bottom">
+                      <div class="dropdown-header d-flex align-items-center py-3 px-3">
+                        <h6 class="mb-0 me-auto">Notifikasi</h6>
+                        <span class="badge bg-label-primary me-2">{{ $unreadCount }} Baru</span>
+                      </div>
+                    </li>
+                
+                    <li class="dropdown-notifications-list scrollable-container">
+                      <ul class="list-group list-group-flush">
+                
+                        {{-- BAGIAN BELUM DIBACA --}}
+                        @if($unread->count() > 0)
+                          <li class="list-group-item bg-secondary text-white fw-bold py-2 px-3">
+                            Belum Dibaca
+                          </li>
+                          @foreach($unread as $notif)
+                            <li class="list-group-item list-group-item-action dropdown-notifications-item bg-primary-subtle px-3 py-2">
+                              <a href="{{ $notif->data['url'] ?? route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
+                                <div class="flex-grow-1">
+                                  <h6 class="small mb-1 fw-bold text-dark">{{ $notif->data['title'] ?? 'Notifikasi Baru' }}</h6>
+                                  <small class="mb-1 d-block text-body">{{ $notif->data['message'] ?? 'Tidak ada detail.' }}</small>
+                                  <small class="text-muted">{{ $notif->created_at->diffForHumans() }}</small>
+                                </div>
+                              </a>
+                            </li>
+                          @endforeach
+                        @endif
+                
+                        {{-- BAGIAN SUDAH DIBACA --}}
+                        @if($read->count() > 0)
+                          <li class="list-group-item bg-secondary text-white fw-bold py-2 px-3">
+                            Sudah Dibaca
+                          </li>
+                          @foreach($read as $notif)
+                            <li class="list-group-item list-group-item-action dropdown-notifications-item bg-light text-muted px-3 py-2">
+                              <a href="{{ $notif->data['url'] ?? route('notifications.read', $notif->id) }}" class="d-flex text-decoration-none">
+                                <div class="flex-grow-1">
+                                  <h6 class="small mb-1 text-dark">{{ $notif->data['title'] ?? 'Notifikasi' }}</h6>
+                                  <small class="mb-1 d-block text-body">{{ $notif->data['message'] ?? 'Tidak ada detail.' }}</small>
+                                  <small class="text-muted">{{ $notif->created_at->diffForHumans() }}</small>
+                                </div>
+                              </a>
+                            </li>
+                          @endforeach
+                        @endif
+                
+                        {{-- === JIKA TIDAK ADA NOTIFIKASI === --}}
+                        @if($notifications->count() == 0)
+                          <li class="list-group-item text-center py-4 text-muted small">
+                            Tidak ada notifikasi
+                          </li>
+                        @endif
+                
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <!-- /Notification -->
 
                 <!-- User -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">

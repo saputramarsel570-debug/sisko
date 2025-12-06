@@ -72,9 +72,12 @@ class PengumumanController extends Controller
             ->with('success', 'Pengumuman terbaru berhasil dikirim');
     }
 
-    public function show(string $id)
+    public function show($id)
     {
         $pengumuman = Pengumuman::findOrFail($id);
+
+        $pengumuman->created_at = $pengumuman->created_at->timezone('Asia/Jakarta');
+
         return view('pages.guru.pengumuman.show', compact('pengumuman'));
     }
 

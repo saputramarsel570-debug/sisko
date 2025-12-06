@@ -26,11 +26,37 @@ class KeluhanSaranController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+
+        // Filter balasan
+        if ($request->filled('balasan')) {
+            if ($request->balasan === 'sudah') {
+                $query->whereNotNull('balasan');
+            } elseif ($request->balasan === 'belum') {
+                $query->whereNull('balasan');
+            }
+        }
+
+        // Filter tanggal
+        if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
+            $query->whereBetween('created_at', [
+                $request->tanggal_awal . ' 00:00:00',
+                $request->tanggal_akhir . ' 23:59:59'
+            ]);
+        } elseif ($request->filled('tanggal_awal')) {
+            $query->where('created_at', '>=', $request->tanggal_awal . ' 00:00:00');
+        } elseif ($request->filled('tanggal_akhir')) {
+            $query->where('created_at', '<=', $request->tanggal_akhir . ' 23:59:59');
+        }
     
         // 🔍 Filter pencarian nama siswa/orangtua
         if ($request->filled('search')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+        
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($user) use ($search) {
+                    $user->where('name', 'like', "%{$search}%");
+                })
+                ->orWhere('isi', 'like', "%{$search}%");
             });
         }
     

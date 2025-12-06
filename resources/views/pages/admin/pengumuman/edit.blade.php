@@ -17,43 +17,66 @@
                     @csrf
                     @method('PUT')
 
+                    {{-- Judul --}}
                     <div class="mb-3">
                         <label for="judul" class="form-label fw-semibold text-primary">Judul</label>
                         <input type="text" name="judul" id="judul" 
-                               class="form-control form-control-lg border-primary-subtle shadow-sm" 
+                               class="form-control form-control-lg border-primary-subtle shadow-sm @error('judul') is-invalid @enderror" 
                                value="{{ old('judul', $pengumuman->judul) }}" required>
+
+                        @error('judul')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
+                    {{-- Isi --}}
                     <div class="mb-3">
                         <label for="isi" class="form-label fw-semibold text-primary">Isi Pengumuman</label>
                         <textarea name="isi" id="isi" rows="5" 
-                                  class="form-control border-primary-subtle shadow-sm" 
+                                  class="form-control border-primary-subtle shadow-sm @error('isi') is-invalid @enderror" 
                                   required>{{ old('isi', $pengumuman->isi) }}</textarea>
+
+                        @error('isi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
+                    {{-- Target --}}
                     <div class="mb-4">
                         <label for="target" class="form-label fw-semibold text-primary">Target Audiens</label>
-                        <select name="target" id="target" class="form-select border-primary-subtle shadow-sm">
+                        <select name="target" id="target" 
+                                class="form-select border-primary-subtle shadow-sm @error('target') is-invalid @enderror">
                             <option value="siswa" {{ old('target', $pengumuman->target) == 'siswa' ? 'selected' : '' }}>Siswa</option>
                             <option value="orangtua" {{ old('target', $pengumuman->target) == 'orangtua' ? 'selected' : '' }}>Orang Tua</option>
                             <option value="semua" {{ old('target', $pengumuman->target) == 'semua' ? 'selected' : '' }}>Semua</option>
                         </select>
+
+                        @error('target')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+
+                    {{-- Tanggal Berakhir --}}
                     <div class="mb-4">
                         <label for="tanggal_berakhir" class="form-label fw-semibold text-primary">
                             Tanggal Berakhir Pengumuman
                         </label>
                         <input type="date" name="tanggal_berakhir" id="tanggal_berakhir" 
-                               class="form-control border-primary-subtle shadow-sm"
+                               class="form-control border-primary-subtle shadow-sm @error('tanggal_berakhir') is-invalid @enderror"
                                value="{{ old('tanggal_berakhir', $pengumuman->tanggal_berakhir) }}">
+
+                        @error('tanggal_berakhir')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+
                         <small class="text-muted">Biarkan kosong jika pengumuman berlaku tanpa batas waktu.</small>
                     </div>
 
-                    {{-- 🔹 Tambahan: Upload dan preview gambar --}}
+                    {{-- Gambar --}}
                     <div class="mb-4">
                         <label class="form-label fw-semibold text-primary">Gambar Pengumuman (opsional)</label>
-                        
-                        {{-- Preview gambar lama --}}
+
+                        {{-- Thumbnail --}}
                         @if($pengumuman->gambar)
                             <div class="mb-2">
                                 <img src="{{ asset('storage/' . $pengumuman->gambar) }}" 
@@ -63,7 +86,14 @@
                             </div>
                         @endif
 
-                        <input type="file" name="gambar" class="form-control border-primary-subtle shadow-sm" accept="image/*">
+                        <input type="file" name="gambar" 
+                               class="form-control border-primary-subtle shadow-sm @error('gambar') is-invalid @enderror" 
+                               accept="image/*">
+
+                        @error('gambar')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+
                         <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar.</small>
                     </div>
 
@@ -75,18 +105,10 @@
                             <i class="ti ti-device-floppy"></i> Simpan Perubahan
                         </button>
                     </div>
+
                 </form>
             </div>
         </div>
     </div>
 </div>
 @endsection
-
-@push('styles')
-<style>
-    .form-control:focus, .form-select:focus {
-        border-color: #0d6efd !important;
-        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25) !important;
-    }
-</style>
-@endpush

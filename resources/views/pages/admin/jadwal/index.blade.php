@@ -42,30 +42,11 @@
                         <a href="{{ route('jadwal.exportPdf', $kelasId) }}" target="_blank" class="btn btn-danger btn-sm">
                             <i class="ti ti-file-type-pdf"></i> Export PDF
                         </a>
-                        <button class="btn btn-info btn-sm" data-bs-toggle="collapse" data-bs-target="#importForm">
-                            <i class="ti ti-upload"></i> Import
-                        </button>
                     @endif
                 </div>
             </div>
 
             <div class="card-body">
-                {{-- Form Import (collapsible) --}}
-                <div class="collapse mb-3" id="importForm">
-                    <div class="card card-body border rounded-3">
-                        <form action="{{ route('admin.jadwal.import') }}" method="POST" enctype="multipart/form-data" class="row g-2 align-items-center">
-                            @csrf
-                            <div class="col">
-                                <input type="file" name="file" class="form-control form-control-sm" required>
-                            </div>
-                            <div class="col-auto">
-                                <button class="btn btn-success btn-sm" type="submit">
-                                    <i class="ti ti-upload"></i> Import
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
 
                 {{-- Tabel Jadwal --}}
                 @if($kelasId)

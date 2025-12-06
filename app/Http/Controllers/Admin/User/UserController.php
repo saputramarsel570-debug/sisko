@@ -39,19 +39,55 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|max:255|unique:users,username',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'role' => 'required|in:admin,guru,siswa,orangtua,siswa_perwakilan',
-            'password' => 'required|min:6|confirmed',
+            'username' => [
+                'required',
+                'lowercase',
+                'min:4',
+                'max:50',
+                'unique:users,username',
+                'regex:/^[a-z0-9_]+$/', 
+            ],
+        
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+        
+            'email' => [
+                'required',
+                'lowercase',
+                'email',
+                'unique:users,email',
+                'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/',
+            ],
+        
+            'password' => [
+                'required',
+                'min:6',
+                'confirmed',
+                'regex:/^\S+$/', 
+            ],
+        ], [
+            'username.lowercase' => 'Username harus menggunakan huruf kecil.',
+            'username.min' => 'Username minimal 4 karakter.',
+            'username.max' => 'Username maksimal 50 karakter.',
+            'username.unique' => 'Username sudah ada di database.',
+            'username.regex' => 'Username hanya boleh huruf kecil, angka, dan underscore.',
+            'name.max' => 'Nama maksimal 255 karakter.',
+            'email.lowercase' => 'Email harus menggunakan huruf kecil.',
+            'email.regex' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah ada di database.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.regex' => 'Password tidak boleh mengandung spasi.',
         ]);
 
         User::create([
-            'username' => $request->username,
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-            'password' => bcrypt($request->password),
+            'username' => strtolower($request->username),
+            'name'     => $request->name,
+            'email'    => strtolower($request->email),
+            'role'     => 'admin',
+            'password' => Hash::make($request->password),
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan');
@@ -79,27 +115,71 @@ class UserController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-{
-    $user = User::findOrFail($id);
+    {
+        $user = User::findOrFail($id);
 
-    $request->validate([
-        'username' => 'required|string|max:50|unique:users,username,' . $user->id,
-        'name'     => 'required|string|max:255',
-        'email'    => 'required|email|unique:users,email,' . $user->id,
-        'role'     => 'required|in:admin,guru,siswa,orangtua,siswa_perwakilan',
-        'password' => 'nullable|min:6|confirmed',
-    ]);
+        $request->validate([
+            'username' => [
+                'required',
+                'lowercase',
+                'min:4',
+                'max:50',
+                'unique:users,username,' . $user->id,
+                'regex:/^[a-z0-9_]+$/',
+            ],
+        
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+        
+            'email' => [
+                'required',
+                'lowercase',
+                'email',
+                'unique:users,email,' . $user->id,
+                'regex:/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/',
+            ],
+        
+            'role' => [
+                'required',
+                'in:admin,guru,siswa,orangtua,siswa_perwakilan',
+            ],
+        
+            'password' => [
+                'nullable',
+                'min:6',
+                'confirmed',
+                'regex:/^\S+$/',
+            ],
+        ], [
+            'username.lowercase' => 'Username harus menggunakan huruf kecil.',
+            'username.min' => 'Username minimal 4 karakter.',
+            'username.max' => 'Username maksimal 50 karakter.',
+            'username.unique' => 'Username sudah ada di database.',
+            'username.regex' => 'Username hanya boleh huruf kecil, angka, dan underscore.',
+            'name.max' => 'Nama maksimal 255 karakter.',
+            'email.lowercase' => 'Email harus menggunakan huruf kecil.',
+            'email.regex' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah ada di database.',
+            'role.in' => 'Role tidak valid.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.regex' => 'Password tidak boleh mengandung spasi.',
+        ]);
 
-    $user->update([
-        'username' => $request->username,
-        'name'     => $request->name,
-        'email'    => $request->email,
-        'role'     => $request->role,
-        'password' => $request->filled('password') ? Hash::make($request->password) : $user->password,
-    ]);
+        $user->update([
+            'username' => strtolower($request->username),
+            'name'     => $request->name,
+            'email'    => strtolower($request->email),
+            'role'     => $request->role,
+            'password' => $request->filled('password')
+                            ? Hash::make($request->password)
+                            : $user->password,
+        ]);
 
-    return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui');
-}
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui');
+    }
 
     /**
      * Remove the specified resource from storage.

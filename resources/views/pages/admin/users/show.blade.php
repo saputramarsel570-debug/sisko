@@ -40,11 +40,22 @@
                     </tr>
                     <tr>
                         <th>Terdaftar Pada</th>
-                        <td>{{ $user->created_at->isoFormat('DD MMM Y HH:mm') }}</td>
+                        <td>
+                            {{ $user->created_at 
+                                ? $user->created_at->copy()->timezone('Asia/Jakarta')->format('d M Y H:i') 
+                                : '-' 
+                            }}
+                        </td>
                     </tr>
+                    
                     <tr>
                         <th>Diperbarui Pada</th>
-                        <td>{{ $user->updated_at->isoFormat('DD MMM Y HH:mm') }}</td>
+                        <td>
+                            {{ $user->updated_at 
+                                ? $user->updated_at->copy()->timezone('Asia/Jakarta')->format('d M Y H:i') 
+                                : '-' 
+                            }}
+                        </td>
                     </tr>
                 </table>
             </div>

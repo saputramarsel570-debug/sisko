@@ -6,12 +6,58 @@
 <div class="row">
     <div class="col-md-12">
 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         {{-- Notifikasi sukses --}}
         @if (session('success'))
             <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
                 <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
                 {{ session('success') }}
             </div>
+        @endif
+
+        @if (session('import_success') && session('import_errors'))
+        <script>
+            let html = "<p><b>{{ session('import_success') }} data berhasil diimport.</b></p>";
+            html += "<p><b>Beberapa data gagal:</b></p>";
+            html += "<ul style='text-align:left'>";
+            @foreach(session('import_errors') as $failure)
+                html += "<li><b>Baris {{ $failure->row() }}</b> : {{ implode(', ', $failure->errors()) }}</li>";
+            @endforeach
+            html += "</ul>";
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Import Selesai Dengan Catatan',
+                html: html,
+            });
+        </script>
+        @endif
+
+        @if (session('import_success') && !session('import_errors'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Import Berhasil',
+                text: 'Berhasil menambahkan {{ session("import_success") }} data.',
+            });
+        </script>
+        @endif
+
+        @if (!session('import_success') && session('import_errors'))
+        <script>
+            let html = "<ul style='text-align:left'>";
+            @foreach(session('import_errors') as $failure)
+                html += "<li><b>Baris {{ $failure->row() }}</b> : {{ implode(', ', $failure->errors()) }}</li>";
+            @endforeach
+            html += "</ul>";
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Import Gagal!',
+                html: html,
+            });
+        </script>
         @endif
 
         <div class="card shadow-lg border-0 rounded-4">
@@ -23,6 +69,9 @@
                     </a>
                     <a href="{{ route('admin.mapel.export') }}" class="btn btn-success btn-sm me-2">
                         <i class="ti ti-download"></i> Export
+                    </a>
+                    <a href="{{ route('admin.mapel.template') }}" class="btn btn-success btn-sm me-2">
+                        <i class="ti ti-download"></i> Download Template Excel Untuk Import
                     </a>
                     <button class="btn btn-info btn-sm" data-bs-toggle="collapse" data-bs-target="#importForm">
                         <i class="ti ti-upload"></i> Import

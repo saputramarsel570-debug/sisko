@@ -3,43 +3,49 @@
 @section('title', 'Detail Jadwal Ekskul')
 
 @section('content')
-<div class="row">
-    <div class="col-md-8 offset-md-2">
+<div class="row justify-content-center">
+    <div class="col-lg-8">
 
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
-                <i class="ti ti-calendar-event fs-4 me-2"></i>
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+
+            <div class="card-header bg-primary bg-gradient text-white py-3 d-flex align-items-center">
+                <i class="ti ti-calendar-event fs-3 me-2"></i>
                 <h4 class="mb-0 fw-semibold">Detail Jadwal Ekskul</h4>
             </div>
 
-            <div class="card-body text-dark">
+            <div class="card-body p-4">
 
-                <div class="mb-3">
-                    <h6 class="fw-bold mb-1">Nama Ekstrakurikuler</h6>
-                    <div class="p-2 ps-3 border rounded bg-light">
+                <div class="info-box mb-3">
+                    <label class="info-title">Nama Ekstrakurikuler</label>
+                    <div class="info-value">
+                        <i class="ti ti-star text-primary me-1"></i>
                         {{ $jadwal_ekskul->ekstrakurikuler->nama }}
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <h6 class="fw-bold mb-1">Nama Pembina</h6>
-                    <div class="p-2 ps-3 border rounded bg-light">
+                <div class="info-box mb-3">
+                    <label class="info-title">Nama Pembina</label>
+                    <div class="info-value">
+                        <i class="ti ti-user-heart text-primary me-1"></i>
                         {{ $jadwal_ekskul->ekstrakurikuler->nama_pembina ?? '-' }}
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <h6 class="fw-bold mb-1">Hari</h6>
-                    <div class="p-2 ps-3 border rounded bg-light">
+                <div class="info-box mb-3">
+                    <label class="info-title">Hari</label>
+                    <div class="info-value">
                         @php
                             $hariList = $jadwal_ekskul->hari;
                             if (!is_array($hariList)) {
                                 $hariList = json_decode($hariList, true) ?? [];
                             }
                         @endphp
+
                         @if(!empty($hariList))
                             @foreach($hariList as $h)
-                                <span class="badge bg-info text-dark me-1">{{ $h }}</span>
+                                <span class="badge bg-hari rounded-pill me-1 mb-1">
+                                    <i class="ti ti-calendar-event me-1"></i> {{ $h }}
+                                </span>
                             @endforeach
                         @else
                             <span class="text-muted">-</span>
@@ -47,21 +53,21 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <h6 class="fw-bold mb-1">Deskripsi</h6>
-                    <div class="p-2 ps-3 border rounded bg-light">
+                <div class="info-box mb-3">
+                    <label class="info-title">Deskripsi</label>
+                    <div class="info-value">
                         {{ $jadwal_ekskul->ekstrakurikuler->deskripsi ?? '-' }}
                     </div>
                 </div>
 
                 @if(!empty($jadwal_ekskul->ekstrakurikuler->foto))
-                <div class="mb-3">
-                    <h6 class="fw-bold mb-1">Foto</h6>
+                <div class="info-box mb-3">
+                    <label class="info-title">Foto</label>
                     <div class="text-center mt-2">
                         <img src="{{ asset('storage/' . $jadwal_ekskul->ekstrakurikuler->foto) }}"
                              alt="Foto {{ $jadwal_ekskul->ekstrakurikuler->nama }}"
-                             class="img-fluid rounded shadow-sm border"
-                             style="max-height: 250px; cursor: zoom-in;"
+                             class="img-fluid rounded-4 shadow-sm border"
+                             style="max-height: 260px; cursor: zoom-in;"
                              data-bs-toggle="modal"
                              data-bs-target="#imageModal"
                              data-src="{{ asset('storage/' . $jadwal_ekskul->ekstrakurikuler->foto) }}">
@@ -71,9 +77,9 @@
 
             </div>
 
-            <div class="card-footer bg-light text-end rounded-bottom-4">
-                <a href="{{ route('siswa.jadwal_ekskul.index') }}" class="btn btn-primary">
-                    <i class="ti ti-arrow-left"></i> Kembali
+            <div class="card-footer bg-light text-end py-3">
+                <a href="{{ route('siswa.jadwal_ekskul.index') }}" class="btn btn-primary rounded-pill px-4">
+                    <i class="ti ti-arrow-left me-1"></i> Kembali
                 </a>
             </div>
         </div>
@@ -81,37 +87,62 @@
     </div>
 </div>
 
-{{-- Modal Gambar --}}
-<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade" id="imageModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content bg-transparent border-0 shadow-none">
-      <div class="modal-body p-0 d-flex justify-content-center align-items-center">
-        <img id="previewImage" src="" alt="Preview" 
-             class="w-100 rounded-4 shadow-lg"
-             style="max-height: 85vh; object-fit: contain;">
+      <div class="modal-body p-0 d-flex justify-content-center align-items-center" style="cursor: zoom-out;">
+        <img id="previewImage" src="" class="rounded-4 shadow-lg"
+             style="max-height: 90vh; width: auto; object-fit: contain;">
       </div>
     </div>
   </div>
 </div>
 @endsection
 
+@push('styles')
+<style>
+    .info-box {
+        background: #f8f9fa;
+        border: 1px solid #e6e6e6;
+        border-radius: 10px;
+        padding: 14px 18px;
+    }
+    .info-title {
+        font-weight: 600;
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 3px;
+        display: inline-block;
+    }
+    .info-value {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .bg-hari {
+        background: #eaf4ff !important;
+        color: #0d6efd !important;
+        border: 1px solid #b3d7ff !important;
+        font-size: 13px;
+        padding: 7px 12px;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
-    // Modal Preview Gambar
     const imageModal = document.getElementById('imageModal');
     imageModal.addEventListener('show.bs.modal', event => {
-        const triggerImg = event.relatedTarget;
-        const newSrc = triggerImg.getAttribute('data-src');
-        const modalImg = document.getElementById('previewImage');
-        modalImg.src = newSrc;
+        const trigger = event.relatedTarget;
+        document.getElementById('previewImage').src = trigger.dataset.src;
     });
 
-    // Tutup modal jika klik area luar gambar
     document.addEventListener('click', function(e) {
         const modalBody = document.querySelector('#imageModal .modal-body');
         if (e.target === modalBody) {
-            const modalInstance = bootstrap.Modal.getInstance(document.getElementById('imageModal'));
-            modalInstance.hide();
+            const modal = bootstrap.Modal.getInstance(imageModal);
+            modal.hide();
         }
     });
 </script>

@@ -12,6 +12,12 @@
             <div class="card-header bg-primary text-white py-3">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
                     <div>
+                        @if (session('success'))
+                        <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                          <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                          {{ session('success') }}
+                        </div>
+                      @endif
                         <h5 class="mb-1 d-flex align-items-center gap-2">
                             <i class="ti ti-clipboard-list fs-4"></i>
                             Absensi Hari Ini
@@ -152,4 +158,61 @@
         </div>
     </div>
 </div>
-@endsection
+<form id="form-delete" action="" method="POST" class="d-none">
+    @csrf
+    @method('DELETE')
+  </form>
+  @endsection
+  
+  @push('styles')
+  <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
+  <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+  <link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+  <style>
+    .hover-card:hover {
+      transform: translateY(-4px);
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+  
+    .bg-success-subtle { background-color: #e8f8ef !important; }
+    .bg-danger-subtle { background-color: #fdeaea !important; }
+  
+    .btn.disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  </style>
+  @endpush
+  
+  @push('scripts')
+  <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+  <script>
+  function actionDelete(url) {
+    Swal.fire({
+      title: "Yakin mau dihapus?",
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('form-delete').setAttribute('action', url);
+        document.getElementById('form-delete').submit();
+      }
+    });
+  }
+  
+  setTimeout(() => {
+    const alert = document.getElementById('success');
+    if (alert) {
+      alert.style.transition = "opacity 0.5s";
+      alert.style.opacity = 0;
+      setTimeout(() => alert.remove(), 500);
+    }
+  }, 3000);
+  </script>
+  @endpush

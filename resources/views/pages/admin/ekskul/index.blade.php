@@ -29,48 +29,83 @@
 
             <div class="card-body">
                 {{-- Tabel Ekstrakurikuler --}}
-                <table class="table table-striped table-hover align-middle dataTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th>No</th>
-                            <th>Foto</th>
-                            <th>Nama Ekstrakurikuler</th>
-                            <th>Pembina</th>
-                            <th>Deskripsi</th>
-                            <th width="200">Aksi</th>
+                <table class="table table-hover table-borderless align-middle dataTable">
+                    <thead class="bg-light">
+                        <tr class="text-center text-secondary fw-semibold">
+                            <th style="width: 5%">No</th>
+                            <th style="width: 15%">Foto</th>
+                            <th style="width: 25%">Nama Ekstrakurikuler</th>
+                            <th style="width: 20%">Pembina</th>
+                            <th style="width: 25%">Deskripsi</th>
+                            <th style="width: 15%">Aksi</th>
                         </tr>
                     </thead>
+                
                     <tbody>
-                        @forelse($ekskul as $index => $item)
+                        @forelse($ekskul as $item)
                             <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>
+
+                                {{-- NOMOR --}}
+                                <td class="fw-bold text-center">{{ $loop->iteration }}</td>
+                
+                                {{-- FOTO --}}
+                                <td class="text-center">
                                     @if ($item->foto)
                                         <img src="{{ asset('storage/' . $item->foto) }}"
-                                             alt="{{ $item->nama }}" width="60" class="rounded shadow-sm">
+                                             class="rounded-3 shadow-sm ekskul-img-table"
+                                             alt="{{ $item->nama }}">
                                     @else
-                                        <span class="text-muted">-</span>
+                                        <span class="badge bg-secondary">Tidak ada</span>
                                     @endif
                                 </td>
-                                <td class="fw-semibold">{{ $item->nama }}</td>
-                                <td>{{ $item->nama_pembina ?? '-' }}</td>
-                                <td>{{ Str::limit($item->deskripsi, 50, '...') }}</td>
-                                <td>
-                                    <a href="{{ route('admin.ekskul.show', $item->id) }}" class="btn btn-sm btn-info">
-                                        <i class="ti ti-eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.ekskul.edit', $item->id) }}" class="btn btn-sm btn-warning">
-                                        <i class="ti ti-pencil"></i>
-                                    </a>
-                                    <a href="javascript:;" class="btn btn-sm btn-danger"
-                                       onclick="actionDelete('{{ route('admin.ekskul.destroy', $item->id) }}')">
-                                        <i class="ti ti-trash"></i>
-                                    </a>
+                
+                                {{-- NAMA --}}
+                                <td class="fw-semibold text-dark">
+                                    <i class="ti ti-trophy text-primary me-1"></i>
+                                    {{ $item->nama }}
                                 </td>
+                
+                                {{-- PEMBINA --}}
+                                <td>
+                                    <span class="badge bg-pembina px-3 py-2">
+                                        <i class="ti ti-user me-1"></i>
+                                        {{ $item->nama_pembina ?? 'Tidak ada' }}
+                                    </span>
+                                </td>
+                
+                                {{-- DESKRIPSI --}}
+                                <td class="text-muted">
+                                    {{ Str::limit($item->deskripsi, 60) }}
+                                </td>
+                
+                                {{-- AKSI --}}
+                                <td class="text-center aksi-nowrap">
+                                    <div class="d-flex justify-content-center gap-2 flex-nowrap">
+
+                                        <a href="{{ route('admin.ekskul.show', $item->id) }}"
+                                           class="btn btn-sm btn-primary rounded-pill px-3">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                    
+                                        <a href="{{ route('admin.ekskul.edit', $item->id) }}"
+                                           class="btn btn-sm btn-warning rounded-pill px-3">
+                                            <i class="ti ti-pencil"></i>
+                                        </a>
+                    
+                                        <button onclick="actionDelete('{{ route('admin.ekskul.destroy', $item->id) }}')"
+                                                class="btn btn-sm btn-danger rounded-pill px-3">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+
+                                    </div>
+                                </td>
+                
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">Belum ada data ekstrakurikuler</td>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="ti ti-info-circle"></i> Belum ada data ekstrakurikuler
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -90,6 +125,46 @@
     <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+
+    <style>
+        .table-hover tbody tr:hover {
+            background-color: #f5f9ff !important;
+            transition: 0.25s ease;
+        }
+
+        .ekskul-img-table {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border: 2px solid #e5ebff;
+            transition: 0.25s;
+        }
+
+        .ekskul-img-table:hover {
+            transform: scale(1.07);
+            border-color: #bcd2ff;
+        }
+
+        .bg-pembina {
+            background: #eef4ff !important;
+            color: #0d6efd !important;
+            border: 1px solid #cfe0ff !important;
+            font-size: 13px;
+        }
+
+        thead tr th {
+            background: #f8f9fa !important;
+            border-bottom: 2px solid #e1e1e1 !important;
+        }
+
+        .aksi-nowrap {
+            white-space: nowrap !important;
+        }
+
+        .aksi-nowrap .btn {
+            min-width: 35px;
+        }
+    </style>
 @endpush
 
 @push('scripts')
@@ -97,7 +172,9 @@
     <script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script type="text/javascript">
     $(function() {
-        $('.dataTable').DataTable();
+        $('.dataTable').DataTable({
+            responsive: true
+        });
     });
 
     function actionDelete(url) {

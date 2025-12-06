@@ -8,66 +8,80 @@
 
         {{-- 🔹 Header Judul dan Tombol Kembali --}}
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-            <h3 class="fw-bold mb-0"><i class="ti ti-archive"></i> Arsip Pengumuman</h3>
+            <h3 class="fw-bold mb-0">
+                <i class="ti ti-archive"></i> Arsip Pengumuman
+            </h3>
             <a href="{{ route('admin.pengumuman.index') }}" 
-               class="btn btn-outline-dark rounded-pill shadow-sm mt-2 mt-md-0">
-                <i class="ti ti-arrow-left"></i> Kembali ke Daftar Aktif
+               class="btn btn-outline-dark rounded-pill shadow-sm mt-2 mt-md-0 px-4">
+                <i class="ti ti-arrow-left"></i> Kembali
             </a>
         </div>
 
-        {{-- 🔹 Cek Apakah Ada Data --}}
+        {{-- 🔹 Jika Kosong --}}
         @if ($pengumuman->isEmpty())
-            <div class="alert alert-light border text-center text-muted py-4 rounded-3">
-                <i class="ti ti-inbox fs-3"></i>
-                <p class="mt-2 mb-0">Belum ada pengumuman yang diarsipkan.</p>
+            <div class="alert alert-light border text-center text-muted py-5 rounded-4">
+                <i class="ti ti-inbox fs-1"></i>
+                <p class="mt-3 mb-0 fs-6">Belum ada pengumuman yang diarsipkan.</p>
             </div>
         @else
-            <div class="row">
-                @foreach ($pengumuman as $item)
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-sm border-0 h-100 hover-shadow overflow-hidden">
 
-                            {{-- 🔹 Gambar Pengumuman --}}
-                            @if ($item->gambar)
-                                <img src="{{ asset('storage/'.$item->gambar) }}" 
-                                     alt="Gambar Pengumuman" 
-                                     class="w-100" 
-                                     style="height:180px; object-fit:cover;">
-                            @else
-                                <div class="bg-light d-flex flex-column align-items-center justify-content-center text-muted py-5" style="height:180px;">
-                                    <i class="ti ti-archive fs-1 mb-2"></i>
-                                    <p class="mb-0 small">Tanpa Gambar</p>
-                                </div>
-                            @endif
+        <div class="row g-4">
+            @foreach ($pengumuman as $item)
+            <div class="col-md-4">
+                <div class="card pengumuman-card border-0 shadow-sm h-100">
 
-                            {{-- 🔹 Isi Card --}}
-                            <div class="card-body">
-                                <h5 class="fw-bold mb-2 text-dark">{{ $item->judul }}</h5>
-                                <p class="small text-muted mb-1">
-                                    <i class="ti ti-calendar"></i> 
-                                    Dibuat: {{ $item->created_at->format('d/m/Y') }}
-                                </p>
-                                <p class="small text-muted mb-1">
-                                    <i class="ti ti-clock-stop"></i> 
-                                    Berakhir: {{ \Carbon\Carbon::parse($item->tanggal_berakhir)->format('d/m/Y') }}
-                                </p>
-                                <p class="small text-muted mb-2">
-                                    <i class="ti ti-user"></i> {{ $item->user->name ?? 'Tidak diketahui' }}
-                                </p>
-                                <span class="badge bg-primary">{{ ucfirst($item->target) }}</span>
-                            </div>
-
-                            {{-- 🔹 Footer Aksi --}}
-                            <div class="card-footer bg-light text-center">
-                                <a href="{{ route('admin.pengumuman.show', $item->id) }}" 
-                                   class="btn btn-sm btn-outline-primary rounded-pill shadow-sm">
-                                    <i class="ti ti-eye"></i> Lihat
-                                </a>
-                            </div>
+                    {{-- 🔹 Gambar --}}
+                    @if ($item->gambar)
+                        <img src="{{ asset('storage/'.$item->gambar) }}" 
+                             class="card-img-top"
+                             style="height:180px; object-fit:cover;"
+                             alt="Gambar">
+                    @else
+                        <div class="no-image d-flex flex-column justify-content-center align-items-center bg-light text-muted"
+                             style="height:180px;">
+                            <i class="ti ti-photo-off fs-1"></i>
+                            <span class="small mt-2">Tanpa Gambar</span>
                         </div>
+                    @endif
+
+                    <div class="card-body">
+                        {{-- 🔹 Judul --}}
+                        <h5 class="fw-bold text-dark text-truncate mb-2" title="{{ $item->judul }}">
+                            {{ $item->judul }}
+                        </h5>
+
+                        {{-- 🔹 Informasi --}}
+                        <p class="small text-muted mb-1">
+                            <i class="ti ti-calendar"></i> 
+                            Dibuat: {{ $item->created_at->format('d/m/Y') }}
+                        </p>
+                        <p class="small text-muted mb-1">
+                            <i class="ti ti-clock-stop"></i>
+                            Berakhir: {{ \Carbon\Carbon::parse($item->tanggal_berakhir)->format('d/m/Y') }}
+                        </p>
+                        <p class="small text-muted mb-2">
+                            <i class="ti ti-user"></i>
+                            {{ $item->user->name ?? 'Tidak diketahui' }}
+                        </p>
+
+                        {{-- 🔹 Target --}}
+                        <span class="badge rounded-pill bg-gradient-primary shadow-sm px-3 py-1">
+                            {{ ucfirst($item->target) }}
+                        </span>
                     </div>
-                @endforeach
+
+                    {{-- 🔹 Footer --}}
+                    <div class="card-footer bg-white text-center border-0 pb-3">
+                        <a href="{{ route('admin.pengumuman.show', $item->id) }}" 
+                           class="btn btn-sm btn-outline-primary rounded-pill px-4 shadow-sm">
+                            <i class="ti ti-eye"></i> Lihat Detail
+                        </a>
+                    </div>
+                </div>
             </div>
+            @endforeach
+        </div>
+
         @endif
     </div>
 </div>
@@ -75,13 +89,26 @@
 
 @push('styles')
 <style>
-.hover-shadow:hover {
-    transform: translateY(-4px);
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+.pengumuman-card {
+    border-radius: 18px;
+    overflow: hidden;
+    transition: .25s ease-in-out;
 }
-.card-footer {
-    border-top: 1px solid rgba(0,0,0,0.05);
+
+.pengumuman-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(45deg, #3b82f6, #2563eb);
+    color: white;
 }
 </style>
 @endpush

@@ -35,14 +35,45 @@
             <i class="ti ti-category me-1"></i> Kategori:
           </span>
 
-          <a href="{{ route('admin.keluhan_saran.index', array_filter(['kategori' => 'Keluhan', 'status' => $status, 'search' => request('search')])) }}"
-             class="btn btn-danger {{ $kategori == 'Keluhan' ? 'disabled' : '' }}">
-            <i class="ti ti-alert-circle"></i> Keluhan
+          <a href="{{ route('admin.keluhan_saran.index', array_merge(request()->query(), ['kategori' => 'Keluhan'])) }}"
+            class="btn btn-danger btn-sm text-nowrap {{ $kategori == 'Keluhan' ? 'disabled' : '' }}">
+           <i class="ti ti-alert-circle"></i> Keluhan
+         </a>
+         
+         <a href="{{ route('admin.keluhan_saran.index', array_merge(request()->query(), ['kategori' => 'Saran'])) }}"
+            class="btn btn-success btn-sm text-nowrap {{ $kategori == 'Saran' ? 'disabled' : '' }}">
+           <i class="ti ti-bulb"></i> Saran
+         </a>
+        </div>
+
+        {{-- 🔹 Balasan --}}
+        <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+          <span class="fw-semibold text-secondary">
+            <i class="ti ti-message-check me-1"></i> Balasan:
+          </span>
+
+          <a href="{{ route('admin.keluhan_saran.index', array_filter([
+                'kategori'      => request('kategori'),
+                'status'        => request('status'),
+                'balasan'       => 'sudah',
+                'search'        => request('search'),
+                'tanggal_awal'  => request('tanggal_awal'),
+                'tanggal_akhir' => request('tanggal_akhir'),
+            ])) }}"
+            class="btn btn-success btn-sm flex-shrink-0 text-nowrap {{ request('balasan') == 'sudah' ? 'disabled' : '' }}">
+            <i class="ti ti-message-check"></i> Sudah Dibalas
           </a>
 
-          <a href="{{ route('admin.keluhan_saran.index', array_filter(['kategori' => 'Saran', 'status' => $status, 'search' => request('search')])) }}"
-             class="btn btn-success {{ $kategori == 'Saran' ? 'disabled' : '' }}">
-            <i class="ti ti-bulb"></i> Saran
+          <a href="{{ route('admin.keluhan_saran.index', array_filter([
+                'kategori'      => request('kategori'),
+                'status'        => request('status'),
+                'balasan'       => 'belum',
+                'search'        => request('search'),
+                'tanggal_awal'  => request('tanggal_awal'),
+                'tanggal_akhir' => request('tanggal_akhir'),
+            ])) }}"
+            class="btn btn-secondary btn-sm flex-shrink-0 text-nowrap {{ request('balasan') == 'belum' ? 'disabled' : '' }}">
+            <i class="ti ti-message-off"></i> Belum Dibalas
           </a>
         </div>
 
@@ -52,44 +83,84 @@
             <i class="ti ti-list-check me-1"></i> Status:
           </span>
 
-          <a href="{{ route('admin.keluhan_saran.index', array_filter(['kategori' => $kategori, 'status' => 'pending', 'search' => request('search')])) }}"
-             class="btn btn-warning {{ $status == 'pending' ? 'disabled' : '' }}">
-            <i class="ti ti-clock"></i> Pending
-          </a>
-
-          <a href="{{ route('admin.keluhan_saran.index', array_filter(['kategori' => $kategori, 'status' => 'proses', 'search' => request('search')])) }}"
-             class="btn btn-info {{ $status == 'proses' ? 'disabled' : '' }}">
-            <i class="ti ti-loader-2"></i> Proses
-          </a>
-
-          <a href="{{ route('admin.keluhan_saran.index', array_filter(['kategori' => $kategori, 'status' => 'selesai', 'search' => request('search')])) }}"
-             class="btn btn-success {{ $status == 'selesai' ? 'disabled' : '' }}">
-            <i class="ti ti-check"></i> Selesai
-          </a>
+          <a href="{{ route('admin.keluhan_saran.index', array_merge(request()->query(), ['status' => 'pending'])) }}"
+            class="btn btn-warning btn-sm text-nowrap {{ $status == 'pending' ? 'disabled' : '' }}">
+           <i class="ti ti-clock"></i> Pending
+         </a>
+         
+         <a href="{{ route('admin.keluhan_saran.index', array_merge(request()->query(), ['status' => 'proses'])) }}"
+            class="btn btn-info btn-sm text-nowrap {{ $status == 'proses' ? 'disabled' : '' }}">
+           <i class="ti ti-loader-2"></i> Proses
+         </a>
+         
+         <a href="{{ route('admin.keluhan_saran.index', array_merge(request()->query(), ['status' => 'selesai'])) }}"
+            class="btn btn-success btn-sm text-nowrap {{ $status == 'selesai' ? 'disabled' : '' }}">
+           <i class="ti ti-check"></i> Selesai
+         </a>
 
           <a href="{{ route('admin.keluhan_saran.index') }}"
-             class="btn btn-secondary {{ !$kategori && !$status && !request('search') ? 'disabled' : '' }}">
+             class="btn btn-secondary btn-sm flex-shrink-0 text-nowrap {{ !$kategori && !$status && !request('search') ? 'disabled' : '' }}">
             <i class="ti ti-refresh"></i> Semua
           </a>
         </div>
       </div>
     </div>
 
+    {{-- 📅 Filter Tanggal --}}
+    <form action="{{ route('admin.keluhan_saran.index') }}" method="GET" class="card shadow-sm border-0 mb-3 rounded-4">
+      <div class="card-body d-flex flex-wrap align-items-end gap-3">
+
+          <div>
+              <label class="fw-semibold">Tanggal Awal</label>
+              <input type="date" name="tanggal_awal" value="{{ request('tanggal_awal') }}"
+                    class="form-control rounded-pill shadow-sm">
+          </div>
+
+          <div>
+              <label class="fw-semibold">Tanggal Akhir</label>
+              <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}"
+                    class="form-control rounded-pill shadow-sm">
+          </div>
+
+          {{-- Pertahankan semua filter lainnya --}}
+          @foreach(['kategori','status','search','balasan'] as $key)
+              @if(request($key))
+                  <input type="hidden" name="{{ $key }}" value="{{ request($key) }}">
+              @endif
+          @endforeach
+
+          <div>
+              <button type="submit" class="btn btn-primary rounded-pill shadow-sm mt-3">
+                  <i class="ti ti-filter"></i> Terapkan
+              </button>
+          </div>
+
+          @if(request('tanggal_awal') || request('tanggal_akhir'))
+          <div>
+              <a href="{{ route('admin.keluhan_saran.index', array_merge(request()->except(['tanggal_awal','tanggal_akhir']))) }}"
+                class="btn btn-secondary rounded-pill shadow-sm mt-3">
+                  <i class="ti ti-x"></i> Reset
+              </a>
+          </div>
+          @endif
+
+      </div>
+    </form>
+
     {{-- 🔍 Pencarian Nama --}}
     <div class="card shadow-sm border-0 mb-4 rounded-4">
       <div class="card-body">
         <form action="{{ route('admin.keluhan_saran.index') }}" method="GET" class="d-flex align-items-center flex-wrap gap-2">
-          {{-- Pertahankan filter kategori & status --}}
-          @if(request('kategori'))
-            <input type="hidden" name="kategori" value="{{ request('kategori') }}">
-          @endif
-          @if(request('status'))
-            <input type="hidden" name="status" value="{{ request('status') }}">
-          @endif
+          {{-- Pertahankan semua filter --}}
+          @foreach(['kategori','status','balasan','tanggal_awal','tanggal_akhir'] as $key)
+            @if(request($key))
+              <input type="hidden" name="{{ $key }}" value="{{ request($key) }}">
+            @endif
+          @endforeach
 
           <div class="flex-grow-1">
             <input type="text" name="search" value="{{ request('search') }}" 
-                   class="form-control rounded-pill shadow-sm" placeholder="Cari berdasarkan nama siswa/orangtua...">
+                   class="form-control rounded-pill shadow-sm" placeholder="Cari berdasarkan nama user/isi keluhan...">
           </div>
 
           <button type="submit" class="btn btn-primary rounded-pill shadow-sm">
@@ -97,10 +168,10 @@
           </button>
 
           @if(request('search'))
-            <a href="{{ route('admin.keluhan_saran.index', array_filter(['kategori' => request('kategori'), 'status' => request('status')])) }}"
-               class="btn btn-secondary rounded-pill shadow-sm">
-              <i class="ti ti-x"></i> Reset
-            </a>
+          <a href="{{ route('admin.keluhan_saran.index', array_merge(request()->query(), ['search' => null])) }}"
+            class="btn btn-secondary rounded-pill shadow-sm">
+           <i class="ti ti-x"></i> Reset
+         </a>
           @endif
         </form>
       </div>

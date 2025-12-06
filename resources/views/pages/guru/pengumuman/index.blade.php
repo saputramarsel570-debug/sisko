@@ -50,9 +50,17 @@
                         {{-- 🔹 Isi Card --}}
                         <div class="card-body">
                             <h5 class="fw-bold mb-2 text-primary">{{ $item->judul }}</h5>
+
                             <p class="small text-muted mb-2">
                                 <i class="ti ti-user"></i> {{ $item->user->name ?? 'Tidak diketahui' }}
                             </p>
+
+                            {{-- 🔥 Tanggal WIB ditambahkan --}}
+                            <p class="small text-muted mb-2">
+                                <i class="ti ti-calendar"></i>
+                                {{ $item->created_at->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}
+                            </p>
+
                             <p class="text-muted mb-3">{!! nl2br(e(Str::limit($item->isi, 100))) !!}</p>
                         </div>
 

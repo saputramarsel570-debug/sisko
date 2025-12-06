@@ -51,7 +51,7 @@
 
 <div class="container py-4 animate-fadeInUp">
     <h2 class="text-center mb-5 fw-bold">
-        <i class="ti ti-dashboard text-primary"></i> Dashboard Admin
+        <i class="ti ti-dashboard text-primary"></i> Dashboard Guru
     </h2>
 
     {{-- Untuk Statistik Card --}}

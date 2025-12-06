@@ -29,15 +29,21 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
     Route::get('/guru/export', [GuruController::class, 'export'])->name('guru.export');
 
+    Route::get('/guru/template', [GuruController::class, 'template'])->name('guru.template');
+
     Route::resource('/guru', GuruController::class);
 
     Route::get('/siswa/export', [SiswaController::class, 'export'])->name('siswa.export');
+
+    Route::get('/siswa-ortu/template', [SiswaController::class, 'template'])->name('siswaortu.template');
 
     Route::resource('/siswa', SiswaController::class);
 
     Route::resource('/orangtua', OrangtuaController::class);
 
     Route::get('/kelas/export', [KelasController::class, 'export'])->name('kelas.export');
+
+    Route::get('/kelas/template', [KelasController::class, 'template'])->name('kelas.template');
 
     Route::resource('/kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
 
@@ -58,6 +64,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::get('/export', [JadwalPelajaranController::class, 'export'])->name('jadwal.export');
 
     Route::get('/mapel/export', [MataPelajaranController::class, 'export'])->name('mapel.export');
+
+    Route::get('/mapel/template', [MataPelajaranController::class, 'downloadTemplate'])->name('mapel.template');
 
     Route::get('/absensi/rekap', [AbsensiController::class, 'rekap'])->name('absensi.rekap');
 

@@ -53,7 +53,6 @@
                         <select name="role"
                                 id="role"
                                 class="form-select @error('role') is-invalid @enderror" required>
-                            <option value="">-- Pilih Role --</option>
                             <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="guru" {{ old('role', $user->role) == 'guru' ? 'selected' : '' }}>Guru</option>
                             <option value="siswa" {{ old('role', $user->role) == 'siswa' ? 'selected' : '' }}>Siswa</option>
@@ -67,9 +66,17 @@
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password (kosongkan jika tidak diganti)</label>
-                        <input type="password"
-                               class="form-control @error('password') is-invalid @enderror"
-                               id="password" name="password">
+                    
+                        <div class="input-group">
+                            <input type="password"
+                                   class="form-control @error('password') is-invalid @enderror"
+                                   id="password" name="password">
+                    
+                            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                <i class="ti ti-eye" id="iconPassword"></i>
+                            </button>
+                        </div>
+                    
                         @error('password')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -77,10 +84,47 @@
 
                     <div class="mb-3">
                         <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                        <input type="password"
-                               class="form-control @error('password_confirmation') is-invalid @enderror"
-                               id="password_confirmation" name="password_confirmation">
+                    
+                        <div class="input-group">
+                            <input type="password"
+                                   class="form-control @error('password_confirmation') is-invalid @enderror"
+                                   id="password_confirmation" name="password_confirmation">
+                    
+                            <button type="button" class="btn btn-outline-secondary" onclick="toggleConfirm()">
+                                <i class="ti ti-eye" id="iconConfirm"></i>
+                            </button>
+                        </div>
                     </div>
+
+                    @push('scripts')
+                        <script>
+                        function togglePassword() {
+                            const pass = document.getElementById('password');
+                            const icon = document.getElementById('iconPassword');
+
+                            if (pass.type === "password") {
+                                pass.type = "text";
+                                icon.classList.replace("ti-eye", "ti-eye-off");
+                            } else {
+                                pass.type = "password";
+                                icon.classList.replace("ti-eye-off", "ti-eye");
+                            }
+                        }
+
+                        function toggleConfirm() {
+                            const pass = document.getElementById('password_confirmation');
+                            const icon = document.getElementById('iconConfirm');
+
+                            if (pass.type === "password") {
+                                pass.type = "text";
+                                icon.classList.replace("ti-eye", "ti-eye-off");
+                            } else {
+                                pass.type = "password";
+                                icon.classList.replace("ti-eye-off", "ti-eye");
+                            }
+                        }
+                        </script>
+                    @endpush
 
                     <div class="d-flex justify-content-between">
                         <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2">

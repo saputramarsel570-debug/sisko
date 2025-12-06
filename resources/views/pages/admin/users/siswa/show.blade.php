@@ -56,11 +56,22 @@
                     </tr>
                     <tr>
                         <th>Dibuat Pada</th>
-                        <td>{{ $siswa->created_at->format('d M Y H:i') }}</td>
+                        <td>
+                            {{ $siswa->created_at 
+                                ? $siswa->created_at->copy()->timezone('Asia/Jakarta')->format('d M Y H:i') 
+                                : '-' 
+                            }}
+                        </td>
                     </tr>
+                    
                     <tr>
                         <th>Diperbarui Pada</th>
-                        <td>{{ $siswa->updated_at->format('d M Y H:i') }}</td>
+                        <td>
+                            {{ $siswa->updated_at 
+                                ? $siswa->updated_at->copy()->timezone('Asia/Jakarta')->format('d M Y H:i') 
+                                : '-' 
+                            }}
+                        </td>
                     </tr>
                 </table>
             </div>

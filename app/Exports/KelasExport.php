@@ -23,8 +23,12 @@ class KelasExport implements FromCollection, WithHeadings, WithMapping
             $kelas->id,
             $kelas->nama_kelas,
             $kelas->waliKelas->nama ?? '-',
-            $kelas->created_at,
-            $kelas->updated_at,
+            $kelas->created_at
+            ? $kelas->created_at->copy()->timezone('Asia/Jakarta')->format('Y-m-d H:i')
+            : '-',
+            $kelas->updated_at
+            ? $kelas->updated_at->copy()->timezone('Asia/Jakarta')->format('Y-m-d H:i')
+            : '-',
         ];
     }
 
