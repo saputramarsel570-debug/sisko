@@ -15,12 +15,10 @@ class JurnalController extends Controller
     public function index(Request $request)
     {
         $guru = Auth::user()->guru;
-    
-        // Ambil tanggal
+
         $tanggal = $request->get('tanggal') ?? now()->toDateString();
         $hariInggris = Carbon::parse($tanggal)->format('l');
-    
-        // Map hari
+
         $hariMap = [
             'Monday'    => 'Senin',
             'Tuesday'   => 'Selasa',
@@ -31,14 +29,12 @@ class JurnalController extends Controller
             'Sunday'    => 'Minggu',
         ];
         $hariIni = $hariMap[$hariInggris] ?? null;
-    
-        // Ambil kelas
+
         $kelasId = $request->get('kelas_id')
             ?? JadwalPelajaran::where('guru_id', $guru->id)->pluck('kelas_id')->first();
-    
+
         $kelas = Kelas::find($kelasId);
-    
-        // Jam real
+
         $jamRanges = [
             1 => '07:00 - 07:45',
             2 => '07:45 - 08:30',
@@ -51,25 +47,23 @@ class JurnalController extends Controller
             9 => '14:00 - 14:45',
             10 => '14:45 - 15:30',
         ];
-    
-        // Ambil jadwal
+
         $jadwalHariIni = JadwalPelajaran::with(['kelas', 'mataPelajaran', 'guru'])
             ->where('kelas_id', $kelasId)
             ->where('hari', $hariIni)
             ->orderBy('jam_mulai')
             ->get();
-    
-        // Gabungkan jadwal berurutan
+
         $jadwalGabung = collect();
         foreach ($jadwalHariIni as $jadwal) {
             if ($jadwalGabung->isEmpty()) {
                 $jadwalGabung->push(clone $jadwal);
                 continue;
             }
-    
+
             $lastIndex = $jadwalGabung->keys()->last();
             $last = $jadwalGabung[$lastIndex];
-    
+
             if (
                 $last->guru_id == $jadwal->guru_id &&
                 $last->mata_pelajaran_id == $jadwal->mata_pelajaran_id &&
@@ -81,19 +75,15 @@ class JurnalController extends Controller
                 $jadwalGabung->push(clone $jadwal);
             }
         }
-    
-        // Ambil jurnal per-jam
+
         $jurnalRaw = Jurnal::where('kelas_id', $kelasId)
             ->where('guru_id', $guru->id)
             ->whereDate('tanggal', $tanggal)
             ->get();
 
-        // 🔥 Gabungkan jurnal sesuai format key Blade:
-        // key = jamMulai-jamSelesai-mapelId-guruId
         $jurnalMerged = collect();
 
         foreach ($jurnalRaw as $item) {
-            // Cari jadwalGabung yang cocok
             foreach ($jadwalGabung as $j) {
                 if (
                     $item->jam_mulai >= $j->jam_mulai &&
@@ -104,12 +94,12 @@ class JurnalController extends Controller
                     $key = $j->jam_mulai . '-' . $j->jam_selesai . '-' . $j->mata_pelajaran_id . '-' . $j->guru_id;
 
                     if (!$jurnalMerged->has($key)) {
-                        $jurnalMerged->put($key, $item); 
+                        $jurnalMerged->put($key, $item);
                     }
                 }
             }
         }
-    
+
         return view('pages.guru.jurnal.index', compact(
             'kelas',
             'kelasId',
@@ -126,11 +116,16 @@ class JurnalController extends Controller
         $guru = Auth::user()->guru;
 
         $tanggal = $request->input('tanggal', now()->toDateString());
+
+        // 🔥 TOLAK INPUT UNTUK TANGGAL YANG BELUM TERJADI
+        if (Carbon::parse($tanggal)->greaterThan(today())) {
+            return redirect()->back()->with('error', 'Tidak bisa mengisi jurnal untuk tanggal yang belum terjadi.');
+        }
+
         $data = $request->input('jurnal', []);
 
         foreach ($data as $key => $value) {
 
-            // Key format: jamMulai-jamSelesai-mapelId-guruId
             [$jamMulai, $jamSelesai, $mapelId, $guruId] = explode('-', $key);
 
             $jamMulai   = (int) trim($jamMulai);
@@ -138,7 +133,6 @@ class JurnalController extends Controller
             $mapelId    = (int) trim($mapelId);
             $guruId     = (int) trim($guruId);
 
-            // Simpan jurnal per-jam sesuai jam gabungan
             for ($jam = $jamMulai; $jam <= $jamSelesai; $jam++) {
                 Jurnal::updateOrCreate(
                     [

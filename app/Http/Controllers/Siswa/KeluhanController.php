@@ -53,7 +53,7 @@ class KeluhanController extends Controller
         $request->validate([
             'kategori' => 'required|in:keluhan,saran',
             'isi'      => 'required|string',
-            'gambar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'gambar'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $gambarPath = null;
@@ -71,10 +71,17 @@ class KeluhanController extends Controller
             'gambar'   => $gambarPath,
         ]);
 
-        $gurus = User::where('role', 'guru')->get();
-        foreach ($gurus as $guru) {
-            $guru->notify(new \App\Notifications\KeluhanBaruNotification($keluhan));
-        }
+        // Kirim notif ke guru
+$gurus = User::where('role', 'guru')->get();
+foreach ($gurus as $guru) {
+    $guru->notify(new \App\Notifications\KeluhanBaruNotification($keluhan));
+}
+
+// Kirim notif ke admin
+$admins = User::where('role', 'admin')->get();
+foreach ($admins as $admin) {
+    $admin->notify(new \App\Notifications\KeluhanBaruNotification($keluhan));
+}
 
         return redirect()->route('siswa.keluhan.index')
             ->with('success', 'Keluhan atau Saran berhasil dikirim');

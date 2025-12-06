@@ -27,33 +27,30 @@ class AbsensiController extends Controller
             return back()->with('error', 'Data kelas siswa perwakilan tidak ditemukan.');
         }
 
-        // periode: hari/bulan
         $periode = $request->get('periode', 'hari');
         $tanggal = $request->get('tanggal', now()->toDateString());
         $bulan   = $request->get('bulan', now()->format('Y-m'));
 
-        // ===============================
-        //  SAFE TANGGALLIST (NO CARBON PERIOD)
-        // ===============================
+        // Deteksi libur + tanggal future
+        $isWeekend = in_array(Carbon::parse($tanggal)->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY]);
+        $isFuture  = Carbon::parse($tanggal)->gt(Carbon::today());
+
+        // tanggalList
         if ($periode === 'hari') {
             $tanggalList = [$tanggal];
+
         } else {
             $start = Carbon::parse("$bulan-01");
-            $end   = $start->copy()->endOfMonth();
+            $until = $start->copy()->endOfMonth();
 
             $tanggalList = [];
-            while ($start->lte($end)) {
+            while ($start->lte($until)) {
                 $tanggalList[] = $start->format('Y-m-d');
                 $start->addDay();
             }
         }
 
-        // ===============================
-        //  AMAN UNTUK BULANAN
-        // ===============================
-        $siswaList = Siswa::where('kelas_id', $kelasId)
-            ->orderBy('nama')
-            ->get();
+        $siswaList = Siswa::where('kelas_id', $kelasId)->orderBy('nama')->get();
 
         $absensi = Absensi::whereIn('siswa_id', $siswaList->pluck('id'))
             ->whereBetween('tanggal', [reset($tanggalList), end($tanggalList)])
@@ -78,31 +75,37 @@ class AbsensiController extends Controller
             'tanggal',
             'bulan',
             'totalStatus',
-            'kelasId'
+            'kelasId',
+            'isWeekend',
+            'isFuture',
         ));
     }
 
     public function updateBulk(Request $request)
     {
-        $kelasId = $request->kelas_id;
         $tanggal = $request->tanggal;
+
+        // Cegah hari libur
+        if (in_array(Carbon::parse($tanggal)->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
+            return back()->withErrors(['Hari ini adalah hari libur (Sabtu atau Minggu). Tidak dapat melakukan absensi.']);
+        }
+
+        // Cegah tanggal future
+        if (Carbon::parse($tanggal)->gt(Carbon::today())) {
+            return back()->withErrors(['Tidak boleh melakukan absensi untuk tanggal yang belum terjadi.']);
+        }
+
+        $kelasId = $request->kelas_id;
         $absensiData = $request->absensi ?? [];
 
-        // Ambil nama siswa untuk label validasi
         $siswaList = Siswa::whereIn('id', array_keys($absensiData))
             ->pluck('nama', 'id');
 
         $rules = [];
-        $messages = [
-            'required' => ':attribute wajib diisi.',
-            'in'       => ':attribute harus salah satu dari: hadir, izin, sakit, alfa.',
-            'string'   => ':attribute harus berupa teks.',
-        ];
-
         $attributes = [];
 
         foreach ($absensiData as $id => $data) {
-            $nama = $siswaList[$id] ?? "Siswa";
+            $nama = $siswaList[$id] ?? 'Siswa';
 
             $rules["absensi.$id.status"] = "required|in:hadir,izin,sakit,alfa";
 
@@ -114,7 +117,7 @@ class AbsensiController extends Controller
             $attributes["absensi.$id.keterangan"] = "Keterangan untuk $nama";
         }
 
-        $validator = Validator::make($request->all(), $rules, $messages);
+        $validator = Validator::make($request->all(), $rules);
         $validator->setAttributeNames($attributes);
         $validator->validate();
 
@@ -132,20 +135,22 @@ class AbsensiController extends Controller
             );
         }
 
-        return redirect()
-            ->route('siswa_perwakilan.absensi.rekap', [
-                'kelas_id' => $kelasId,
-                'periode'  => 'hari',
-                'tanggal'  => $tanggal,
-            ])
-            ->with('success', 'Absensi berhasil diperbarui.');
+        return back()->with('success', 'Absensi berhasil diperbarui.');
     }
 
     public function hadirSemua(Request $request)
     {
-        $kelasId = $request->kelas_id;
         $tanggal = $request->tanggal;
 
+        if (in_array(Carbon::parse($tanggal)->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
+            return back()->withErrors(['Hari ini adalah hari libur (Sabtu atau Minggu). Tidak dapat mengubah absensi.']);
+        }
+
+        if (Carbon::parse($tanggal)->gt(Carbon::today())) {
+            return back()->withErrors(['Tidak boleh mengubah absensi untuk tanggal yang belum terjadi.']);
+        }
+
+        $kelasId = $request->kelas_id;
         $siswaList = Siswa::where('kelas_id', $kelasId)->pluck('id');
 
         foreach ($siswaList as $sid) {
@@ -174,20 +179,19 @@ class AbsensiController extends Controller
             $query->whereDate('tanggal', $tanggal);
         } else {
             $start = Carbon::parse("$bulan-01");
-            $end = $start->copy()->endOfMonth();
+            $until = $start->copy()->endOfMonth();
 
-            $query->whereBetween('tanggal', [$start->toDateString(), $end->toDateString()]);
+            $query->whereBetween('tanggal', [$start->toDateString(), $until->toDateString()]);
         }
 
         $absensi = $query->get();
 
-        // tanggalList aman
         if ($periode === 'bulan') {
             $start = Carbon::parse("$bulan-01");
-            $end   = $start->copy()->endOfMonth();
+            $until = $start->copy()->endOfMonth();
 
             $tanggalList = [];
-            while ($start->lte($end)) {
+            while ($start->lte($until)) {
                 $tanggalList[] = $start->format('Y-m-d');
                 $start->addDay();
             }
@@ -195,13 +199,11 @@ class AbsensiController extends Controller
             $tanggalList = [$tanggal];
         }
 
-        // rekap
         $rekap = [];
         foreach ($absensi as $a) {
             $rekap[$a->siswa_id][$a->tanggal] = $a;
         }
 
-        // total status
         $totalStatus = [];
         foreach ($siswaList as $s) {
             $totalStatus[$s->id] = [

@@ -77,6 +77,7 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-primary text-center">
                             <tr>
+                                <th>No</th>
                                 <th>Nama Siswa</th>
                                 <th>Tanggal</th>
                                 <th>Hari</th>
@@ -88,6 +89,7 @@
                         <tbody>
                             @forelse($absensi as $a)
                             <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="fw-semibold">{{ $a->siswa->nama }}</td>
                                 <td>{{ \Carbon\Carbon::parse($a->tanggal)->format('d-m-Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($a->tanggal)->translatedFormat('l') }}</td>

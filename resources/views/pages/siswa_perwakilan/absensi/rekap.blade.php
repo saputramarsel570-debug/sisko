@@ -6,6 +6,9 @@
 <div class="row">
     <div class="col-md-12">
 
+        {{-- =============================== --}}
+        {{--   HEADER + EXPORT PDF BUTTON    --}}
+        {{-- =============================== --}}
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-header bg-primary d-flex justify-content-between align-items-center py-3">
                 <h5 class="mb-0 text-white d-flex align-items-center gap-2">
@@ -14,17 +17,22 @@
                 </h5>
 
                 @if(!empty($kelasId) && ($periode ?? '') === 'bulan')
-                <a href="{{ route('siswa_perwakilan.absensi.exportPdf', [
-                    'kelas_id' => $kelasId,
-                    'periode' => $periode,
-                    'bulan' => $bulan,
-                ]) }}" class="btn btn-danger mb-3" target="_blank">
-                    <i class="ti ti-file-type-pdf"></i> Export PDF
-                </a>
+                    <a href="{{ route('siswa_perwakilan.absensi.exportPdf', [
+                        'kelas_id' => $kelasId,
+                        'periode'  => $periode,
+                        'bulan'    => $bulan,
+                    ]) }}"
+                    class="btn btn-danger"
+                    target="_blank">
+                        <i class="ti ti-file-type-pdf"></i> Export PDF
+                    </a>
                 @endif
             </div>
         </div>
 
+        {{-- ======================== --}}
+        {{--      SUCCESS ALERT       --}}
+        {{-- ======================== --}}
         @if (session('success'))
         <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
             <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
@@ -32,6 +40,9 @@
         </div>
         @endif
 
+        {{-- ====================== --}}
+        {{--     ERROR ALERTS       --}}
+        {{-- ====================== --}}
         @if($errors->any())
         <div class="alert alert-solid-danger d-flex align-items-center" role="alert">
             <span class="alert-icon rounded"><i class="ti ti-alert-triangle"></i></span>
@@ -46,16 +57,21 @@
         </div>
         @endif
 
+        {{-- =============================== --}}
+        {{--           FILTER FORM           --}}
+        {{-- =============================== --}}
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <form method="GET" class="row g-2 align-items-center">
 
+                    {{-- KELAS --}}
                     <div class="col-md-3">
                         <input type="text" class="form-control bg-light"
                             value="{{ $siswaList->first()->kelas->nama_kelas ?? '-' }}" readonly>
                         <input type="hidden" name="kelas_id" value="{{ $kelasId }}">
                     </div>
 
+                    {{-- PILIH PERIODE --}}
                     <div class="col-md-2">
                         <select name="periode" class="form-select" onchange="this.form.submit()">
                             <option value="">-- Periode --</option>
@@ -64,6 +80,7 @@
                         </select>
                     </div>
 
+                    {{-- INPUT PER PERIODE --}}
                     @if(($periode ?? '') === 'hari')
                         <div class="col-md-3">
                             <input type="date" name="tanggal" class="form-control"
@@ -77,14 +94,14 @@
                                 onchange="this.form.submit()">
                         </div>
                     @endif
+
                 </form>
             </div>
         </div>
 
-        {{-- ============================= --}}
-        {{--   VALIDASI KELAS + DATA      --}}
-        {{-- ============================= --}}
+        {{-- VALIDASI KELAS --}}
         @if(!empty($kelasId))
+
             @if($siswaList->isEmpty())
                 <div class="alert alert-warning">Tidak ada data siswa pada kelas ini.</div>
 
@@ -93,150 +110,144 @@
 
             @else
 
-                {{-- ====================================================== --}}
-                {{--                   MODE HARIAN (INPUT)                 --}}
-                {{-- ====================================================== --}}
+                {{-- ================================================================= --}}
+                {{--                          MODE HARIAN                              --}}
+                {{-- ================================================================= --}}
                 @if(($periode ?? '') === 'hari')
 
-                <form method="POST" action="{{ route('siswa_perwakilan.absensi.update_bulk') }}">
-                    @csrf
-                    @method('PUT')
+                    <form method="POST" action="{{ route('siswa_perwakilan.absensi.update_bulk') }}">
+                        @csrf
+                        @method('PUT')
 
-                    <input type="hidden" name="kelas_id" value="{{ $kelasId }}">
-                    <input type="hidden" name="tanggal" value="{{ $tanggal }}">
+                        <input type="hidden" name="kelas_id" value="{{ $kelasId }}">
+                        <input type="hidden" name="tanggal" value="{{ $tanggal }}">
 
-                    <div class="card shadow-sm">
-                        <div class="card-body table-responsive">
+                        <div class="card shadow-sm">
+                            <div class="card-body table-responsive">
 
-                            <button type="button" id="hadirSemua" class="btn btn-success mb-3">
-                                <i class="ti ti-user-check"></i> Hadir Semua
-                            </button>
+                                {{-- Button Hadir Semua --}}
+                                <button type="button" id="hadirSemua" class="btn btn-success mb-3">
+                                    <i class="ti ti-user-check"></i> Hadir Semua
+                                </button>
 
-                            <table class="table table-bordered align-middle text-center">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>No</th>
-                                        <th class="text-start">Nama Siswa</th>
-                                        <th>Status</th>
-                                        <th>Keterangan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    @foreach($siswaList as $i => $siswa)
-                                        @php 
-                                            $absen = $rekap[$siswa->id][$tanggal] ?? null;
-
-                                            $selectedStatus = old("absensi.$siswa->id.status", $absen->status ?? '');
-                                            $selectedKet = old("absensi.$siswa->id.keterangan", $absen->keterangan ?? '');
-                                        @endphp
-
+                                <table class="table table-bordered align-middle text-center">
+                                    <thead class="table-light">
                                         <tr>
-                                            <td>{{ $i + 1 }}</td>
-                                            <td class="text-start">{{ $siswa->nama }}</td>
-
-                                            <td>
-                                                <select 
-                                                    name="absensi[{{ $siswa->id }}][status]" 
-                                                    class="form-select status-select">
-                                                    <option value="">-- Pilih --</option>
-                                                    <option value="hadir" {{ $selectedStatus == 'hadir' ? 'selected' : '' }}>Hadir</option>
-                                                    <option value="izin" {{ $selectedStatus == 'izin' ? 'selected' : '' }}>Izin</option>
-                                                    <option value="sakit" {{ $selectedStatus == 'sakit' ? 'selected' : '' }}>Sakit</option>
-                                                    <option value="alfa" {{ $selectedStatus == 'alfa' ? 'selected' : '' }}>Alfa</option>
-                                                </select>
-                                            </td>
-
-                                            <td>
-                                                <input type="text"
-                                                    name="absensi[{{ $siswa->id }}][keterangan]"
-                                                    class="form-control"
-                                                    value="{{ $selectedKet }}">
-                                            </td>
+                                            <th>No</th>
+                                            <th class="text-start">Nama Siswa</th>
+                                            <th>Status</th>
+                                            <th>Keterangan</th>
                                         </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($siswaList as $i => $siswa)
+                                            @php
+                                                $absen = $rekap[$siswa->id][$tanggal] ?? null;
+                                                $selectedStatus = old("absensi.$siswa->id.status", $absen->status ?? '');
+                                                $selectedKet    = old("absensi.$siswa->id.keterangan", $absen->keterangan ?? '');
+                                            @endphp
 
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                            <tr>
+                                                <td>{{ $i + 1 }}</td>
+                                                <td class="text-start">{{ $siswa->nama }}</td>
+                                                <td>
+                                                    <select name="absensi[{{ $siswa->id }}][status]"
+                                                        class="form-select status-select">
+                                                        <option value="">-- Pilih --</option>
+                                                        <option value="hadir" {{ $selectedStatus == 'hadir' ? 'selected' : '' }}>Hadir</option>
+                                                        <option value="izin" {{ $selectedStatus == 'izin' ? 'selected' : '' }}>Izin</option>
+                                                        <option value="sakit" {{ $selectedStatus == 'sakit' ? 'selected' : '' }}>Sakit</option>
+                                                        <option value="alfa" {{ $selectedStatus == 'alfa' ? 'selected' : '' }}>Alfa</option>
+                                                    </select>
+                                                </td>
+
+                                                <td>
+                                                    <textarea 
+                                                        name="absensi[{{ $siswa->id }}][keterangan]" 
+                                                        class="form-control keterangan-textarea"
+                                                        rows="1"
+                                                    >{{ $selectedKet }}</textarea>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="mt-3 text-end">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-device-floppy"></i> Simpan Perubahan
-                        </button>
-                    </div>
+                        <div class="mt-3 text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti ti-device-floppy"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
 
-                </form>
-
-                {{-- ====================================================== --}}
-                {{--                   MODE BULANAN (REKAP)                --}}
-                {{-- ====================================================== --}}
+                {{-- ================================================================= --}}
+                {{--                          MODE BULANAN                             --}}
+                {{-- ================================================================= --}}
                 @else
 
-<div class="card shadow-sm">
-    <div class="card-body table-responsive">
+                <div class="card shadow-sm">
+                    <div class="card-body table-responsive">
 
-        <table class="table table-bordered text-center align-middle">
-            <thead class="table-light align-middle">
-                <tr>
-                    <th rowspan="2" style="width: 50px;">No</th>
-                    <th rowspan="2" class="text-start" style="width: 200px;">Nama Siswa</th>
+                        <table class="table table-bordered text-center align-middle">
+                            <thead class="table-light align-middle">
+                                <tr>
+                                    <th rowspan="2" style="width: 50px;">No</th>
+                                    <th rowspan="2" class="text-start" style="width: 200px;">Nama Siswa</th>
 
-                    @foreach($tanggalList as $tgl)
-                        <th style="width: 45px;">
-                            {{ \Carbon\Carbon::parse($tgl)->format('d') }}
-                        </th>
-                    @endforeach
+                                    @foreach($tanggalList as $tgl)
+                                        <th style="width: 45px;">
+                                            {{ \Carbon\Carbon::parse($tgl)->format('d') }}
+                                        </th>
+                                    @endforeach
 
-                    <th rowspan="2" style="width: 45px;">H</th>
-                    <th rowspan="2" style="width: 45px;">S</th>
-                    <th rowspan="2" style="width: 45px;">I</th>
-                    <th rowspan="2" style="width: 45px;">A</th>
-                </tr>
+                                    <th rowspan="2" style="width: 45px;">H</th>
+                                    <th rowspan="2" style="width: 45px;">S</th>
+                                    <th rowspan="2" style="width: 45px;">I</th>
+                                    <th rowspan="2" style="width: 45px;">A</th>
+                                </tr>
+                                <tr></tr>
+                            </thead>
 
-                <tr></tr>
-            </thead>
+                            <tbody>
+                                @foreach($siswaList as $i => $siswa)
+                                <tr>
+                                    <td>{{ $i + 1 }}</td>
+                                    <td class="text-start fw-semibold">{{ $siswa->nama }}</td>
 
-            <tbody>
-                @foreach($siswaList as $i => $siswa)
-                <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td class="text-start fw-semibold">{{ $siswa->nama }}</td>
+                                    @foreach($tanggalList as $tgl)
+                                        @php
+                                            $abs = $rekap[$siswa->id][$tgl] ?? null;
+                                        @endphp
+                                        <td>
+                                            @if($abs)
+                                                <span class="fw-bold">
+                                                    {{ strtoupper(substr($abs->status, 0, 1)) }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                    @endforeach
 
-                    @foreach($tanggalList as $tgl)
-                        @php 
-                            $abs = $rekap[$siswa->id][$tgl] ?? null; 
-                        @endphp
+                                    <td class="fw-bold">{{ $totalStatus[$siswa->id]['hadir'] ?? 0 }}</td>
+                                    <td class="fw-bold">{{ $totalStatus[$siswa->id]['sakit'] ?? 0 }}</td>
+                                    <td class="fw-bold">{{ $totalStatus[$siswa->id]['izin'] ?? 0 }}</td>
+                                    <td class="fw-bold">{{ $totalStatus[$siswa->id]['alfa'] ?? 0 }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
 
-                        <td>
-                            @if($abs)
-                                {{-- tanpa warna --}}
-                                <span class="fw-bold">
-                                    {{ strtoupper(substr($abs->status, 0, 1)) }}
-                                </span>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                    @endforeach
+                        </table>
 
-                    {{-- TOTAL (tanpa warna) --}}
-                    <td class="fw-bold">{{ $totalStatus[$siswa->id]['hadir'] ?? 0 }}</td>
-                    <td class="fw-bold">{{ $totalStatus[$siswa->id]['sakit'] ?? 0 }}</td>
-                    <td class="fw-bold">{{ $totalStatus[$siswa->id]['izin'] ?? 0 }}</td>
-                    <td class="fw-bold">{{ $totalStatus[$siswa->id]['alfa'] ?? 0 }}</td>
+                    </div>
+                </div>
 
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-    </div>
-</div>
-
-                @endif {{-- end periode bulan --}}
+                @endif {{-- end check periode hari/bulan --}}
             @endif
+
         @else
             <div class="alert alert-info">Silakan pilih kelas terlebih dahulu.</div>
         @endif
@@ -245,9 +256,13 @@
 </div>
 @endsection
 
+{{-- ================================= --}}
+{{--           JAVASCRIPT              --}}
+{{-- ================================= --}}
 @push('scripts')
 <script>
 
+// Auto remove alert setelah 3 detik
 setTimeout(() => {
     const a = document.querySelectorAll('#success, #error');
     a.forEach(el => {
@@ -257,6 +272,7 @@ setTimeout(() => {
     });
 }, 3000);
 
+// Button Hadir Semua
 document.getElementById('hadirSemua')?.addEventListener('click', () => {
     document.querySelectorAll('.status-select').forEach(select => {
         select.value = 'hadir';

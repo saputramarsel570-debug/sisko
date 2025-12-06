@@ -178,39 +178,38 @@ class RekapJurnalsController extends Controller
         return $merged;
     }
 
-    // =========================
-    // EXPORT PDF
-    // =========================
     public function exportPdf(Request $request)
-{
-    $guru = auth()->user()->guru;
-    $periode = $request->periode ?? date('Y-m');
-    [$tahun, $bulan] = explode('-', $periode);
-
-    $tanggalAwal = Carbon::createFromDate($tahun, $bulan, 1);
-    $tanggalAkhir = $tanggalAwal->copy()->endOfMonth();
-
-    // Ambil jurnal dan MERGE seperti tampilan web
-    $jurnalBulanan = Jurnal::with(['kelas', 'mataPelajaran'])
-        ->where('guru_id', $guru->id)
-        ->whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir])
-        ->orderBy('tanggal')
-        ->orderBy('jam_mulai')
-        ->get()
-        ->groupBy('tanggal')
-        ->map(function ($items) {
-            return $this->mergeJurnal($items);
-        });
-
-    $data = [
-        'guru' => $guru,
-        'periode' => $periode,
-        'jurnalBulanan' => $jurnalBulanan,
-    ];
-
-    $pdf = Pdf::loadView('pages.guru.jurnals.rekap_pdf', $data)
-        ->setPaper('a4', 'portrait');
-
-    return $pdf->stream('Rekap_Jurnal_' . $guru->nama . '_' . $periode . '.pdf');
-}
+    {
+        // FIX AGAR JAM PDF SESUAI JAM LAPTOP
+        date_default_timezone_set('Asia/Jakarta');
+    
+        $guru = auth()->user()->guru;
+        $periode = $request->periode ?? date('Y-m');
+        [$tahun, $bulan] = explode('-', $periode);
+    
+        $tanggalAwal = Carbon::createFromDate($tahun, $bulan, 1);
+        $tanggalAkhir = $tanggalAwal->copy()->endOfMonth();
+    
+        $jurnalBulanan = Jurnal::with(['kelas', 'mataPelajaran'])
+            ->where('guru_id', $guru->id)
+            ->whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir])
+            ->orderBy('tanggal')
+            ->orderBy('jam_mulai')
+            ->get()
+            ->groupBy('tanggal')
+            ->map(function ($items) {
+                return $this->mergeJurnal($items);
+            });
+    
+        $data = [
+            'guru' => $guru,
+            'periode' => $periode,
+            'jurnalBulanan' => $jurnalBulanan,
+        ];
+    
+        $pdf = Pdf::loadView('pages.guru.jurnals.rekap_pdf', $data)
+            ->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('Rekap_Jurnal_' . $guru->nama . '_' . $periode . '.pdf');
+    }
 }

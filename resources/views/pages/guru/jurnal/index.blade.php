@@ -13,16 +13,21 @@
             </div>
         @endif
 
-        <!-- Header & Pilih Kelas + Tanggal -->
+        @if (session('error'))
+            <div class="alert alert-solid-danger d-flex align-items-center" role="alert">
+                <span class="alert-icon rounded"><i class="ti ti-alert-triangle"></i></span>
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
             <h3 class="fw-bold mb-3 mb-md-0">
                 <i class="ti ti-notebook"></i> Jurnal Mengajar
             </h3>
 
-            <form method="GET" action="{{ route('guru.jurnal.index') }}" 
+            <form method="GET" action="{{ route('guru.jurnal.index') }}"
                 class="d-flex flex-wrap gap-2 align-items-center">
 
-                <!-- Pilih Kelas -->
                 <div class="flex-grow-1" style="min-width: 180px;">
                     <select name="kelas_id" class="form-select shadow-sm" required>
                         <option value="">-- Pilih Kelas --</option>
@@ -34,13 +39,14 @@
                     </select>
                 </div>
 
-                <!-- Pilih Tanggal -->
                 <div style="min-width: 180px;">
-                    <input type="date" name="tanggal" class="form-control shadow-sm" 
+                    <input type="date"
+                        name="tanggal"
+                        class="form-control shadow-sm"
+                        max="{{ now()->toDateString() }}"
                         value="{{ $tanggal ?? now()->toDateString() }}">
                 </div>
 
-                <!-- Tombol -->
                 <div>
                     <button type="submit" class="btn btn-primary shadow-sm">
                         <i class="ti ti-search"></i> Tampilkan
@@ -50,7 +56,6 @@
             </form>
         </div>
 
-        <!-- Card Jurnal -->
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
@@ -74,21 +79,19 @@
                                 <th width="23%">Catatan</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             @forelse($jadwalGabung as $jadwal)
                                 @php
-                                    // Key wajib konsisten
                                     $key = $jadwal->jam_mulai . '-' 
                                         . $jadwal->jam_selesai . '-' 
                                         . $jadwal->mata_pelajaran_id . '-' 
                                         . $jadwal->guru_id;
 
-                                    // Ambil jurnal dengan key yang sama
                                     $jurnal = $jurnalMerged[$key] ?? null;
 
                                     $isGuruSendiri = $jadwal->guru_id == $guru->id;
 
-                                    // Format tampilan jam
                                     $mulaiParts = explode(' - ', $jamRanges[$jadwal->jam_mulai] ?? $jadwal->jam_mulai);
                                     $selesaiParts = explode(' - ', $jamRanges[$jadwal->jam_selesai] ?? $jadwal->jam_selesai);
                                     $jamTampil = ($mulaiParts[0] ?? $jadwal->jam_mulai) 
@@ -108,7 +111,7 @@
                                                 class="form-control"
                                                 value="{{ old("jurnal.$key.materi", $jurnal->materi ?? '') }}">
                                         @else
-                                            <input type="text" class="form-control" 
+                                            <input type="text" class="form-control"
                                                 value="{{ $jurnal->materi ?? '-' }}" disabled>
                                         @endif
                                     </td>
@@ -120,7 +123,7 @@
                                                 class="form-control"
                                                 value="{{ old("jurnal.$key.catatan", $jurnal->catatan ?? '') }}">
                                         @else
-                                            <input type="text" class="form-control" 
+                                            <input type="text" class="form-control"
                                                 value="{{ $jurnal->catatan ?? '-' }}" disabled>
                                         @endif
                                     </td>
@@ -148,62 +151,4 @@
         </div>
     </div>
 </div>
-
-<form id="form-delete" action="" method="POST" class="d-none">
-    @csrf
-    @method('DELETE')
-</form>
 @endsection
-
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('/vendor/libs/sweetalert2/sweetalert2.css') }}" />
-<style>
-    .hover-card:hover {
-        transform: translateY(-4px);
-        transition: all 0.25s ease;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-    }
-    .bg-primary-subtle { background-color: #e9f3ff !important; }
-    .bg-success-subtle { background-color: #e8f8ef !important; }
-    .bg-warning-subtle { background-color: #fff7e6 !important; }
-    .bg-secondary-subtle { background-color: #f3f3f3 !important; }
-    .btn.disabled {
-        opacity: 0.6;
-        pointer-events: none;
-    }
-</style>
-@endpush
-
-
-@push('scripts')
-<script src="{{ asset('/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-<script>
-function actionDelete(url) {
-    Swal.fire({
-        title: "Yakin mau dihapus?",
-        text: "Data yang dihapus tidak dapat dikembalikan!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Ya, hapus!",
-        cancelButtonText: "Batal",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById('form-delete').action = url;
-            document.getElementById('form-delete').submit();
-        }
-    });
-}
-
-setTimeout(() => {
-    const alert = document.getElementById('success');
-    if (alert) {
-        alert.style.transition = "opacity 0.5s";
-        alert.style.opacity = 0;
-        setTimeout(() => alert.remove(), 500);
-    }
-}, 3000);
-</script>
-@endpush

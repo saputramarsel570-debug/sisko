@@ -54,7 +54,7 @@
     <div class="info">
         <p><strong>Nama Guru:</strong> {{ $guru->nama }}</p>
         <p><strong>NIP:</strong> {{ $guru->nip ?? '-' }}</p>
-        <p><strong>Dicetak pada:</strong> {{ now()->translatedFormat('d F Y, H:i') }}</p>
+        <p><strong>Dicetak pada:</strong> {{ now('Asia/Jakarta')->translatedFormat('d F Y, H:i') }}</p>
     </div>
 
     @php
@@ -103,26 +103,23 @@
                             @php
                                 $mulai = $jamRanges[$j->jam_mulai] ?? null;
                                 $selesai = $jamRanges[$j->jam_selesai] ?? null;
-                    
-                                // Ambil jam awal dari range mulai
+
                                 if ($mulai) {
                                     $mulaiJam = explode(' - ', $mulai)[0];
                                 }
-                    
-                                // Ambil jam akhir dari range selesai
+
                                 if ($selesai) {
                                     $selesaiJam = explode(' - ', $selesai)[1];
                                 }
                             @endphp
-                    
+
                             {{ $mulaiJam ?? '-' }} - {{ $selesaiJam ?? '-' }}
-                    
+
                         @else
                             -
                         @endif
                     </td>
                     <td>{{ $j->materi ?? '-' }}</td>
-
                     <td>{{ $j->catatan ?? '-' }}</td>
                 </tr>
             @endforeach
@@ -132,7 +129,7 @@
     @endforelse
 
     <div class="footer">
-        <p>Dicetak oleh sistem pada {{ now()->translatedFormat('d F Y') }}</p>
+        <p>Dicetak oleh sistem pada {{ now('Asia/Jakarta')->translatedFormat('d F Y') }}</p>
     </div>
 
 </body>

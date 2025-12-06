@@ -4,94 +4,78 @@
 
 @section('content')
 <div class="container">
-    <h3 class="mb-4 text-center">Profil Admin</h3>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
 
-    {{-- Notifikasi --}}
-    @if (session('success'))
-        <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
-            <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
-            {{ session('success') }}
-        </div>
-    @endif
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-primary text-white rounded-top-4 text-center py-3">
+                    <h4 class="mb-0"><i class="ti ti-user-circle"></i> Profil Admin</h4>
+                </div>
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $e)
-                    <li>{{ $e }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+                <div class="card-body p-4">
 
-    <div class="row justify-content-center g-4">
-        {{-- Data Identitas --}}
-        <div class="col-md-5">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="mb-3 fw-semibold"><i class="ti ti-user"></i> Data Identitas</h5>
+                    {{-- Notifikasi --}}
+                    @if (session('success'))
+                        <div id="success" class="alert alert-solid-success d-flex align-items-center" role="alert">
+                            <span class="alert-icon rounded"><i class="ti ti-check"></i></span>
+                            {{ session('success') }}
+                        </div>
+                    @endif
 
-                    <div class="text-center mb-3">
+                    @if ($errors->any())
+                        <div class="alert alert-danger mb-4">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $e)
+                                    <li>{{ $e }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    {{-- Foto Profil + Upload --}}
+                    <div class="text-center mb-4">
                         <img 
-                            src="{{ $user->profile_photo ? asset('uploads/profile/' . $user->profile_photo) : 'https://via.placeholder.com/120' }}" 
+                            src="{{ $user->profile_photo ? asset('uploads/profile/' . $user->profile_photo) : 'https://via.placeholder.com/150' }}" 
                             alt="Foto Profil" 
-                            class="rounded-circle border mb-2" 
-                            style="width: 120px; height: 120px; object-fit: cover; cursor: pointer;"
+                            class="rounded-circle shadow-sm border"
+                            style="width: 150px; height:150px; object-fit: cover; cursor: pointer;"
                             onclick="showImageModal(this.src)"
-                        />
+                        >
 
-                        <form action="{{ route('admin.profile.photo') }}" method="POST" enctype="multipart/form-data" class="d-flex justify-content-center mt-2">
+                        <form action="{{ route('admin.profile.photo') }}" method="POST" enctype="multipart/form-data" class="mt-3 d-flex justify-content-center">
                             @csrf
-                            <input type="file" name="profile_photo" id="profile_photo" class="form-control form-control-sm w-75" accept="image/*" required>
-                            <button type="submit" class="btn btn-sm btn-primary ms-2">Ganti</button>
+                            <input type="file" name="profile_photo" class="form-control form-control-sm w-50" accept="image/*" required>
+                            <button type="submit" class="btn btn-sm btn-primary ms-2 px-3">
+                                <i class="ti ti-upload"></i> Ganti
+                            </button>
                         </form>
                     </div>
 
-                    <p><strong>Nama :</strong> {{ $user->name }}</p>
-                    <p><strong>Email :</strong> {{ $user->email }}</p>
-                    <p><strong>Role :</strong> {{ ucfirst($user->role) }}</p>
-                </div>
-            </div>
-        </div>
+                    <hr>
 
-        {{-- Form Ganti Password & Email --}}
-        <div class="col-md-5">
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-body">
-                    <h5 class="mb-3 fw-semibold"><i class="ti ti-mail"></i> Ganti Email</h5>
-                    <form action="{{ route('admin.profile.email') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Baru</label>
-                            <input type="email" name="email" id="email" class="form-control" value="{{ $user->email }}" required>
+                    {{-- Informasi Admin --}}
+                    <div class="mt-4">
+                        <h5 class="fw-semibold mb-3"><i class="ti ti-id-badge"></i> Informasi Akun</h5>
+
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between">
+                                <strong>Nama</strong>
+                                <span>{{ $user->name }}</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between">
+                                <strong>Email</strong>
+                                <span>{{ $user->email }}</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between">
+                                <strong>Role</strong>
+                                <span class="badge bg-success px-3 py-2">{{ ucfirst($user->role) }}</span>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Perbarui Email</button>
-                    </form>
-                </div>
+                    </div>
+
+                </div> {{-- end card body --}}
             </div>
 
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="mb-3 fw-semibold"><i class="ti ti-lock"></i> Ganti Password</h5>
-
-                    <form action="{{ route('admin.profile.password') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="current_password" class="form-label">Password Lama</label>
-                            <input type="password" class="form-control" id="current_password" name="current_password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_password" class="form-label">Password Baru</label>
-                            <input type="password" class="form-control" id="new_password" name="new_password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-                            <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Ganti Password</button>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -106,19 +90,20 @@
 </div>
 @endsection
 
+
 @push('scripts')
 <script>
-    // Auto-hide alert sukses
+    // Auto hide alert
     setTimeout(() => {
         let alert = document.getElementById('success');
         if (alert) {
-            alert.style.transition = "opacity 0.5s ease";
+            alert.style.transition = "opacity 0.6s ease";
             alert.style.opacity = 0;
-            setTimeout(() => alert.remove(), 500);
+            setTimeout(() => alert.remove(), 600);
         }
-    }, 3000);
+    }, 2500);
 
-    // Modal preview foto
+    // Show modal preview
     function showImageModal(src) {
         const modal = new bootstrap.Modal(document.getElementById('photoModal'));
         document.getElementById('photoPreview').src = src;

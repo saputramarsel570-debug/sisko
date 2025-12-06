@@ -33,12 +33,9 @@ class KeluhanBaruNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Keluhan Baru Diterima',
-            'message' => 'Ada keluhan atau saran baru dari ' . $this->keluhan->user->name,
-            'keluhan_id' => $this->keluhan->id,
-            'kategori' => $this->keluhan->kategori,
-            'isi' => $this->keluhan->isi,
-            'created_at' => now()->toDateTimeString(),
+            'title'   => 'Keluhan Baru',
+            'message' => 'Keluhan dari ' . $this->keluhan->user->name,
+            'url'     => route('admin.keluhan_saran.show', $this->keluhan->id)
         ];
     }
 }
