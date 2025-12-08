@@ -21,6 +21,31 @@
                     <a href="{{ route('admin.orangtua.create') }}" class="btn btn-light btn-sm">
                         <i class="ti ti-plus"></i> Tambah Orang Tua
                     </a>
+                
+                    <form action="{{ route('admin.orangtua.reset.password') }}" method="POST" 
+                          id="resetOrangtuaForm" class="d-inline">
+                        @csrf
+                        <button type="button" class="btn btn-warning btn-sm" onclick="confirmResetOrangtua()">
+                            Reset Password Semua Orang Tua
+                        </button>
+                    </form>
+                    
+                    <script>
+                    function confirmResetOrangtua() {
+                        Swal.fire({
+                            title: "Yakin reset semua password orang tua?",
+                            text: "Semua akun orang tua akan otomatis logout dan tidak bisa login lagi!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Ya, reset!",
+                            cancelButtonText: "Batal"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById("resetOrangtuaForm").submit();
+                            }
+                        });
+                    }
+                    </script>
                 </div>
             </div>
 

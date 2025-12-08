@@ -57,6 +57,10 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
 
+    Route::post('/admin/siswa/reset-password', [SiswaController::class, 'resetAllPasswords'])->name('siswa.reset.password');
+
+Route::post('/admin/orangtua/reset-password', [OrangtuaController::class, 'resetAllPasswords'])->name('orangtua.reset.password');
+
     Route::get('/jadwal-ekskul/export', [JadwalEkskulController::class, 'export'])->name('jadwal_ekskul.export');
 
     Route::get('/ekskul/export', [EkstrakurikulerController::class, 'export'])->name('ekskul.export');

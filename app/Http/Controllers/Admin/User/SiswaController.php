@@ -57,6 +57,19 @@ class SiswaController extends Controller
     return back()->with('import_success', $successCount);
 }
 
+public function resetAllPasswords()
+{
+    // Password baru disamakan untuk semua siswa
+    $newPassword = Hash::make('disabled123');
+
+    // Update semua user siswa
+    User::where('role', 'siswa')->update([
+        'password' => $newPassword,
+    ]);
+
+    return redirect()->back()->with('success', 'Semua password siswa berhasil direset!');
+}
+
     /**
      * Display a listing of the resource.
      */
@@ -126,7 +139,7 @@ class SiswaController extends Controller
         ], [
             // NIS
             'nis.required' => 'NIS wajib diisi.',
-            'nis.digits_between' => 'NIS harus 5–25 digit angka.',
+            'nis.digits_between' => 'NIS harus 5-25 digit angka.',
             'nis.unique' => 'NIS sudah digunakan.',
         
             // Siswa

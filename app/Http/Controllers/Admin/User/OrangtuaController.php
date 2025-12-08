@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Hash;
 
 class OrangtuaController extends Controller
 {
+    public function resetAllPasswords()
+{
+    $newPassword = Hash::make('disabled123');
+
+    User::where('role', 'orangtua')->update([
+        'password' => $newPassword,
+    ]);
+
+    return redirect()->back()->with('success', 'Semua password orang tua berhasil direset!');
+}
+
     /**
      * Display a listing of the resource.
      */
@@ -62,6 +73,7 @@ class OrangtuaController extends Controller
         
             'no_hp' => [
                 'required',
+                'string',
                 'digits_between:8,20',
                 'regex:/^[0-9]+$/'
             ],
@@ -94,7 +106,7 @@ class OrangtuaController extends Controller
             'nama.required' => 'Nama orang tua wajib diisi.',
         
             'no_hp.required' => 'Nomor HP wajib diisi.',
-            'no_hp.digits_between' => 'Nomor HP harus 8–20 digit.',
+            'no_hp.digits_between' => 'Nomor HP harus 8-20 digit.',
             'no_hp.regex' => 'Nomor HP hanya boleh angka.',
         
             'username.required' => 'Username orang tua wajib diisi.',

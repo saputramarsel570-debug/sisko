@@ -161,7 +161,7 @@ class SiswaOrangtuaImport implements ToModel, WithHeadingRow, WithValidation, Sk
             // Siswa
             '*.nis.required' => 'NIS wajib diisi.',
             '*.nis.numeric' => 'NIS harus berupa angka.',
-            '*.nis.digits_between' => 'NIS harus 5–25 digit.',
+            '*.nis.digits_between' => 'NIS harus 5 sampai 25 digit.',
             '*.nis.unique' => 'NIS sudah digunakan.',
 
             '*.nama_siswa.required' => 'Nama siswa wajib diisi.',

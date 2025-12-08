@@ -76,9 +76,34 @@
                     <a href="{{ route('admin.siswaortu.template') }}" class="btn btn-info btn-sm me-2">
                         <i class="ti ti-download"></i> Download Template Excel
                     </a>
-                    <button class="btn btn-info btn-sm" data-bs-toggle="collapse" data-bs-target="#importForm">
+                    <button class="btn btn-info btn-sm me-2" data-bs-toggle="collapse" data-bs-target="#importForm">
                         <i class="ti ti-upload"></i> Import
                     </button>
+                
+                    <form action="{{ route('admin.siswa.reset.password') }}" 
+                          method="POST" id="resetSiswaForm" class="d-inline">
+                        @csrf
+                        <button type="button" class="btn btn-warning btn-sm" onclick="confirmResetSiswa()">
+                            Reset Password Semua Siswa
+                        </button>
+                    </form>
+                    
+                    <script>
+                    function confirmResetSiswa() {
+                        Swal.fire({
+                            title: "Yakin reset semua password siswa?",
+                            text: "Semua siswa akan otomatis keluar dan tidak bisa login!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Ya, reset!",
+                            cancelButtonText: "Batal"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById("resetSiswaForm").submit();
+                            }
+                        });
+                    }
+                    </script>
                 </div>
             </div>
 
